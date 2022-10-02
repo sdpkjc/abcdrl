@@ -4,7 +4,7 @@ import os
 import random
 import time
 from distutils.util import strtobool
-from typing import Any, Callable, Dict, Optional, Tuple, Union
+from typing import Callable, Dict, Optional, Tuple
 
 import gym
 import numpy as np
@@ -21,7 +21,10 @@ from torch.utils.tensorboard import SummaryWriter
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--exp-name", type=str, default=os.path.basename(__file__).rstrip(".py"), help="the name of this experiment",
+        "--exp-name",
+        type=str,
+        default=os.path.basename(__file__).rstrip(".py"),
+        help="the name of this experiment",
     )
     parser.add_argument("--seed", type=int, default=1, help="seed of the experiment")
     parser.add_argument(
@@ -41,10 +44,16 @@ def parse_args() -> argparse.Namespace:
         help="if toggled, this experiment will be tracked with Weights and Biases",
     )
     parser.add_argument(
-        "--wandb-project-name", type=str, default="rl_lab", help="the wandb's project name",
+        "--wandb-project-name",
+        type=str,
+        default="rl_lab",
+        help="the wandb's project name",
     )
     parser.add_argument(
-        "--wandb-entity", type=str, default=None, help="the entity (team) of wandb's project",
+        "--wandb-entity",
+        type=str,
+        default=None,
+        help="the entity (team) of wandb's project",
     )
     parser.add_argument(
         "--capture-video",
@@ -56,17 +65,29 @@ def parse_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
-        "--env-id", type=str, default="Hopper-v2", help="the id of the environment",
+        "--env-id",
+        type=str,
+        default="Hopper-v2",
+        help="the id of the environment",
     )
     parser.add_argument("--num-envs", type=int, default=1, help="the number of environments")
     parser.add_argument(
-        "--eval-frequency", type=int, default=10000, help="the frequency of evaluate",
+        "--eval-frequency",
+        type=int,
+        default=10000,
+        help="the frequency of evaluate",
     )
     parser.add_argument(
-        "--num-ep-eval", type=int, default=5, help="number of episodic in a evaluation",
+        "--num-ep-eval",
+        type=int,
+        default=5,
+        help="number of episodic in a evaluation",
     )
     parser.add_argument(
-        "--total-timesteps", type=int, default=1000000, help="total timesteps of the experiments",
+        "--total-timesteps",
+        type=int,
+        default=1000000,
+        help="total timesteps of the experiments",
     )
 
     parser.add_argument("--gamma", type=float, default=0.99, help="the discount factor gamma")
@@ -97,7 +118,12 @@ class ActorNetwork(nn.Module):
     def __init__(self, in_n: int, out_n: int) -> None:
         super().__init__()
         self.network = nn.Sequential(
-            nn.Linear(in_n, 256), nn.ReLU(), nn.Linear(256, 256), nn.ReLU(), nn.Linear(256, out_n), nn.Tanh(),
+            nn.Linear(in_n, 256),
+            nn.ReLU(),
+            nn.Linear(256, 256),
+            nn.ReLU(),
+            nn.Linear(256, out_n),
+            nn.Tanh(),
         )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
@@ -108,7 +134,11 @@ class CriticNetwork(nn.Module):
     def __init__(self, in_n: int) -> None:
         super().__init__()
         self.network = nn.Sequential(
-            nn.Linear(in_n, 256), nn.ReLU(), nn.Linear(256, 256), nn.ReLU(), nn.Linear(256, 1),
+            nn.Linear(in_n, 256),
+            nn.ReLU(),
+            nn.Linear(256, 256),
+            nn.ReLU(),
+            nn.Linear(256, 1),
         )
 
     def forward(self, x: torch.Tensor, a: torch.Tensor) -> torch.Tensor:
@@ -285,7 +315,12 @@ class Trainer:
         self.kwargs["device"] = torch.device("cuda" if torch.cuda.is_available() and kwargs["cuda"] else "cpu")
         self.envs = gym.vector.SyncVectorEnv(
             [
-                self._make_env(kwargs["env_id"], kwargs["seed"], i, kwargs["capture_video"],)
+                self._make_env(
+                    kwargs["env_id"],
+                    kwargs["seed"],
+                    i,
+                    kwargs["capture_video"],
+                )
                 for i in range(kwargs["num_envs"])
             ]
         )
@@ -335,10 +370,14 @@ class Trainer:
             for info in infos:
                 if "episode" in info.keys():
                     writer.add_scalar(
-                        "collect/episodic_length", info["episode"]["l"], self.agent.sample_step,
+                        "collect/episodic_length",
+                        info["episode"]["l"],
+                        self.agent.sample_step,
                     )
                     writer.add_scalar(
-                        "collect/episodic_return", info["episode"]["r"], self.agent.sample_step,
+                        "collect/episodic_return",
+                        info["episode"]["r"],
+                        self.agent.sample_step,
                     )
                     print(
                         self.agent.sample_step,
@@ -383,17 +422,27 @@ class Trainer:
                         1 / cnt_episodic
                     ) * info["episode"]["r"]
                     print(
-                        "Eval: episodic_length", info["episode"]["l"], ", episodic_return", info["episode"]["r"],
+                        "Eval: episodic_length",
+                        info["episode"]["l"],
+                        ", episodic_return",
+                        info["episode"]["r"],
                     )
                     break
         writer.add_scalar(
-            "evaluate/episodic_length", mean_episodic_length, self.agent.sample_step,
+            "evaluate/episodic_length",
+            mean_episodic_length,
+            self.agent.sample_step,
         )
         writer.add_scalar(
-            "evaluate/episodic_return", mean_episodic_return, self.agent.sample_step,
+            "evaluate/episodic_return",
+            mean_episodic_return,
+            self.agent.sample_step,
         )
         print(
-            "Eval: mean_episodic_length", mean_episodic_length, ", mean_episodic_return", mean_episodic_return,
+            "Eval: mean_episodic_length",
+            mean_episodic_length,
+            ", mean_episodic_return",
+            mean_episodic_return,
         )
 
     def _make_env(self, env_id: str, seed: int, idx: int, capture_video: bool) -> Callable:

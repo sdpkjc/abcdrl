@@ -1,5 +1,4 @@
-
-from typing import Any, Callable, Dict, Optional, Tuple, Union
+from typing import Dict, Optional, Tuple
 
 import numpy as np
 import torch
@@ -14,12 +13,13 @@ class Model(nn.Module):
     def value(self, x: torch.Tensor, a: Optional[torch.Tensor] = None) -> Tuple:
         # 多个 或 单个 critic 的输出值
         pass
-    
+
     def action(self, x: torch.Tensor) -> Tuple:
         # 给出 动作 | 动作概率分布
         pass
 
-class Algorithm():
+
+class Algorithm:
     def __init__(self, kwargs: Dict) -> None:
         # 1. 初始化 model, target_model
         # 2. 初始化 optimizer
@@ -31,7 +31,7 @@ class Algorithm():
 
     def learn(self, data: ReplayBufferSamples) -> Dict:
         # 根据训练数据（观测量和输入的reward），定义损失函数，用于更新 Model 中的参数。
-        
+
         # 1. 计算目标
         # 2. 计算损失
         # 3. 优化模型
@@ -43,7 +43,7 @@ class Algorithm():
         pass
 
 
-class Agent():
+class Agent:
     def __init__(self, kwargs: Dict) -> None:
         pass
 
@@ -65,17 +65,20 @@ class Agent():
         pass
 
 
-class Trainer():
+class Trainer:
     # Buffer, Env, Agent
     # logger
     def __init__(self, kwargs: Dict) -> None:
         pass
+
     def _run_collect(self, n: int = 1) -> None:
         pass
+
     def _run_train(self):
         pass
+
     def _run_evaluate(self, n_episodic: int = 1) -> None:
         pass
+
     def run(self):
         pass
-    
