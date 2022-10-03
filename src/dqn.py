@@ -233,8 +233,10 @@ class Agent:
         if random.random() < self._get_epsilon():
             act = np.array([self.kwargs["envs_single_action_space"].sample() for _ in range(self.kwargs["num_envs"])])
         else:
+            obs = torch.Tensor(obs).to(next(self.alg.model.parameters()))
             with torch.no_grad():
                 _, act = self.alg.predict(obs).max(dim=1)
+            act = act.cpu().numpy()
         self.sample_step += 1
         return act
 
