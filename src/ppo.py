@@ -58,7 +58,6 @@ def parse_args():
         help="the learning rate of the optimizer")
     parser.add_argument("--anneal-lr", type=lambda x: bool(strtobool(x)), default=True, nargs="?", const=True,
         help="Toggle learning rate annealing for policy and value networks")
-
     parser.add_argument("--update-epochs", type=int, default=10,
         help="the K epochs to update the policy")
     parser.add_argument("--norm-adv", type=lambda x: bool(strtobool(x)), default=True, nargs="?", const=True,
@@ -75,7 +74,6 @@ def parse_args():
         help="the maximum norm for the gradient clipping")
     parser.add_argument("--target-kl", type=float, default=None,
         help="the target KL divergence threshold")
-
     # Train
     parser.add_argument("--num-minibatches", type=int, default=32,
         help="the number of mini-batches")
