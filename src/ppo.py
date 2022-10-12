@@ -17,15 +17,13 @@ from torch.distributions.normal import Normal
 from torch.utils.tensorboard import SummaryWriter
 
 
-def parse_args():
+def parse_args() -> argparse.Namespace:
     # fmt: off
     parser = argparse.ArgumentParser()
     parser.add_argument("--exp-name", type=str, default=os.path.basename(__file__).rstrip(".py"),
         help="the name of this experiment")
     parser.add_argument("--seed", type=int, default=1,
         help="seed of the experiment")
-    parser.add_argument("--torch-deterministic", type=lambda x: bool(strtobool(x)), default=True, nargs="?", const=True,
-        help="if toggled, `torch.backends.cudnn.deterministic=False`")
     parser.add_argument("--cuda", type=lambda x: bool(strtobool(x)), default=True, nargs="?", const=True,
         help="if toggled, cuda will be enabled by default")
     parser.add_argument("--track", type=lambda x: bool(strtobool(x)), default=False, nargs="?", const=True,
@@ -41,10 +39,10 @@ def parse_args():
         help="the id of the environment")
     parser.add_argument("--num-envs", type=int, default=1,
         help="the number of parallel game environments")
-    parser.add_argument("--eval-frequency", type=int, default=100,
-        help="the frequency of evaluate",)
+    parser.add_argument("--eval-frequency", type=int, default=10,
+        help="the frequency of evaluate")
     parser.add_argument("--num-ep-eval", type=int, default=5,
-        help="number of episodic in a evaluation",)
+        help="number of episodic in a evaluation")
     parser.add_argument("--total-timesteps", type=int, default=1_000_000,
         help="total timesteps of the experiments")
     parser.add_argument("--gamma", type=float, default=0.99,
@@ -93,22 +91,19 @@ def layer_init(layer, std=np.sqrt(2), bias_const=0.0):
 
 
 class ActorNetwork(nn.Module):
-    def __init__(self, kwargs: Dict) -> None:
+    def __init__(self, in_n: int, out_n: int) -> None:
         super().__init__()
-        self.kwargs = kwargs
         self.network_mean = nn.Sequential(
-            layer_init(nn.Linear(np.prod(self.kwargs["envs_single_observation_space"].shape), 64)),
+            layer_init(nn.Linear(in_n, 64)),
             nn.Tanh(),
             layer_init(nn.Linear(64, 64)),
             nn.Tanh(),
             layer_init(
-                nn.Linear(64, np.prod(self.kwargs["envs_single_action_space"].shape)),
+                nn.Linear(64, out_n),
                 std=0.01,
             ),
         )
-        self.network_logstd = nn.Parameter(
-            torch.zeros(1, np.array(self.kwargs["envs_single_action_space"].shape).prod())
-        )
+        self.network_logstd = nn.Parameter(torch.zeros(1, out_n))
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         act_mean = self.network_mean(x)
@@ -118,11 +113,10 @@ class ActorNetwork(nn.Module):
 
 
 class CriticNetwork(nn.Module):
-    def __init__(self, kwargs: Dict) -> None:
+    def __init__(self, in_n: int) -> None:
         super().__init__()
-        self.kwargs = kwargs
         self.network = nn.Sequential(
-            layer_init(nn.Linear(np.prod(self.kwargs["envs_single_observation_space"].shape), 64)),
+            layer_init(nn.Linear(in_n, 64)),
             nn.Tanh(),
             layer_init(nn.Linear(64, 64)),
             nn.Tanh(),
@@ -138,8 +132,11 @@ class Model(nn.Module):
         super().__init__()
         self.kwargs = kwargs
 
-        self.actor_nn = ActorNetwork(kwargs)
-        self.critic_nn = CriticNetwork(kwargs)
+        self.actor_nn = ActorNetwork(
+            np.prod(self.kwargs["envs_single_observation_space"].shape),
+            np.prod(self.kwargs["envs_single_action_space"].shape),
+        )
+        self.critic_nn = CriticNetwork(np.prod(self.kwargs["envs_single_observation_space"].shape))
 
     def value(self, obs: torch.Tensor) -> torch.Tensor:
         return self.critic_nn(obs)
@@ -266,6 +263,7 @@ class Agent:
         log_data_list = []
         for data_generator in data_generator_list:
             log_data_list += [self.alg.learn(data_generator)]
+
         self.learn_step += 1
         return log_data_list
 
@@ -283,7 +281,8 @@ class Trainer:
         self.kwargs["device"] = torch.device("cuda" if torch.cuda.is_available() and kwargs["cuda"] else "cpu")
         self.envs = gym.vector.SyncVectorEnv([self._make_env(i) for i in range(kwargs["num_envs"])])
         self.envs.single_observation_space.dtype = np.float32
-        self.eval_env = gym.vector.SyncVectorEnv([self._make_env(kwargs["env_id"], 0, 0, False)])
+        self.eval_env = gym.vector.SyncVectorEnv([self._make_env(1)])
+        self.eval_env.single_observation_space.dtype = np.float32
 
         self.kwargs["envs_single_observation_space"] = self.envs.single_observation_space
         self.kwargs["envs_single_action_space"] = self.envs.single_action_space
@@ -341,7 +340,7 @@ class Trainer:
                     )
                     break
 
-        act, _, next_val = self.agent.sample(next_obs)
+        act, _, next_val = self.agent.sample(real_next_obs)
         self.agent.sample_step -= 1
         _, _, next_done, _ = self.envs.step(act)
         self.buffer.compute_returns_and_advantage(next_val, next_done)
@@ -376,17 +375,19 @@ class Trainer:
                     print(f"Eval: episodic_length {info['episode']['l']}, episodic_return {info['episode']['r']}")
                     break
 
+        mean_episodic_length = sum_episodic_length / n_episodic
+        mean_episodic_return = sum_episodic_return / n_episodic
         writer.add_scalar(
             "evaluate/episodic_length",
-            sum_episodic_length / n_episodic,
+            mean_episodic_length,
             self.agent.sample_step,
         )
         writer.add_scalar(
             "evaluate/episodic_return",
-            sum_episodic_return / n_episodic,
+            mean_episodic_return,
             self.agent.sample_step,
         )
-        print(f"Eval: mean_episodic_length {sum_episodic_length}, mean_episodic_return {sum_episodic_return}")
+        print(f"Eval: mean_episodic_length {mean_episodic_length}, mean_episodic_return {mean_episodic_return}")
 
     def _make_env(self, idx: int) -> Callable:
         def thunk():

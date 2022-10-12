@@ -34,12 +34,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--wandb-entity", type=str, default=None,
         help="the entity (team) of wandb's project")
     parser.add_argument("--capture-video", type=lambda x: bool(strtobool(x)), default=False, nargs="?", const=True,
-        help="weather to capture videos of the agent performances (check out `videos` folder)")
+        help="whether to capture videos of the agent performances (check out `videos` folder)")
 
     parser.add_argument("--env-id", type=str, default="CartPole-v1",
         help="the id of the environment")
     parser.add_argument("--num-envs", type=int, default=1,
-        help="the number of environments")
+        help="the number of parallel game environments")
     parser.add_argument("--eval-frequency", type=int, default=1_000_0,
         help="the frequency of evaluate")
     parser.add_argument("--num-ep-eval", type=int, default=5,
@@ -95,13 +95,13 @@ class Model(nn.Module):
     def __init__(self, kwargs: Dict) -> None:
         super().__init__()
         self.kwargs = kwargs
-        self.nn = Network(
-            int(np.array(self.kwargs["envs_single_observation_space"].shape).prod()),
+        self.network = Network(
+            int(np.prod(self.kwargs["envs_single_observation_space"].shape)),
             self.kwargs["envs_single_action_space"].n,
         )
 
-    def value(self, x: torch.Tensor) -> torch.Tensor:
-        return self.nn(x)
+    def value(self, obs: torch.Tensor) -> torch.Tensor:
+        return self.network(obs)
 
 
 class Algorithm:
@@ -113,12 +113,12 @@ class Algorithm:
         self.optimizer = optim.Adam(self.model.parameters(), lr=self.kwargs["learning_rate"])
 
     def predict(self, obs: torch.Tensor) -> torch.Tensor:
-        Q = self.model.value(obs)
-        return Q
+        val = self.model.value(obs)
+        return val
 
     def learn(self, data: ReplayBufferSamples) -> Dict:
         with torch.no_grad():
-            target_max, target_argmax = self.model_t.value(data.next_observations).max(dim=1)
+            target_max, _ = self.model_t.value(data.next_observations).max(dim=1)
             td_target = data.rewards.flatten() + self.kwargs["gamma"] * target_max * (1 - data.dones.flatten())
 
         old_val = self.model.value(data.observations).gather(1, data.actions).squeeze()
@@ -128,8 +128,8 @@ class Algorithm:
         td_loss.backward()
         self.optimizer.step()
 
-        metadata = {"td_loss": td_loss, "q_value": old_val.mean()}
-        return metadata
+        log_data = {"td_loss": td_loss, "q_value": old_val.mean()}
+        return log_data
 
     def sync_target(self) -> None:
         self.model_t.load_state_dict(self.model.state_dict())
@@ -165,12 +165,12 @@ class Agent:
 
     def learn(self, data: ReplayBufferSamples) -> Dict:
         # 数据预处理 & 目标网络同步
-        metadata = self.alg.learn(data)
+        log_data = self.alg.learn(data)
         if self.sample_step % self.kwargs["target_network_frequency"] == 0:
             self.alg.sync_target()
         self.learn_step += 1
-        metadata["epsilon"] = self._get_epsilon()
-        return metadata
+        log_data["epsilon"] = self._get_epsilon()
+        return log_data
 
     def _get_epsilon(self) -> float:
         slope = (self.kwargs["end_epsilon"] - self.kwargs["start_epsilon"]) * (
@@ -184,18 +184,8 @@ class Trainer:
         self.kwargs = kwargs
 
         self.kwargs["device"] = torch.device("cuda" if torch.cuda.is_available() and kwargs["cuda"] else "cpu")
-        self.envs = gym.vector.SyncVectorEnv(
-            [
-                self._make_env(
-                    kwargs["env_id"],
-                    kwargs["seed"],
-                    i,
-                    kwargs["capture_video"],
-                )
-                for i in range(kwargs["num_envs"])
-            ]
-        )
-        self.eval_env = gym.vector.SyncVectorEnv([self._make_env(kwargs["env_id"], 0, 0, False)])
+        self.envs = gym.vector.SyncVectorEnv([self._make_env(i) for i in range(kwargs["num_envs"])])
+        self.eval_env = gym.vector.SyncVectorEnv([self._make_env(1)])
 
         self.kwargs["envs_single_observation_space"] = self.envs.single_observation_space
         self.kwargs["envs_single_action_space"] = self.envs.single_action_space
@@ -225,15 +215,15 @@ class Trainer:
 
     def _run_collect(self, n: int = 1) -> None:
         for _ in range(n):
-            action = self.agent.sample(self.obs)
-            next_obs, reward, done, infos = self.envs.step(action)
+            act = self.agent.sample(self.obs)
+            next_obs, reward, done, infos = self.envs.step(act)
             real_next_obs = next_obs.copy()
 
             for idx, d in enumerate(done):
                 if d and infos[idx].get("terminal_observation") is not None:
                     real_next_obs[idx] = infos[idx]["terminal_observation"]
 
-            self.buffer.add(self.obs, real_next_obs, action, reward, done, infos)
+            self.buffer.add(self.obs, real_next_obs, act, reward, done, infos)
             self.obs = next_obs
 
             # logger
@@ -250,49 +240,39 @@ class Trainer:
                         self.agent.sample_step,
                     )
                     print(
-                        self.agent.sample_step,
-                        ": episodic_length",
-                        info["episode"]["l"],
-                        ", episodic_return",
-                        info["episode"]["r"],
+                        f"{self.agent.sample_step}: episodic_length {info['episode']['l']}, episodic_return {info['episode']['r']}"
                     )
                     break
 
     def _run_train(self) -> None:
         data = self.buffer.sample(self.kwargs["batch_size"])
-        metadata = self.agent.learn(data)
+        log_data = self.agent.learn(data)
 
-        writer.add_scalar("train/td_loss", metadata["td_loss"], self.agent.sample_step)
-        writer.add_scalar("train/q_value", metadata["q_value"], self.agent.sample_step)
-        writer.add_scalar("train/epsilon", metadata["epsilon"], self.agent.sample_step)
+        for log_item in log_data.items():
+            if log_item[1] is not None:
+                writer.add_scalar(f"train/{log_item[0]}", log_item[1], self.agent.sample_step)
 
     def _run_evaluate(self, n_episodic: int = 1) -> None:
         eval_obs = self.eval_env.reset()
+
+        sum_episodic_length, sum_episodic_return = 0.0, 0.0
         cnt_episodic = 0
-        mean_episodic_length = 0.0
-        mean_episodic_return = 0.0
         while cnt_episodic < n_episodic:
-            action = self.agent.predict(eval_obs)
-            eval_next_obs, reward, done, infos = self.eval_env.step(action)
+            act = self.agent.predict(eval_obs)
+            eval_next_obs, _, done, infos = self.eval_env.step(act)
             eval_obs = eval_next_obs
             cnt_episodic += done
 
             # logger
             for info in infos:
                 if "episode" in info.keys():
-                    mean_episodic_length = ((cnt_episodic - 1) / cnt_episodic) * mean_episodic_length + (
-                        1 / cnt_episodic
-                    ) * info["episode"]["l"]
-                    mean_episodic_return = ((cnt_episodic - 1) / cnt_episodic) * mean_episodic_return + (
-                        1 / cnt_episodic
-                    ) * info["episode"]["r"]
-                    print(
-                        "Eval: episodic_length",
-                        info["episode"]["l"],
-                        ", episodic_return",
-                        info["episode"]["r"],
-                    )
+                    sum_episodic_length += info["episode"]["l"]
+                    sum_episodic_return += info["episode"]["r"]
+                    print(f"Eval: episodic_length {info['episode']['l']}, episodic_return {info['episode']['r']}")
                     break
+
+        mean_episodic_length = sum_episodic_length / n_episodic
+        mean_episodic_return = sum_episodic_return / n_episodic
         writer.add_scalar(
             "evaluate/episodic_length",
             mean_episodic_length,
@@ -303,23 +283,18 @@ class Trainer:
             mean_episodic_return,
             self.agent.sample_step,
         )
-        print(
-            "Eval: mean_episodic_length",
-            mean_episodic_length,
-            ", mean_episodic_return",
-            mean_episodic_return,
-        )
+        print(f"Eval: mean_episodic_length {mean_episodic_length}, mean_episodic_return {mean_episodic_return}")
 
-    def _make_env(self, env_id: str, seed: int, idx: int, capture_video: bool) -> Callable:
+    def _make_env(self, idx: int) -> Callable:
         def thunk():
-            env = gym.make(env_id)
+            env = gym.make(self.kwargs["env_id"])
             env = gym.wrappers.RecordEpisodeStatistics(env)
-            if capture_video:
+            if self.kwargs["capture_video"]:
                 if idx == 0:
-                    env = gym.wrappers.RecordVideo(env, f"videos/{self.run_name}")
-            env.seed(seed)
-            env.action_space.seed(seed)
-            env.observation_space.seed(seed)
+                    env = gym.wrappers.RecordVideo(env, f"videos/{self.kwargs['exp_name']}")
+            env.seed(self.kwargs["seed"])
+            env.action_space.seed(self.kwargs["seed"])
+            env.observation_space.seed(self.kwargs["seed"])
             return env
 
         return thunk
@@ -339,6 +314,7 @@ if __name__ == "__main__":
 
     kwargs = vars(args)
     kwargs["exp_name"] = f"{kwargs['env_id']}__{kwargs['exp_name']}__{kwargs['seed']}__{int(time.time())}"
+
     # 初始化 tensorboard & wandb
     if kwargs["track"]:
         wandb.init(
