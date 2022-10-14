@@ -23,6 +23,3 @@ COPY pyproject.toml pyproject.toml
 RUN poetry install
 RUN poetry install -E atari
 RUN poetry install -E mujoco
-
-ADD ./ ./
-WORKDIR abcdrl
