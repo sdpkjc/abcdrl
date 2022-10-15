@@ -1,0 +1,15 @@
+numpy>=1.21.5
+torch>=1.12.1
+torchvision
+torchaudio
+tensorboard
+wandb
+stable-baselines3>=1.6.0
+opencv-python
+ale-py==0.7.4
+AutoROM[accept-rom-license]
+free-mujoco-py==2.1.6
+
+pre-commit>=2.17.0
+pytest>=6.2.5
+mkdocs-material
