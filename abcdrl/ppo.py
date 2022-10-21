@@ -39,10 +39,10 @@ def parse_args() -> argparse.Namespace:
         help="the id of the environment")
     parser.add_argument("--num-envs", type=int, default=1,
         help="the number of parallel game environments")
-    parser.add_argument("--eval-frequency", type=int, default=10,
+    parser.add_argument("--eval-frequency", type=int, default=5_000,
         help="the frequency of evaluate")
-    parser.add_argument("--num-ep-eval", type=int, default=5,
-        help="number of episodic in a evaluation")
+    parser.add_argument("--num-steps-eval", type=int, default=500,
+        help="the number of steps in a evaluation")
     parser.add_argument("--total-timesteps", type=int, default=1_000_000,
         help="total timesteps of the experiments")
     parser.add_argument("--gamma", type=float, default=0.99,
@@ -78,8 +78,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--gae-lambda", type=float, default=0.95,
         help="the lambda for the general advantage estimation")
     args = parser.parse_args()
-    args.batch_size = int(args.num_envs * args.num_steps)
-    args.minibatch_size = int(args.batch_size // args.num_minibatches)
+    args.batch_size = args.num_envs * args.num_steps
+    args.minibatch_size = args.batch_size // args.num_minibatches
+    args.eval_frequency = max(args.eval_frequency // args.num_envs * args.num_envs, 1)
     # fmt: on
     return args
 
@@ -254,7 +255,7 @@ class Agent:
         with torch.no_grad():
             act, log_prob, v = self.alg.predict(obs)
         act = act.cpu().numpy()
-        self.sample_step += 1
+        self.sample_step += self.kwargs["num_envs"]
         return act, log_prob, v
 
     def learn(self, data_generator_list: List[Generator[RolloutBufferSamples, None, None]]) -> Dict:
@@ -303,16 +304,18 @@ class Trainer:
     def run(self) -> None:
         self.start_time = time.time()
 
-        self.obs = self.envs.reset()
+        self.obs, self.eval_obs = self.envs.reset(), self.eval_env.reset()
+
         while self.agent.sample_step < self.kwargs["total_timesteps"]:
             self.buffer.reset()
-            self._run_collect(n=self.kwargs["num_steps"])
+            for _ in range(self.kwargs["num_steps"]):
+                self._run_collect(n_steps=1)
+                if self.agent.sample_step % self.kwargs["eval_frequency"] == 0:
+                    self._run_evaluate(n_steps=self.kwargs["num_steps_eval"])
             self._run_train()
-            if self.agent.learn_step % self.kwargs["eval_frequency"] == 0:
-                self._run_evaluate(self.kwargs["num_ep_eval"])
 
-    def _run_collect(self, n: int = 1) -> None:
-        for _ in range(n):
+    def _run_collect(self, n_steps: int = 1) -> None:
+        for _ in range(n_steps):
             act, log_prob, val = self.agent.sample(self.obs)
             next_obs, reward, done, infos = self.envs.step(act)
             real_next_obs = next_obs.copy()
@@ -324,7 +327,7 @@ class Trainer:
             self.buffer.add(self.obs, act, reward, done, val, log_prob)
             self.obs = next_obs
 
-            # log
+            # logger
             for info in infos:
                 if "episode" in info.keys():
                     writer.add_scalar(
@@ -338,12 +341,14 @@ class Trainer:
                         self.agent.sample_step,
                     )
                     print(
-                        f"{self.agent.sample_step}: episodic_length {info['episode']['l']}, episodic_return {info['episode']['r']}"
+                        f"{self.agent.sample_step}: "
+                        + f"episodic_length {info['episode']['l']}, "
+                        + f"episodic_return {info['episode']['r']}"
                     )
                     break
 
         act, _, next_val = self.agent.sample(real_next_obs)
-        self.agent.sample_step -= 1
+        self.agent.sample_step -= self.kwargs["num_envs"]
         _, _, next_done, _ = self.envs.step(act)
         self.buffer.compute_returns_and_advantage(next_val, next_done)
 
@@ -358,38 +363,37 @@ class Trainer:
             if log_data[1] is not None:
                 writer.add_scalar(f"train/{log_data[0]}", log_data[1], self.agent.sample_step)
 
-    def _run_evaluate(self, n_episodic: int = 1) -> None:
-        eval_obs = self.eval_env.reset()
-
-        sum_episodic_length, sum_episodic_return = 0.0, 0.0
-        cnt_episodic = 0
-        while cnt_episodic < n_episodic:
-            act = self.agent.predict(eval_obs)
-            eval_next_obs, _, done, infos = self.eval_env.step(act)
-            eval_obs = eval_next_obs
-            cnt_episodic += done
+    def _run_evaluate(self, n_steps: int = 1) -> None:
+        el_list, er_list = [], []
+        for _ in range(n_steps):
+            act = self.agent.predict(self.eval_obs)
+            self.eval_obs, _, _, infos = self.eval_env.step(act)
 
             # logger
             for info in infos:
                 if "episode" in info.keys():
-                    sum_episodic_length += info["episode"]["l"]
-                    sum_episodic_return += info["episode"]["r"]
-                    print(f"Eval: episodic_length {info['episode']['l']}, episodic_return {info['episode']['r']}")
+                    el_list.append(info["episode"]["l"])
+                    er_list.append(info["episode"]["r"])
                     break
 
-        mean_episodic_length = sum_episodic_length / n_episodic
-        mean_episodic_return = sum_episodic_return / n_episodic
-        writer.add_scalar(
-            "evaluate/episodic_length",
-            mean_episodic_length,
-            self.agent.sample_step,
-        )
-        writer.add_scalar(
-            "evaluate/episodic_return",
-            mean_episodic_return,
-            self.agent.sample_step,
-        )
-        print(f"Eval: mean_episodic_length {mean_episodic_length}, mean_episodic_return {mean_episodic_return}")
+        if el_list:
+            mena_el = sum(el_list) / len(el_list)
+            mena_er = sum(er_list) / len(er_list)
+            writer.add_scalar(
+                "evaluate/episodic_length",
+                mena_el,
+                self.agent.sample_step,
+            )
+            writer.add_scalar(
+                "evaluate/episodic_return",
+                mena_er,
+                self.agent.sample_step,
+            )
+            print(
+                f"Eval {self.agent.sample_step}: "
+                + f"mean_episodic_length {mena_el}, "
+                + f"mean_episodic_return {mena_er}"
+            )
 
     def _make_env(self, idx: int) -> Callable:
         def thunk():
