@@ -24,8 +24,8 @@ def parse_args() -> argparse.Namespace:
         help="the name of this experiment")
     parser.add_argument("--seed", type=int, default=1,
         help="seed of the experiment")
-    parser.add_argument("--cuda", type=lambda x: bool(strtobool(x)), default=True, nargs="?", const=True,
-        help="if toggled, cuda will be enabled by default")
+    parser.add_argument("--device", type=str, default='auto',
+        help="device of the experiment")
     parser.add_argument("--track", type=lambda x: bool(strtobool(x)), default=False, nargs="?", const=True,
         help="if toggled, this experiment will be tracked with Weights and Biases")
     parser.add_argument("--wandb-project-name", type=str, default="rl_lab",
@@ -242,7 +242,7 @@ class Agent:
 
     def predict(self, obs: np.ndarray) -> np.ndarray:
         # 评估
-        obs = torch.Tensor(obs).to(next(self.alg.model.parameters()))
+        obs = torch.Tensor(obs).to(next(self.alg.model.parameters()).device)
         with torch.no_grad():
             act, _, _ = self.alg.predict(obs)
         act = act.cpu().numpy()
@@ -250,7 +250,7 @@ class Agent:
 
     def sample(self, obs: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         # 训练
-        obs = torch.Tensor(obs).to(next(self.alg.model.parameters()))
+        obs = torch.Tensor(obs).to(next(self.alg.model.parameters()).device)
         with torch.no_grad():
             act, log_prob, v = self.alg.predict(obs)
         act = act.cpu().numpy()
@@ -278,7 +278,9 @@ class Trainer:
     def __init__(self, kwargs: Dict) -> None:
         self.kwargs = kwargs
 
-        self.kwargs["device"] = torch.device("cuda" if torch.cuda.is_available() and kwargs["cuda"] else "cpu")
+        if self.kwargs["device"] == "auto":
+            self.kwargs["device"] = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
         self.envs = gym.vector.SyncVectorEnv([self._make_env(i) for i in range(kwargs["num_envs"])])
         self.envs.single_observation_space.dtype = np.float32
         self.eval_env = gym.vector.SyncVectorEnv([self._make_env(1)])
