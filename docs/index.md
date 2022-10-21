@@ -1,6 +1,6 @@
 # abcdRL
 
-**模块化单文件强化学习代码库。**
+**模块化单文件强化学习代码库🗄**
 
 强化学习领域有许多高质量的代码库（🚂[PaddlePaddle/PARL](https://github.com/PaddlePaddle/PARL/), [DLR-RM/stable-baselines3](https://github.com/DLR-RM/stable-baselines3), [thu-ml/tianshou](https://github.com/thu-ml/tianshou), ...），它们大多为了高代码复用率和可扩展性，采用*多文件、多层抽象、模块化*的设计。但这样的设计不利于研究者快速了解算法实现细节，且在进行改进时需要仔细阅读文档，去了解大量的接口信息。(🏃[vwxyzjn/cleanrl](https://github.com/vwxyzjn/cleanrl/), [tinkoff-ai/CORL](https://github.com/tinkoff-ai/CORL)) 是一类*单文件*强化学习代码库，它们提供了清晰极简的算法实现。但其代码采用基于过程的实现方式，使得改进代码时，无法快速定位和限制需要改进的代码范围。
 
