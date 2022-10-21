@@ -257,7 +257,7 @@ class PrioritizedReplayBuffer(ReplayBuffer):
         """Store experience and priority."""
         super().add(obs, next_obs, act, rew, done, infos)
 
-        for i in range(self.num_envs):
+        for _ in range(self.num_envs):
             self.sum_tree[self.tree_ptr] = self.max_priority**self.alpha
             self.min_tree[self.tree_ptr] = self.max_priority**self.alpha
             self.tree_ptr = (self.tree_ptr + 1) % self.max_size
@@ -308,9 +308,7 @@ class PrioritizedReplayBuffer(ReplayBuffer):
         segment = p_total / batch_size
 
         for i in range(batch_size):
-            a = segment * i
-            b = segment * (i + 1)
-            upperbound = random.uniform(a, b)
+            upperbound = random.uniform(segment * i, segment * (i + 1))
             idx = self.sum_tree.retrieve(upperbound)
             indices.append(idx)
 

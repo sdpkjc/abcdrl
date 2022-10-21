@@ -253,10 +253,10 @@ class Agent:
         # 训练
         obs = torch.Tensor(obs).to(next(self.alg.model.parameters()).device)
         with torch.no_grad():
-            act, log_prob, v = self.alg.predict(obs)
+            act, log_prob, val = self.alg.predict(obs)
         act = act.cpu().numpy()
         self.sample_step += self.kwargs["num_envs"]
-        return act, log_prob, v
+        return act, log_prob, val
 
     def learn(self, data_generator_list: List[Generator[RolloutBufferSamples, None, None]]) -> Dict:
         # 数据预处理
