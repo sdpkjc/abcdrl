@@ -1,88 +1,20 @@
-import argparse
 import os
-import random
 import time
-from distutils.util import strtobool
 from typing import Callable, Dict, Generator, List, Optional, Tuple
 
+import random
+import fire
 import gym
 import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
-import wandb
 from stable_baselines3.common.buffers import RolloutBuffer
 from stable_baselines3.common.type_aliases import RolloutBufferSamples
 from torch.distributions.normal import Normal
 from torch.utils.tensorboard import SummaryWriter
 
-
-def parse_args() -> argparse.Namespace:
-    # fmt: off
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--exp-name", type=str, default=os.path.basename(__file__).rstrip(".py"),
-        help="the name of this experiment")
-    parser.add_argument("--seed", type=int, default=1,
-        help="seed of the experiment")
-    parser.add_argument("--device", type=str, default='auto',
-        help="device of the experiment")
-    parser.add_argument("--track", type=lambda x: bool(strtobool(x)), default=False, nargs="?", const=True,
-        help="if toggled, this experiment will be tracked with Weights and Biases")
-    parser.add_argument("--wandb-project-name", type=str, default="rl_lab",
-        help="the wandb's project name")
-    parser.add_argument("--wandb-entity", type=str, default=None,
-        help="the entity (team) of wandb's project")
-    parser.add_argument("--capture-video", type=lambda x: bool(strtobool(x)), default=False, nargs="?", const=True,
-        help="whether to capture videos of the agent performances (check out `videos` folder)")
-
-    parser.add_argument("--env-id", type=str, default="Hopper-v2",
-        help="the id of the environment")
-    parser.add_argument("--num-envs", type=int, default=1,
-        help="the number of parallel game environments")
-    parser.add_argument("--eval-frequency", type=int, default=5_000,
-        help="the frequency of evaluate")
-    parser.add_argument("--num-steps-eval", type=int, default=500,
-        help="the number of steps in a evaluation")
-    parser.add_argument("--total-timesteps", type=int, default=1_000_000,
-        help="total timesteps of the experiments")
-    parser.add_argument("--gamma", type=float, default=0.99,
-        help="the discount factor gamma")
-
-    # Collect
-    parser.add_argument("--num-steps", type=int, default=2048,
-        help="the number of steps to run in each environment per policy rollout")
-    # Learn
-    parser.add_argument("--learning-rate", type=float, default=3e-4,
-        help="the learning rate of the optimizer")
-    parser.add_argument("--anneal-lr", type=lambda x: bool(strtobool(x)), default=True, nargs="?", const=True,
-        help="Toggle learning rate annealing for policy and value networks")
-    parser.add_argument("--update-epochs", type=int, default=10,
-        help="the K epochs to update the policy")
-    parser.add_argument("--norm-adv", type=lambda x: bool(strtobool(x)), default=True, nargs="?", const=True,
-        help="Toggles advantages normalization")
-    parser.add_argument("--clip-coef", type=float, default=0.2,
-        help="the surrogate clipping coefficient")
-    parser.add_argument("--clip-vloss", type=lambda x: bool(strtobool(x)), default=True, nargs="?", const=True,
-        help="Toggles whether or not to use a clipped loss for the value function, as per the paper.")
-    parser.add_argument("--ent-coef", type=float, default=0.0,
-        help="coefficient of the entropy")
-    parser.add_argument("--vf-coef", type=float, default=0.5,
-        help="coefficient of the value function")
-    parser.add_argument("--max-grad-norm", type=float, default=0.5,
-        help="the maximum norm for the gradient clipping")
-    parser.add_argument("--target-kl", type=float, default=None,
-        help="the target KL divergence threshold")
-    # Train
-    parser.add_argument("--num-minibatches", type=int, default=32,
-        help="the number of mini-batches")
-    parser.add_argument("--gae-lambda", type=float, default=0.95,
-        help="the lambda for the general advantage estimation")
-    args = parser.parse_args()
-    args.batch_size = args.num_envs * args.num_steps
-    args.minibatch_size = args.batch_size // args.num_minibatches
-    args.eval_frequency = max(args.eval_frequency // args.num_envs * args.num_envs, 1)
-    # fmt: on
-    return args
+import wandb
 
 
 def layer_init(layer, std=np.sqrt(2), bias_const=0.0):
@@ -129,7 +61,7 @@ class CriticNetwork(nn.Module):
 
 
 class Model(nn.Module):
-    def __init__(self, kwargs: Dict) -> None:
+    def __init__(self, **kwargs) -> None:
         super().__init__()
         self.kwargs = kwargs
 
@@ -153,10 +85,10 @@ class Model(nn.Module):
 
 
 class Algorithm:
-    def __init__(self, kwargs: Dict) -> None:
+    def __init__(self, **kwargs) -> None:
         self.kwargs = kwargs
 
-        self.model = Model(kwargs).to(kwargs["device"])
+        self.model = Model(**self.kwargs).to(self.kwargs["device"])
         self.optimizer = optim.Adam(self.model.parameters(), lr=self.kwargs["learning_rate"])
 
     def predict(self, obs: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
@@ -234,10 +166,10 @@ class Algorithm:
 
 
 class Agent:
-    def __init__(self, kwargs: Dict) -> None:
+    def __init__(self, **kwargs) -> None:
         self.kwargs = kwargs
 
-        self.alg = Algorithm(kwargs)
+        self.alg = Algorithm(**self.kwargs)
         self.sample_step = 0
         self.learn_step = 0
 
@@ -276,13 +208,50 @@ class Agent:
 
 
 class Trainer:
-    def __init__(self, kwargs: Dict) -> None:
-        self.kwargs = kwargs
+    def __init__(
+        self,
+        exp_name: str = os.path.basename(__file__).rstrip(".py"),
+        seed: int = 1,
+        device: str = "auto",
+        capture_video: bool = False,
+        env_id: str = "Hopper-v2",
+        num_envs: int = 1,
+        eval_frequency: int = 5_000,
+        num_steps_eval: int = 500,
+        total_timesteps: int = 1_000_000,
+        gamma: float = 0.99,
+        # Collect
+        num_steps: int = 2048,
+        # Learn
+        learning_rate: float = 3e-4,
+        anneal_lr: bool = True,
+        update_epochs: int = 10,
+        norm_adv: bool = True,
+        clip_coef: float = 0.2,
+        clip_vloss: bool = True,
+        ent_coef: float = 0.0,
+        vf_coef: float = 0.5,
+        max_grad_norm: float = 0.5,
+        target_kl: Optional[float] = None,
+        # Train
+        num_minibatches: int = 32,
+        gae_lambda: float = 0.95,
+    ) -> None:
+        self.kwargs = locals()
+        self.kwargs.pop("self")
 
+        self.kwargs["exp_name"] = (
+            f"{self.kwargs['env_id']}__{self.kwargs['exp_name']}__" + f"{self.kwargs['seed']}__{int(time.time())}"
+        )
+        self.kwargs["eval_frequency"] = max(
+            self.kwargs["eval_frequency"] // self.kwargs["num_envs"] * self.kwargs["num_envs"], 1
+        )
+        self.kwargs["batch_size"] = self.kwargs["num_envs"] * self.kwargs["num_steps"]
+        self.kwargs["minibatch_size"] = self.kwargs["batch_size"] // self.kwargs["num_minibatches"]
         if self.kwargs["device"] == "auto":
-            self.kwargs["device"] = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+            self.kwargs["device"] = "cuda" if torch.cuda.is_available() else "cpu"
 
-        self.envs = gym.vector.SyncVectorEnv([self._make_env(i) for i in range(kwargs["num_envs"])])
+        self.envs = gym.vector.SyncVectorEnv([self._make_env(i) for i in range(self.kwargs["num_envs"])])
         self.envs.single_observation_space.dtype = np.float32
         self.eval_env = gym.vector.SyncVectorEnv([self._make_env(1)])
         self.eval_env.single_observation_space.dtype = np.float32
@@ -299,77 +268,65 @@ class Trainer:
             gae_lambda=self.kwargs["gae_lambda"],
             gamma=self.kwargs["gamma"],
         )
-        self.agent = Agent(self.kwargs)
 
-    def run(self) -> None:
-        self.start_time = time.time()
+        self.agent = Agent(**self.kwargs)
 
+    def __call__(self) -> Generator:
         self.obs, self.eval_obs = self.envs.reset(), self.eval_env.reset()
 
         while self.agent.sample_step < self.kwargs["total_timesteps"]:
             self.buffer.reset()
+            
             for _ in range(self.kwargs["num_steps"]):
-                self._run_collect(n_steps=1)
+                yield self._run_collect()
                 if self.agent.sample_step % self.kwargs["eval_frequency"] == 0:
-                    self._run_evaluate(n_steps=self.kwargs["num_steps_eval"])
-            self._run_train()
+                    yield self._run_evaluate(n_steps=self.kwargs["num_steps_eval"])
+            yield self._run_train()
 
-    def _run_collect(self, n_steps: int = 1) -> None:
-        for _ in range(n_steps):
-            act, log_prob, val = self.agent.sample(self.obs)
-            next_obs, reward, done, infos = self.envs.step(act)
-            real_next_obs = next_obs.copy()
+    def _run_collect(self) -> Dict:
+        act, log_prob, val = self.agent.sample(self.obs)
+        next_obs, reward, done, infos = self.envs.step(act)
+        self.real_next_obs = next_obs.copy()
 
-            for idx, d in enumerate(done):
-                if d and infos[idx].get("terminal_observation") is not None:
-                    real_next_obs[idx] = infos[idx]["terminal_observation"]
+        for idx, done_i in enumerate(done):
+            if done_i and infos[idx].get("terminal_observation") is not None:
+                real_next_obs[idx] = infos[idx]["terminal_observation"]
 
-            self.buffer.add(self.obs, act, reward, done, val, log_prob)
-            self.obs = next_obs
+        self.buffer.add(self.obs, act, reward, done, val, log_prob)
+        self.obs = next_obs
 
-            # logger
-            for info in infos:
-                if "episode" in info.keys():
-                    writer.add_scalar(
-                        "collect/episodic_length",
-                        info["episode"]["l"],
-                        self.agent.sample_step,
-                    )
-                    writer.add_scalar(
-                        "collect/episodic_return",
-                        info["episode"]["r"],
-                        self.agent.sample_step,
-                    )
-                    print(
-                        f"{self.agent.sample_step}: "
-                        + f"episodic_length {info['episode']['l']}, "
-                        + f"episodic_return {info['episode']['r']}"
-                    )
-                    break
+        log_data = {"log_type": "collect"}
+        for info in infos:
+            if "episode" in info.keys():
+                log_data["sample_step"] = self.agent.sample_step
+                log_data["logs"] = {
+                    "episodic_length": info["episode"]["l"],
+                    "episodic_return": info["episode"]["r"],
+                }
+                break
 
-        act, _, next_val = self.agent.sample(real_next_obs)
+        return log_data
+
+    def _run_train(self) -> None:
+        act, _, next_val = self.agent.sample(self.real_next_obs)
         self.agent.sample_step -= self.kwargs["num_envs"]
         _, _, next_done, _ = self.envs.step(act)
         self.buffer.compute_returns_and_advantage(next_val, next_done)
 
-    def _run_train(self) -> None:
         data_generator_list = [
             self.buffer.get(self.kwargs["minibatch_size"]) for _ in range(self.kwargs["update_epochs"])
         ]
 
         log_data_list = self.agent.learn(data_generator_list)
 
-        for log_data in log_data_list[0].items():
-            if log_data[1] is not None:
-                writer.add_scalar(f"train/{log_data[0]}", log_data[1], self.agent.sample_step)
+        return {"log_type": "train", "sample_step": self.agent.sample_step, "logs": log_data_list[0]}
 
-    def _run_evaluate(self, n_steps: int = 1) -> None:
+    def _run_evaluate(self, n_steps: int = 1) -> Dict:
         el_list, er_list = [], []
         for _ in range(n_steps):
             act = self.agent.predict(self.eval_obs)
             self.eval_obs, _, _, infos = self.eval_env.step(act)
 
-            # logger
             for info in infos:
                 if "episode" in info.keys():
                     el_list.append(info["episode"]["l"])
@@ -377,23 +334,16 @@ class Trainer:
                     break
 
         if el_list:
-            mena_el = sum(el_list) / len(el_list)
-            mena_er = sum(er_list) / len(er_list)
-            writer.add_scalar(
-                "evaluate/episodic_length",
-                mena_el,
-                self.agent.sample_step,
-            )
-            writer.add_scalar(
-                "evaluate/episodic_return",
-                mena_er,
-                self.agent.sample_step,
-            )
-            print(
-                f"Eval {self.agent.sample_step}: "
-                + f"mean_episodic_length {mena_el}, "
-                + f"mean_episodic_return {mena_er}"
-            )
+            return {
+                "log_type": "evaluate",
+                "sample_step": self.agent.sample_step,
+                "logs": {
+                    "mean_episodic_length": sum(el_list) / len(el_list),
+                    "mean_episodic_return": sum(er_list) / len(er_list),
+                },
+            }
+
+        return {"log_type": "evaluate"}
 
     def _make_env(self, idx: int) -> Callable:
         def thunk():
@@ -415,38 +365,45 @@ class Trainer:
         return thunk
 
 
-if __name__ == "__main__":
-    args = parse_args()
+def logger(wrapped) -> Callable:
+    def _wrapper(
+        *args, track: bool = False, wandb_project_name: str = "abcdrl", wandb_entity: Optional[str] = None, **kwargs
+    ) -> Generator:
+        if track:
+            wandb.init(
+                project=wandb_project_name,
+                entity=wandb_entity,
+                sync_tensorboard=True,
+                config=args[0].kwargs,
+                name=args[0].kwargs["exp_name"],
+                monitor_gym=True,
+                save_code=True,
+            )
+        writer = SummaryWriter(f"runs/{args[0].kwargs['exp_name']}")
+        writer.add_text(
+            "hyperparameters",
+            "|param|value|\n|-|-|\n%s" % ("\n".join([f"|{key}|{value}|" for key, value in args[0].kwargs.items()])),
+        )
 
-    # 固定随机数种子
-    torch.manual_seed(args.seed)
-    torch.cuda.manual_seed(args.seed)
-    np.random.seed(args.seed)
-    random.seed(args.seed)
+        gen = wrapped(*args, **kwargs)
+        for log_data in gen:
+            if "logs" in log_data:
+                for log_item in log_data["logs"].items():
+                    writer.add_scalar(f"{log_data['log_type']}/{log_item[0]}", log_item[1], log_data["sample_step"])
+                if log_data["log_type"] != "train":
+                    yield log_data
+
+    return _wrapper
+
+
+if __name__ == "__main__":
+    torch.manual_seed(1234)
+    torch.cuda.manual_seed(1234)
+    np.random.seed(1234)
+    random.seed(1234)
     torch.backends.cudnn.benchmark = False
     torch.backends.cudnn.deterministic = True
-    torch.cuda.manual_seed_all(args.seed)
+    torch.cuda.manual_seed_all(1234)
 
-    kwargs = vars(args)
-    kwargs["exp_name"] = f"{kwargs['env_id']}__{kwargs['exp_name']}__{kwargs['seed']}__{int(time.time())}"
-
-    # 初始化 tensorboard & wandb
-    if kwargs["track"]:
-        wandb.init(
-            project=kwargs["wandb_project_name"],
-            entity=kwargs["wandb_entity"],
-            sync_tensorboard=True,
-            config=kwargs,
-            name=kwargs["exp_name"],
-            monitor_gym=True,
-            save_code=True,
-        )
-    writer = SummaryWriter(f"runs/{kwargs['exp_name']}")
-    writer.add_text(
-        "hyperparameters",
-        "|param|value|\n|-|-|\n%s" % ("\n".join([f"|{key}|{value}|" for key, value in kwargs.items()])),
-    )
-
-    # 开始训练
-    trainer = Trainer(kwargs)
-    trainer.run()
+    Trainer.__call__ = logger(Trainer.__call__)
+    fire.Fire(Trainer)

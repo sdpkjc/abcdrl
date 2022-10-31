@@ -9,3 +9,4 @@ opencv-python
 ale-py==0.7.4
 AutoROM[accept-rom-license]
 free-mujoco-py==2.1.6
+fire

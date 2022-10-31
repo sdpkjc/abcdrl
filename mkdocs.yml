@@ -23,7 +23,7 @@ nav:
   - 概览:
     - 简介: index.md
     - 特点: features.md
-    - 框架结构: abstractions.md
+    - 模块设计: abstractions.md
   - 安装:
     - 安装: install.md
   - 算法:
@@ -36,6 +36,8 @@ nav:
     - 参考资料: ref.md
     
 markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
   - admonition
   - pymdownx.details
   - pymdownx.superfences

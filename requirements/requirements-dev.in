@@ -9,8 +9,10 @@ opencv-python
 ale-py==0.7.4
 AutoROM[accept-rom-license]
 free-mujoco-py==2.1.6
+fire
 
 pre-commit>=2.17.0
 pytest>=6.2.5
 pytest-html
 mkdocs-material
+pip-tools
