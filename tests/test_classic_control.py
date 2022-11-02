@@ -12,7 +12,8 @@ def test_dqn():
         + " --learning-starts 8"
         + " --total-timesteps 32"
         + " --buffer-size 10"
-        + " --batch-size 4",
+        + " --batch-size 4"
+        + " --save-frequency 16",
         shell=True,
         check=True,
     )
@@ -29,7 +30,8 @@ def test_ddqn():
         + " --learning-starts 8"
         + " --total-timesteps 32"
         + " --buffer-size 10"
-        + " --batch-size 4",
+        + " --batch-size 4"
+        + " --save-frequency 16",
         shell=True,
         check=True,
     )
@@ -46,7 +48,8 @@ def test_pdqn():
         + " --learning-starts 8"
         + " --total-timesteps 32"
         + " --buffer-size 10"
-        + " --batch-size 4",
+        + " --batch-size 4"
+        + " --save-frequency 16",
         shell=True,
         check=True,
     )

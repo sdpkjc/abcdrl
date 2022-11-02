@@ -12,7 +12,8 @@ def test_ddpg():
         + " --learning-starts 64"
         + " --total-timesteps 256"
         + " --buffer-size 32"
-        + " --batch-size 4",
+        + " --batch-size 4"
+        + " --save-frequency 128",
         shell=True,
         check=True,
     )
@@ -29,7 +30,8 @@ def test_td3():
         + " --learning-starts 64"
         + " --total-timesteps 256"
         + " --buffer-size 32"
-        + " --batch-size 4",
+        + " --batch-size 4"
+        + " --save-frequency 128",
         shell=True,
         check=True,
     )
@@ -46,7 +48,8 @@ def test_sac():
         + " --learning-starts 64"
         + " --total-timesteps 256"
         + " --buffer-size 32"
-        + " --batch-size 4",
+        + " --batch-size 4"
+        + " --save-frequency 128",
         shell=True,
         check=True,
     )
@@ -62,7 +65,8 @@ def test_ppo():
         + " --num-steps-eval 1"
         + " --num-steps 64"
         + " --num-minibatches 16"
-        + " --total-timesteps 256",
+        + " --total-timesteps 256"
+        + " --save-frequency 128",
         shell=True,
         check=True,
     )

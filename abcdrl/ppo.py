@@ -3,19 +3,18 @@ import random
 import time
 from typing import Callable, Dict, Generator, List, Optional, Tuple
 
-import random
+import dill
 import fire
 import gym
 import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
+import wandb
 from stable_baselines3.common.buffers import RolloutBuffer
 from stable_baselines3.common.type_aliases import RolloutBufferSamples
 from torch.distributions.normal import Normal
 from torch.utils.tensorboard import SummaryWriter
-
-import wandb
 
 
 def layer_init(layer, std=np.sqrt(2), bias_const=0.0):
@@ -211,7 +210,7 @@ class Agent:
 class Trainer:
     def __init__(
         self,
-        exp_name: str = os.path.basename(__file__).rstrip(".py"),
+        exp_name: Optional[str] = None,
         seed: int = 1,
         device: str = "auto",
         capture_video: bool = False,
@@ -241,9 +240,11 @@ class Trainer:
         self.kwargs = locals()
         self.kwargs.pop("self")
 
-        self.kwargs["exp_name"] = (
-            f"{self.kwargs['env_id']}__{self.kwargs['exp_name']}__" + f"{self.kwargs['seed']}__{int(time.time())}"
-        )
+        if self.kwargs["exp_name"] is None:
+            self.kwargs["exp_name"] = (
+                    f"{self.kwargs['env_id']}__{os.path.basename(__file__).rstrip('.py')}__"
+                    + f"{self.kwargs['seed']}__{int(time.time())}"
+            )
         self.kwargs["eval_frequency"] = max(
             self.kwargs["eval_frequency"] // self.kwargs["num_envs"] * self.kwargs["num_envs"], 1
         )
@@ -270,14 +271,13 @@ class Trainer:
             gamma=self.kwargs["gamma"],
         )
 
+        self.obs, self.eval_obs = self.envs.reset(), self.eval_env.reset()
         self.agent = Agent(**self.kwargs)
 
     def __call__(self) -> Generator:
-        self.obs, self.eval_obs = self.envs.reset(), self.eval_env.reset()
-
         while self.agent.sample_step < self.kwargs["total_timesteps"]:
             self.buffer.reset()
-            
+
             for _ in range(self.kwargs["num_steps"]):
                 yield self._run_collect()
                 if self.agent.sample_step % self.kwargs["eval_frequency"] == 0:
@@ -291,12 +291,12 @@ class Trainer:
 
         for idx, done_i in enumerate(done):
             if done_i and infos[idx].get("terminal_observation") is not None:
-                real_next_obs[idx] = infos[idx]["terminal_observation"]
+                self.real_next_obs[idx] = infos[idx]["terminal_observation"]
 
         self.buffer.add(self.obs, act, reward, done, val, log_prob)
         self.obs = next_obs
 
-        log_data = {"log_type": "collect"}
+        log_data = {"log_type": "collect", "sample_step": self.agent.sample_step}
         for info in infos:
             if "episode" in info.keys():
                 log_data["sample_step"] = self.agent.sample_step
@@ -318,9 +318,9 @@ class Trainer:
             self.buffer.get(self.kwargs["minibatch_size"]) for _ in range(self.kwargs["update_epochs"])
         ]
 
-        log_data_list = self.agent.learn(data_generator_list)
+        log_data = self.agent.learn(data_generator_list)[0]
 
-        return {"log_type": "train", "sample_step": self.agent.sample_step, "logs": log_data_list[0]}
+        return {"log_type": "train", "sample_step": self.agent.sample_step, "logs": log_data}
 
     def _run_evaluate(self, n_steps: int = 1) -> Dict:
         el_list, er_list = [], []
@@ -344,7 +344,7 @@ class Trainer:
                 },
             }
 
-        return {"log_type": "evaluate"}
+        return {"log_type": "evaluate", "sample_step": self.agent.sample_step}
 
     def _make_env(self, idx: int) -> Callable:
         def thunk():
@@ -391,8 +391,33 @@ def logger(wrapped) -> Callable:
             if "logs" in log_data:
                 for log_item in log_data["logs"].items():
                     writer.add_scalar(f"{log_data['log_type']}/{log_item[0]}", log_item[1], log_data["sample_step"])
-                if log_data["log_type"] != "train":
-                    yield log_data
+            yield log_data
+
+    return _wrapper
+
+
+def saver(wrapped) -> Callable:
+    def _wrapper(*args, save_frequency=1_000_0, **kwargs) -> Generator:
+        save_frequency = max(save_frequency // args[0].kwargs["num_envs"] * args[0].kwargs["num_envs"], 1)
+
+        gen = wrapped(*args, **kwargs)
+        for log_data in gen:
+            if not log_data["sample_step"] % save_frequency:
+                if not os.path.exists(f"models/{args[0].kwargs['exp_name']}"):
+                    os.makedirs(f"models/{args[0].kwargs['exp_name']}")
+                with open(f"models/{args[0].kwargs['exp_name']}/s{args[0].agent.sample_step}.agent", "ab+") as file:
+                    dill.dump(args[0].agent, file)
+            yield log_data
+
+    return _wrapper
+
+
+def filter(wrapped) -> Callable:
+    def _wrapper(*args, **kwargs) -> Generator:
+        gen = wrapped(*args, **kwargs)
+        for log_data in gen:
+            if "logs" in log_data and log_data["log_type"] != "train":
+                yield log_data
 
     return _wrapper
 
@@ -406,5 +431,5 @@ if __name__ == "__main__":
     torch.backends.cudnn.deterministic = True
     torch.cuda.manual_seed_all(1234)
 
-    Trainer.__call__ = logger(Trainer.__call__)
+    Trainer.__call__ = filter(saver(logger(Trainer.__call__)))
     fire.Fire(Trainer)

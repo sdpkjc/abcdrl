@@ -37,6 +37,8 @@ cycler==0.11.0
     # via matplotlib
 cython==0.29.32
     # via free-mujoco-py
+dill==0.3.6
+    # via -r requirements/requirements.in
 docker-pycreds==0.4.0
     # via wandb
 fasteners==0.15
@@ -53,7 +55,7 @@ gitpython==3.1.29
     # via wandb
 glfw==1.12.0
     # via free-mujoco-py
-google-auth==2.13.0
+google-auth==2.14.0
     # via
     #   google-auth-oauthlib
     #   tensorboard
@@ -65,8 +67,10 @@ gym==0.21
     # via stable-baselines3
 idna==3.4
     # via requests
-imageio==2.22.2
+imageio==2.22.3
     # via free-mujoco-py
+imageio-ffmpeg==0.4.7
+    # via -r requirements/requirements.in
 importlib-metadata==4.13.0
     # via
     #   ale-py
@@ -137,7 +141,7 @@ python-dateutil==2.8.2
     # via
     #   matplotlib
     #   pandas
-pytz==2022.5
+pytz==2022.6
     # via pandas
 pyyaml==6.0
     # via wandb

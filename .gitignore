@@ -140,6 +140,10 @@ cython_debug/
 # Tensorboard & wandb
 runs/
 wandb/
+videos/
+
+# save models
+models/
 
 # vscode
 .vscode/

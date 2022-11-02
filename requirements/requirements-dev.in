@@ -5,11 +5,14 @@ torchaudio
 tensorboard
 wandb
 stable-baselines3>=1.6.0
-opencv-python
+opencv-python>=4.6.0
 ale-py==0.7.4
 AutoROM[accept-rom-license]
 free-mujoco-py==2.1.6
-fire
+fire>=0.4.0
+dill>=0.3.6
+imageio-ffmpeg>=0.4.7
+dill
 
 pre-commit>=2.17.0
 pytest>=6.2.5
