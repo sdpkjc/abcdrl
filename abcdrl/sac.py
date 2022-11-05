@@ -2,7 +2,7 @@ import copy
 import os
 import random
 import time
-from typing import Callable, Dict, Generator, Optional, Tuple
+from typing import Callable, Dict, Generator, NamedTuple, Optional, Tuple
 
 import dill
 import fire
@@ -13,9 +13,78 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import wandb
-from stable_baselines3.common.buffers import ReplayBuffer
-from stable_baselines3.common.type_aliases import ReplayBufferSamples
 from torch.utils.tensorboard import SummaryWriter
+
+
+def get_space_shape(env_space: gym.spaces.Space):
+    if isinstance(env_space, gym.spaces.Box):
+        return env_space.shape
+    elif isinstance(env_space, gym.spaces.Discrete):
+        return (1,)
+    elif isinstance(env_space, gym.spaces.MultiDiscrete):
+        return (int(len(env_space.nvec)),)
+    elif isinstance(env_space, gym.spaces.MultiBinary):
+        return (int(env_space.n),)
+    else:
+        raise NotImplementedError(f"{env_space} observation space is not supported")
+
+
+class ReplayBuffer:
+    class Samples(NamedTuple):
+        observations: torch.Tensor
+        actions: torch.Tensor
+        next_observations: torch.Tensor
+        dones: torch.Tensor
+        rewards: torch.Tensor
+
+    def __init__(
+        self,
+        obs_space: gym.Space,
+        act_space: gym.Space,
+        buffer_size: int = 1_000_0,
+        device: str = "cuda" if torch.cuda.is_available() else "cpu",
+    ):
+        self.obs_buf = np.zeros((buffer_size,) + get_space_shape(obs_space), dtype=obs_space.dtype)
+        self.next_obs_buf = np.zeros((buffer_size,) + get_space_shape(obs_space), dtype=obs_space.dtype)
+        self.acts_buf = np.zeros((buffer_size,) + get_space_shape(act_space), dtype=act_space.dtype)
+        self.rews_buf = np.zeros([buffer_size], dtype=np.float32)
+        self.done_buf = np.zeros(buffer_size, dtype=np.float32)
+
+        self.max_size = buffer_size
+        self.ptr = 0
+        self.size = 0
+        self.device = device
+
+    def add(
+        self,
+        obs: np.ndarray,
+        next_obs: np.ndarray,
+        act: np.ndarray,
+        rew: float,
+        done: bool,
+        infos: dict,
+    ):
+        for obs_i, next_obs_i, act_i, rew_i, done_i in zip(obs, next_obs, act, rew, done):
+            self.obs_buf[self.ptr] = obs_i
+            self.next_obs_buf[self.ptr] = next_obs_i
+            self.acts_buf[self.ptr] = act_i
+            self.rews_buf[self.ptr] = rew_i
+            self.done_buf[self.ptr] = done_i
+            self.ptr = (self.ptr + 1) % self.max_size
+            self.size = min(self.size + 1, self.max_size)
+
+    def sample(self, batch_size=1) -> Samples:
+        idxs = np.random.choice(self.size, size=batch_size, replace=False)
+        return ReplayBuffer.Samples(
+            observations=torch.tensor(self.obs_buf[idxs]).to(self.device),
+            next_observations=torch.tensor(self.next_obs_buf[idxs]).to(self.device),
+            actions=torch.tensor(self.acts_buf[idxs]).to(self.device),
+            rewards=torch.tensor(self.rews_buf[idxs]).to(self.device),
+            dones=torch.tensor(self.done_buf[idxs]).to(self.device),
+        )
+
+    def __len__(self) -> int:
+        return self.size
 
 
 class ActorNetwork(nn.Module):
@@ -62,33 +131,23 @@ class Model(nn.Module):
         self.kwargs = kwargs
 
         self.actor_nn = ActorNetwork(
-            int(np.prod(self.kwargs["envs_single_observation_space"].shape)),
-            int(np.prod(self.kwargs["envs_single_action_space"].shape)),
+            int(np.prod(get_space_shape(self.kwargs["obs_space"]))),
+            int(np.prod(get_space_shape(self.kwargs["act_space"]))),
         )
         self.critic_nn_0 = CriticNetwork(
-            int(
-                np.prod(self.kwargs["envs_single_observation_space"].shape)
-                + np.prod(self.kwargs["envs_single_action_space"].shape)
-            )
+            int(np.prod(get_space_shape(self.kwargs["obs_space"])) + np.prod(get_space_shape(self.kwargs["act_space"])))
         )
         self.critic_nn_1 = CriticNetwork(
-            int(
-                np.prod(self.kwargs["envs_single_observation_space"].shape)
-                + np.prod(self.kwargs["envs_single_action_space"].shape)
-            )
+            int(np.prod(get_space_shape(self.kwargs["obs_space"])) + np.prod(get_space_shape(self.kwargs["act_space"])))
         )
 
         self.register_buffer(
             "action_scale",
-            torch.FloatTensor(
-                (self.kwargs["envs_single_action_space"].high - self.kwargs["envs_single_action_space"].low) / 2.0
-            ),
+            torch.FloatTensor((self.kwargs["act_space"].high - self.kwargs["act_space"].low) / 2.0),
         )
         self.register_buffer(
             "action_bias",
-            torch.FloatTensor(
-                (self.kwargs["envs_single_action_space"].high + self.kwargs["envs_single_action_space"].low) / 2.0
-            ),
+            torch.FloatTensor((self.kwargs["act_space"].high + self.kwargs["act_space"].low) / 2.0),
         )
 
     def value(self, obs: torch.Tensor, act: Optional[torch.Tensor] = None) -> Tuple[torch.Tensor, torch.Tensor]:
@@ -125,7 +184,7 @@ class Algorithm:
         self.alpha = self.kwargs["alpha"]
         if self.kwargs["autotune"]:
             self.target_entropy = -torch.prod(
-                torch.Tensor(self.kwargs["envs_single_action_space"].shape).to(self.kwargs["device"])
+                torch.Tensor(get_space_shape(self.kwargs["act_space"])).to(self.kwargs["device"])
             ).item()
             self.log_alpha = torch.zeros(1, requires_grad=True, device=self.kwargs["device"])
             self.alpha = self.log_alpha.exp().item()
@@ -135,7 +194,7 @@ class Algorithm:
         act, _ = self.model.action(obs)
         return act
 
-    def learn(self, data: ReplayBufferSamples, update_actor: bool) -> Dict:
+    def learn(self, data: ReplayBuffer.Samples, update_actor: bool) -> Dict:
         with torch.no_grad():
             next_state_action, next_state_log_prob = self.model_t.action(data.next_observations)
 
@@ -211,7 +270,7 @@ class Agent:
     def sample(self, obs: np.ndarray) -> np.ndarray:
         # 训练
         if self.sample_step < self.kwargs["learning_starts"]:
-            act = np.array([self.kwargs["envs_single_action_space"].sample() for _ in range(self.kwargs["num_envs"])])
+            act = np.array([self.kwargs["act_space"].sample() for _ in range(self.kwargs["num_envs"])])
         else:
             obs = torch.Tensor(obs).to(next(self.alg.model.parameters()).device)
             with torch.no_grad():
@@ -220,7 +279,7 @@ class Agent:
         self.sample_step += self.kwargs["num_envs"]
         return act
 
-    def learn(self, data: ReplayBufferSamples) -> Dict:
+    def learn(self, data: ReplayBuffer.Samples) -> Dict:
         # 数据预处理 & 目标网络同步
         log_data = self.alg.learn(data, self.sample_step % self.kwargs["policy_frequency"] == 0)
         if self.sample_step % self.kwargs["target_network_frequency"] == 0:
@@ -263,8 +322,8 @@ class Trainer:
 
         if self.kwargs["exp_name"] is None:
             self.kwargs["exp_name"] = (
-                    f"{self.kwargs['env_id']}__{os.path.basename(__file__).rstrip('.py')}__"
-                    + f"{self.kwargs['seed']}__{int(time.time())}"
+                f"{self.kwargs['env_id']}__{os.path.basename(__file__).rstrip('.py')}__"
+                + f"{self.kwargs['seed']}__{int(time.time())}"
             )
         self.kwargs["eval_frequency"] = max(
             self.kwargs["eval_frequency"] // self.kwargs["num_envs"] * self.kwargs["num_envs"], 1
@@ -282,18 +341,16 @@ class Trainer:
         self.envs.single_observation_space.dtype = np.float32
         self.eval_env = gym.vector.SyncVectorEnv([self._make_env(1)])
         self.eval_env.single_observation_space.dtype = np.float32
+        assert isinstance(self.envs.single_action_space, gym.spaces.Box)
 
-        self.kwargs["envs_single_observation_space"] = self.envs.single_observation_space
-        self.kwargs["envs_single_action_space"] = self.envs.single_action_space
+        self.kwargs["obs_space"] = self.envs.single_observation_space
+        self.kwargs["act_space"] = self.envs.single_action_space
 
         self.buffer = ReplayBuffer(
-            self.kwargs["buffer_size"],
-            self.kwargs["envs_single_observation_space"],
-            self.kwargs["envs_single_action_space"],
-            self.kwargs["device"],
-            n_envs=self.kwargs["num_envs"],
-            optimize_memory_usage=True,
-            handle_timeout_termination=False,
+            self.kwargs["obs_space"],
+            self.kwargs["act_space"],
+            buffer_size=self.kwargs["buffer_size"],
+            device=self.kwargs["device"],
         )
 
         self.obs, self.eval_obs = self.envs.reset(), self.eval_env.reset()

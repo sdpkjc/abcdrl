@@ -17,33 +17,104 @@ import wandb
 from torch.utils.tensorboard import SummaryWriter
 
 
-# https://github.com/DLR-RM/stable-baselines3/blob/57e0054e62ac5a964f9c1e557b59028307d21bff/stable_baselines3/common/type_aliases.py
-class ReplayBufferSamples(NamedTuple):
-    observations: torch.Tensor
-    actions: torch.Tensor
-    next_observations: torch.Tensor
-    dones: torch.Tensor
-    rewards: torch.Tensor
-    infos: List
-    weights: List
-    indices: List
+def get_space_shape(env_space: gym.spaces.Space):
+    if isinstance(env_space, gym.spaces.Box):
+        return env_space.shape
+    elif isinstance(env_space, gym.spaces.Discrete):
+        return (1,)
+    elif isinstance(env_space, gym.spaces.MultiDiscrete):
+        return (int(len(env_space.nvec)),)
+    elif isinstance(env_space, gym.spaces.MultiBinary):
+        return (int(env_space.n),)
+    else:
+        raise NotImplementedError(f"{env_space} observation space is not supported")
 
 
-# https://github.com/Curt-Park/rainbow-is-all-you-need
-class ReplayBuffer:
-    def __init__(self, envs_single_observation_space, envs_single_action_space, size: int, device):
-        self.obs_buf = np.zeros([size, *envs_single_observation_space.shape], dtype=np.float32)
-        self.next_obs_buf = np.zeros([size, *envs_single_observation_space.shape], dtype=np.float32)
-        self.acts_buf = np.zeros([size, *envs_single_action_space.shape, 1], dtype=np.float32)
-        self.rews_buf = np.zeros([size], dtype=np.float32)
-        self.done_buf = np.zeros(size, dtype=np.float32)
-        self.infos_buf = [{} for _ in range(size)]
-        self.max_size = size
-        self.ptr, self.size, = (
-            0,
-            0,
-        )
+class PrioritizedReplayBuffer:
+    class Samples(NamedTuple):
+        observations: torch.Tensor
+        actions: torch.Tensor
+        next_observations: torch.Tensor
+        dones: torch.Tensor
+        rewards: torch.Tensor
+        weights: List
+        indices: List
+
+    class SegmentTree:
+        def __init__(self, capacity: int, operation: Callable, init_value: float):
+            assert capacity > 0 and capacity % 2 == 0
+
+            self.capacity = capacity
+            self.operation = operation
+            self.init_value = init_value
+            self.tree = [init_value for _ in range(2 * capacity)]
+
+        def query(self, start: int, end: int) -> float:
+            return self._query(start, end, 1, 0, self.capacity)
+
+        def _query(self, start: int, end: int, node: int, node_start: int, node_end: int) -> float:
+            if start <= node_start and node_end <= end:
+                return self.tree[node]
+
+            mid = (node_start + node_end) // 2
+            return self.operation(
+                self._query(start, end, 2 * node, node_start, mid) if start <= mid else self.init_value,
+                self._query(start, end, 2 * node + 1, mid + 1, node_end) if end > mid else self.init_value,
+            )
+
+        def retrieve(self, upperbound: float) -> int:
+            assert self.operation == operator.add
+            assert 0 <= upperbound <= self.query(0, self.capacity - 1) + 1e-5
+
+            idx = 1
+            while idx < self.capacity:
+                idx *= 2
+                if self.tree[idx] <= upperbound:
+                    upperbound -= self.tree[idx]
+                    idx += 1
+
+            return idx - self.capacity
+
+        def __setitem__(self, idx: int, val: float):
+            idx += self.capacity
+            self.tree[idx] = val
+
+            while idx // 2:
+                idx //= 2
+                self.tree[idx] = self.operation(self.tree[2 * idx], self.tree[2 * idx + 1])
+
+        def __getitem__(self, idx: int) -> float:
+            return self.tree[self.capacity + idx]
+
+    def __init__(
+        self,
+        obs_space: gym.spaces,
+        act_space: gym.spaces,
+        buffer_size: int = 1_000_0,
+        device: str = "cuda" if torch.cuda.is_available() else "cpu",
+        alpha: float = 0.2,
+    ):
+        assert alpha >= 0
+
+        self.obs_buf = np.zeros((buffer_size,) + get_space_shape(obs_space), dtype=obs_space.dtype)
+        self.next_obs_buf = np.zeros((buffer_size,) + get_space_shape(obs_space), dtype=obs_space.dtype)
+        self.acts_buf = np.zeros((buffer_size,) + get_space_shape(act_space), dtype=act_space.dtype)
+        self.rews_buf = np.zeros([buffer_size], dtype=np.float32)
+        self.done_buf = np.zeros(buffer_size, dtype=np.float32)
+
+        self.max_size = buffer_size
+        self.ptr = 0
+        self.size = 0
         self.device = device
+
+        self.max_priority, self.tree_ptr = 1.0, 0
+        self.alpha = alpha
+        tree_capacity = 1
+        while tree_capacity < self.max_size:
+            tree_capacity *= 2
+
+        self.sum_tree = self.SegmentTree(tree_capacity, operator.add, 0.0)
+        self.min_tree = self.SegmentTree(tree_capacity, min, float("inf"))
 
     def add(
         self,
@@ -54,152 +125,20 @@ class ReplayBuffer:
         done: bool,
         infos: dict,
     ):
-        for obs_i, next_obs_i, act_i, rew_i, done_i, infos_i in zip(obs, next_obs, act, rew, done, infos):
+        for obs_i, next_obs_i, act_i, rew_i, done_i in zip(obs, next_obs, act, rew, done):
             self.obs_buf[self.ptr] = obs_i
             self.next_obs_buf[self.ptr] = next_obs_i
             self.acts_buf[self.ptr] = act_i
             self.rews_buf[self.ptr] = rew_i
             self.done_buf[self.ptr] = done_i
-            self.infos_buf[self.ptr] = infos_i
             self.ptr = (self.ptr + 1) % self.max_size
             self.size = min(self.size + 1, self.max_size)
 
-    def sample(self, batch_size=1) -> ReplayBufferSamples:
-        idxs = np.random.choice(self.size, size=batch_size, replace=False)
-        return ReplayBufferSamples(
-            observations=torch.tensor(self.obs_buf[idxs]).to(self.device),
-            next_observations=torch.tensor(self.next_obs_buf[idxs]).to(self.device),
-            actions=torch.tensor(self.acts_buf[idxs]).to(self.device).long(),
-            rewards=torch.tensor(self.rews_buf[idxs]).to(self.device),
-            dones=torch.tensor(self.done_buf[idxs]).to(self.device),
-            infos=self.infos_buf[idxs],
-        )
-
-    def __len__(self) -> int:
-        return self.size
-
-
-# https://github.com/Curt-Park/rainbow-is-all-you-need/blob/master/segment_tree.py
-class SegmentTree:
-    def __init__(self, capacity: int, operation: Callable, init_value: float):
-        assert capacity > 0 and capacity & (capacity - 1) == 0, "capacity must be positive and a power of 2."
-        self.capacity = capacity
-        self.tree = [init_value for _ in range(2 * capacity)]
-        self.operation = operation
-
-    def _operate_helper(self, start: int, end: int, node: int, node_start: int, node_end: int) -> float:
-        if start == node_start and end == node_end:
-            return self.tree[node]
-        mid = (node_start + node_end) // 2
-        if end <= mid:
-            return self._operate_helper(start, end, 2 * node, node_start, mid)
-        else:
-            if mid + 1 <= start:
-                return self._operate_helper(start, end, 2 * node + 1, mid + 1, node_end)
-            else:
-                return self.operation(
-                    self._operate_helper(start, mid, 2 * node, node_start, mid),
-                    self._operate_helper(mid + 1, end, 2 * node + 1, mid + 1, node_end),
-                )
-
-    def operate(self, start: int = 0, end: int = 0) -> float:
-        if end <= 0:
-            end += self.capacity
-        end -= 1
-
-        return self._operate_helper(start, end, 1, 0, self.capacity - 1)
-
-    def __setitem__(self, idx: int, val: float):
-        idx += self.capacity
-        self.tree[idx] = val
-
-        idx //= 2
-        while idx >= 1:
-            self.tree[idx] = self.operation(self.tree[2 * idx], self.tree[2 * idx + 1])
-            idx //= 2
-
-    def __getitem__(self, idx: int) -> float:
-        assert 0 <= idx < self.capacity
-
-        return self.tree[self.capacity + idx]
-
-
-class SumSegmentTree(SegmentTree):
-    def __init__(self, capacity: int):
-        super(SumSegmentTree, self).__init__(capacity=capacity, operation=operator.add, init_value=0.0)
-
-    def sum(self, start: int = 0, end: int = 0) -> float:
-        return super(SumSegmentTree, self).operate(start, end)
-
-    def retrieve(self, upperbound: float) -> int:
-        assert 0 <= upperbound <= self.sum() + 1e-5, "upperbound: {}".format(upperbound)
-
-        idx = 1
-        while idx < self.capacity:  # while non-leaf
-            left = 2 * idx
-            right = left + 1
-            if self.tree[left] > upperbound:
-                idx = 2 * idx
-            else:
-                upperbound -= self.tree[left]
-                idx = right
-        return idx - self.capacity
-
-
-class MinSegmentTree(SegmentTree):
-    def __init__(self, capacity: int):
-        super(MinSegmentTree, self).__init__(capacity=capacity, operation=min, init_value=float("inf"))
-
-    def min(self, start: int = 0, end: int = 0) -> float:
-        return super(MinSegmentTree, self).operate(start, end)
-
-
-# https://nbviewer.org/github/Curt-Park/rainbow-is-all-you-need/blob/master/03.per.ipynb
-class PrioritizedReplayBuffer(ReplayBuffer):
-    def __init__(
-        self,
-        envs_single_observation_space: gym.spaces,
-        envs_single_action_space: gym.spaces,
-        buffer_size: int = 10000,
-        device: torch.device = torch.device("cuda" if torch.cuda.is_available() else "cpu"),
-        num_envs: int = 1,
-        alpha: float = 0.2,
-    ):
-        assert alpha >= 0
-
-        super(PrioritizedReplayBuffer, self).__init__(
-            envs_single_observation_space, envs_single_action_space, buffer_size, device
-        )
-        self.max_priority, self.tree_ptr = 1.0, 0
-        self.num_envs = num_envs
-        self.alpha = alpha
-        # capacity must be positive and a power of 2.
-        tree_capacity = 1
-        while tree_capacity < self.max_size:
-            tree_capacity *= 2
-
-        self.sum_tree = SumSegmentTree(tree_capacity)
-        self.min_tree = MinSegmentTree(tree_capacity)
-
-    def add(
-        self,
-        obs: np.ndarray,
-        next_obs: np.ndarray,
-        act: int,
-        rew: float,
-        done: bool,
-        infos: dict,
-    ):
-        """Store experience and priority."""
-        super().add(obs, next_obs, act, rew, done, infos)
-
-        for _ in range(self.num_envs):
             self.sum_tree[self.tree_ptr] = self.max_priority**self.alpha
             self.min_tree[self.tree_ptr] = self.max_priority**self.alpha
             self.tree_ptr = (self.tree_ptr + 1) % self.max_size
 
-    def sample(self, batch_size=1, beta: float = 0.6) -> ReplayBufferSamples:
-        """Sample a batch of experiences."""
+    def sample(self, batch_size=1, beta: float = 0.6) -> Samples:
         assert len(self) >= batch_size
         assert beta > 0
 
@@ -210,22 +149,19 @@ class PrioritizedReplayBuffer(ReplayBuffer):
         acts = self.acts_buf[indices]
         rews = self.rews_buf[indices]
         done = self.done_buf[indices]
-        infos = [self.infos_buf[i] for i in indices]
         weights = np.array([self._calculate_weight(i, beta) for i in indices])
 
-        return ReplayBufferSamples(
+        return PrioritizedReplayBuffer.Samples(
             observations=torch.tensor(obs).to(self.device),
             next_observations=torch.tensor(next_obs).to(self.device),
-            actions=torch.tensor(acts).to(self.device).long(),
+            actions=torch.tensor(acts).to(self.device),
             rewards=torch.tensor(rews).to(self.device),
             dones=torch.tensor(done).to(self.device),
-            infos=infos,
             weights=weights,
             indices=indices,
         )
 
     def update_priorities(self, indices: List[int], priorities: np.ndarray):
-        """Update priorities of sampled transitions."""
         assert len(indices) == len(priorities)
 
         for idx, priority in zip(indices, priorities):
@@ -234,13 +170,14 @@ class PrioritizedReplayBuffer(ReplayBuffer):
 
             self.sum_tree[idx] = priority**self.alpha
             self.min_tree[idx] = priority**self.alpha
-
             self.max_priority = max(self.max_priority, priority)
 
+    def __len__(self) -> int:
+        return self.size
+
     def _sample_proportional(self, batch_size=1) -> List[int]:
-        """Sample indices based on proportions."""
         indices = []
-        p_total = self.sum_tree.sum(0, len(self) - 1)
+        p_total = self.sum_tree.query(0, len(self) - 1)
         segment = p_total / batch_size
 
         for i in range(batch_size):
@@ -251,13 +188,10 @@ class PrioritizedReplayBuffer(ReplayBuffer):
         return indices
 
     def _calculate_weight(self, idx: int, beta: float):
-        """Calculate the weight of the experience at idx."""
-        # get max weight
-        p_min = self.min_tree.min() / self.sum_tree.sum()
+        p_min = self.min_tree.query(0, len(self) - 1) / self.sum_tree.query(0, len(self) - 1)
         max_weight = (p_min * len(self)) ** (-beta)
 
-        # calculate weights
-        p_sample = self.sum_tree[idx] / self.sum_tree.sum()
+        p_sample = self.sum_tree[idx] / self.sum_tree.query(0, len(self) - 1)
         weight = (p_sample * len(self)) ** (-beta)
         weight = weight / max_weight
 
@@ -285,8 +219,8 @@ class Model(nn.Module):
         self.kwargs = kwargs
 
         self.network = Network(
-            int(np.prod(self.kwargs["envs_single_observation_space"].shape)),
-            self.kwargs["envs_single_action_space"].n,
+            np.prod(get_space_shape(self.kwargs["obs_space"])),
+            self.kwargs["act_space"].n,
         )
 
     def value(self, obs: torch.Tensor) -> torch.Tensor:
@@ -305,7 +239,7 @@ class Algorithm:
         val = self.model.value(obs)
         return val
 
-    def learn(self, data: ReplayBufferSamples) -> Dict:
+    def learn(self, data: PrioritizedReplayBuffer.Samples) -> Dict:
         with torch.no_grad():
             target_max, _ = self.model_t.value(data.next_observations).max(dim=1)
             td_target = data.rewards.flatten() + self.kwargs["gamma"] * target_max * (1 - data.dones.flatten())
@@ -347,7 +281,7 @@ class Agent:
     def sample(self, obs: np.ndarray) -> np.ndarray:
         # 训练
         if random.random() < self._get_epsilon():
-            act = np.array([self.kwargs["envs_single_action_space"].sample() for _ in range(self.kwargs["num_envs"])])
+            act = np.array([self.kwargs["act_space"].sample() for _ in range(self.kwargs["num_envs"])])
         else:
             obs = torch.Tensor(obs).to(next(self.alg.model.parameters()).device)
             with torch.no_grad():
@@ -356,7 +290,7 @@ class Agent:
         self.sample_step += self.kwargs["num_envs"]
         return act
 
-    def learn(self, data: ReplayBufferSamples) -> Dict:
+    def learn(self, data: PrioritizedReplayBuffer.Samples) -> Dict:
         # 数据预处理 & 目标网络同步
         log_data = self.alg.learn(data)
         if self.sample_step % self.kwargs["target_network_frequency"] == 0:
@@ -405,8 +339,8 @@ class Trainer:
 
         if self.kwargs["exp_name"] is None:
             self.kwargs["exp_name"] = (
-                    f"{self.kwargs['env_id']}__{os.path.basename(__file__).rstrip('.py')}__"
-                    + f"{self.kwargs['seed']}__{int(time.time())}"
+                f"{self.kwargs['env_id']}__{os.path.basename(__file__).rstrip('.py')}__"
+                + f"{self.kwargs['seed']}__{int(time.time())}"
             )
         self.kwargs["eval_frequency"] = max(
             self.kwargs["eval_frequency"] // self.kwargs["num_envs"] * self.kwargs["num_envs"], 1
@@ -419,16 +353,16 @@ class Trainer:
 
         self.envs = gym.vector.SyncVectorEnv([self._make_env(i) for i in range(self.kwargs["num_envs"])])
         self.eval_env = gym.vector.SyncVectorEnv([self._make_env(1)])
+        assert isinstance(self.envs.single_action_space, gym.spaces.Discrete)
 
-        self.kwargs["envs_single_observation_space"] = self.envs.single_observation_space
-        self.kwargs["envs_single_action_space"] = self.envs.single_action_space
+        self.kwargs["obs_space"] = self.envs.single_observation_space
+        self.kwargs["act_space"] = self.envs.single_action_space
 
         self.buffer = PrioritizedReplayBuffer(
-            self.kwargs["envs_single_observation_space"],
-            self.kwargs["envs_single_action_space"],
+            self.kwargs["obs_space"],
+            self.kwargs["act_space"],
             buffer_size=self.kwargs["buffer_size"],
             device=self.kwargs["device"],
-            num_envs=self.kwargs["num_envs"],
             alpha=self.kwargs["alpha"],
         )
 

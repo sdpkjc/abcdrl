@@ -17,6 +17,19 @@ from torch.distributions.normal import Normal
 from torch.utils.tensorboard import SummaryWriter
 
 
+def get_space_shape(env_space: gym.spaces.Space):
+    if isinstance(env_space, gym.spaces.Box):
+        return env_space.shape
+    elif isinstance(env_space, gym.spaces.Discrete):
+        return (1,)
+    elif isinstance(env_space, gym.spaces.MultiDiscrete):
+        return (int(len(env_space.nvec)),)
+    elif isinstance(env_space, gym.spaces.MultiBinary):
+        return (int(env_space.n),)
+    else:
+        raise NotImplementedError(f"{env_space} observation space is not supported")
+
+
 def layer_init(layer, std=np.sqrt(2), bias_const=0.0):
     torch.nn.init.orthogonal_(layer.weight, std)
     torch.nn.init.constant_(layer.bias, bias_const)
@@ -66,10 +79,10 @@ class Model(nn.Module):
         self.kwargs = kwargs
 
         self.actor_nn = ActorNetwork(
-            np.prod(self.kwargs["envs_single_observation_space"].shape),
-            np.prod(self.kwargs["envs_single_action_space"].shape),
+            int(np.prod(get_space_shape(self.kwargs["obs_space"]))),
+            int(np.prod(get_space_shape(self.kwargs["act_space"]))),
         )
-        self.critic_nn = CriticNetwork(np.prod(self.kwargs["envs_single_observation_space"].shape))
+        self.critic_nn = CriticNetwork(int(np.prod(get_space_shape(self.kwargs["obs_space"]))))
 
     def value(self, obs: torch.Tensor) -> torch.Tensor:
         return self.critic_nn(obs)
@@ -242,8 +255,8 @@ class Trainer:
 
         if self.kwargs["exp_name"] is None:
             self.kwargs["exp_name"] = (
-                    f"{self.kwargs['env_id']}__{os.path.basename(__file__).rstrip('.py')}__"
-                    + f"{self.kwargs['seed']}__{int(time.time())}"
+                f"{self.kwargs['env_id']}__{os.path.basename(__file__).rstrip('.py')}__"
+                + f"{self.kwargs['seed']}__{int(time.time())}"
             )
         self.kwargs["eval_frequency"] = max(
             self.kwargs["eval_frequency"] // self.kwargs["num_envs"] * self.kwargs["num_envs"], 1
@@ -257,14 +270,15 @@ class Trainer:
         self.envs.single_observation_space.dtype = np.float32
         self.eval_env = gym.vector.SyncVectorEnv([self._make_env(1)])
         self.eval_env.single_observation_space.dtype = np.float32
+        assert isinstance(self.envs.single_action_space, gym.spaces.Box)
 
-        self.kwargs["envs_single_observation_space"] = self.envs.single_observation_space
-        self.kwargs["envs_single_action_space"] = self.envs.single_action_space
+        self.kwargs["obs_space"] = self.envs.single_observation_space
+        self.kwargs["act_space"] = self.envs.single_action_space
 
         self.buffer = RolloutBuffer(
             self.kwargs["num_steps"],
-            self.kwargs["envs_single_observation_space"],
-            self.kwargs["envs_single_action_space"],
+            self.kwargs["obs_space"],
+            self.kwargs["act_space"],
             self.kwargs["device"],
             n_envs=self.kwargs["num_envs"],
             gae_lambda=self.kwargs["gae_lambda"],
