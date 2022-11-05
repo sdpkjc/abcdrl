@@ -492,11 +492,17 @@ class Trainer:
 
 def logger(wrapped) -> Callable:
     def _wrapper(
-        *args, track: bool = False, wandb_project_name: str = "abcdrl", wandb_entity: Optional[str] = None, **kwargs
+        *args,
+        track: bool = False,
+        wandb_project_name: str = "abcdrl",
+        wandb_tags: list = [],
+        wandb_entity: Optional[str] = None,
+        **kwargs,
     ) -> Generator:
         if track:
             wandb.init(
                 project=wandb_project_name,
+                tags=wandb_tags,
                 entity=wandb_entity,
                 sync_tensorboard=True,
                 config=args[0].kwargs,
