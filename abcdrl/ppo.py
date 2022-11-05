@@ -1,7 +1,7 @@
 import os
 import random
 import time
-from typing import Callable, Dict, Generator, List, Optional, Tuple
+from typing import Callable, Dict, Generator, List, NamedTuple, Optional, Tuple
 
 import dill
 import fire
@@ -11,8 +11,6 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import wandb
-from stable_baselines3.common.buffers import RolloutBuffer
-from stable_baselines3.common.type_aliases import RolloutBufferSamples
 from torch.distributions.normal import Normal
 from torch.utils.tensorboard import SummaryWriter
 
@@ -28,6 +26,119 @@ def get_space_shape(env_space: gym.spaces.Space):
         return (int(env_space.n),)
     else:
         raise NotImplementedError(f"{env_space} observation space is not supported")
+
+
+class RolloutBuffer:
+    class Samples(NamedTuple):
+        observations: torch.Tensor
+        actions: torch.Tensor
+        old_values: torch.Tensor
+        old_log_prob: torch.Tensor
+        advantages: torch.Tensor
+        returns: torch.Tensor
+
+    def __init__(
+        self,
+        obs_space: gym.spaces.Space,
+        act_space: gym.spaces.Space,
+        buffer_size: int,
+        device: str = "cuda" if torch.cuda.is_available() else "cpu",
+        gae_lambda: float = 1,
+        gamma: float = 0.99,
+    ):
+        self.obs_buf = np.zeros((buffer_size,) + get_space_shape(obs_space), dtype=obs_space.dtype)
+        self.next_obs_buf = np.zeros((buffer_size,) + get_space_shape(obs_space), dtype=obs_space.dtype)
+        self.acts_buf = np.zeros((buffer_size,) + get_space_shape(act_space), dtype=act_space.dtype)
+        self.rews_buf = np.zeros([buffer_size], dtype=np.float32)
+        self.done_buf = np.zeros(buffer_size, dtype=np.float32)
+
+        self.returns = np.zeros([buffer_size], dtype=np.float32)
+        self.episode_starts = np.zeros([buffer_size], dtype=np.float32)
+        self.values = np.zeros([buffer_size], dtype=np.float32)
+        self.log_probs = np.zeros([buffer_size], dtype=np.float32)
+        self.advantages = np.zeros([buffer_size], dtype=np.float32)
+
+        self.max_size = buffer_size
+        self.ptr = 0
+        self.size = 0
+        self.device = device
+
+        self.gae_lambda = gae_lambda
+        self.gamma = gamma
+        self.generator_ready = False
+
+    def reset(self) -> None:
+        self.ptr = 0
+        self.size = 0
+        self.generator_ready = False
+
+    def compute_returns_and_advantage(self, last_values: torch.Tensor, dones: np.ndarray) -> None:
+        last_values = last_values.clone().cpu().numpy().flatten()
+
+        last_gae_lam = 0
+        for step in reversed(range(self.max_size)):
+            if step == self.max_size - 1:
+                next_non_terminal = 1.0 - dones
+                next_values = last_values
+            else:
+                next_non_terminal = 1.0 - self.episode_starts[step + 1]
+                next_values = self.values[step + 1]
+            delta = self.rews_buf[step] + self.gamma * next_values * next_non_terminal - self.values[step]
+            last_gae_lam = delta + self.gamma * self.gae_lambda * next_non_terminal * last_gae_lam
+            self.advantages[step] = last_gae_lam
+
+        self.returns = self.advantages + self.values
+
+    def add(
+        self,
+        obs: np.ndarray,
+        act: np.ndarray,
+        rew: np.ndarray,
+        episode_start: np.ndarray,
+        val: torch.Tensor,
+        log_prob: torch.Tensor,
+    ) -> None:
+        if len(log_prob.shape) == 0:
+            # Reshape 0-d tensor to avoid error
+            log_prob = log_prob.reshape(-1, 1)
+
+        for obs_i, act_i, rew_i, ep_st_i, val_i, log_p_i in zip(obs, act, rew, episode_start, val, log_prob):
+            assert self.ptr < self.max_size
+            self.obs_buf[self.ptr] = obs_i
+            self.acts_buf[self.ptr] = act_i
+            self.rews_buf[self.ptr] = rew_i
+            self.episode_starts[self.ptr] = ep_st_i
+            self.values[self.ptr] = val_i.clone().cpu().numpy().flatten()
+            self.log_probs[self.ptr] = log_p_i.clone().cpu().numpy()
+
+            self.ptr = self.ptr + 1
+
+        if self.ptr == self.max_size:
+            self.full = True
+
+    def get(self, batch_size: Optional[int] = None) -> Generator[Samples, None, None]:
+        assert self.full
+
+        indices = np.random.permutation(self.max_size)
+        self.generator_ready = True
+
+        if batch_size is None:
+            batch_size = self.max_size
+
+        start_idx = 0
+        while start_idx < self.max_size:
+            yield self._get_samples(indices[start_idx : start_idx + batch_size])
+            start_idx += batch_size
+
+    def _get_samples(self, batch_inds: np.ndarray) -> Samples:
+        return RolloutBuffer.Samples(
+            observations=torch.tensor(self.obs_buf[batch_inds]).to(self.device),
+            actions=torch.tensor(self.acts_buf[batch_inds]).to(self.device),
+            old_values=torch.tensor(self.values[batch_inds]).to(self.device),
+            old_log_prob=torch.tensor(self.log_probs[batch_inds]).to(self.device),
+            advantages=torch.tensor(self.advantages[batch_inds]).to(self.device),
+            returns=torch.tensor(self.returns[batch_inds]).to(self.device),
+        )
 
 
 def layer_init(layer, std=np.sqrt(2), bias_const=0.0):
@@ -109,7 +220,7 @@ class Algorithm:
         val = self.model.value(obs)
         return act, log_prob, val
 
-    def learn(self, data_generator: Generator[RolloutBufferSamples, None, None]) -> Dict:
+    def learn(self, data_generator: Generator[RolloutBuffer.Samples, None, None]) -> Dict:
         clipfracs = []
         for data in data_generator:
             _, entropy, newlogprob = self.model.action(data.observations, data.actions)
@@ -203,7 +314,7 @@ class Agent:
         self.sample_step += self.kwargs["num_envs"]
         return act, log_prob, val
 
-    def learn(self, data_generator_list: List[Generator[RolloutBufferSamples, None, None]]) -> Dict:
+    def learn(self, data_generator_list: List[Generator[RolloutBuffer.Samples, None, None]]) -> Dict:
         # 数据预处理
         self._update_lr()
         log_data_list = []
@@ -276,11 +387,10 @@ class Trainer:
         self.kwargs["act_space"] = self.envs.single_action_space
 
         self.buffer = RolloutBuffer(
-            self.kwargs["num_steps"],
             self.kwargs["obs_space"],
             self.kwargs["act_space"],
+            self.kwargs["num_steps"],
             self.kwargs["device"],
-            n_envs=self.kwargs["num_envs"],
             gae_lambda=self.kwargs["gae_lambda"],
             gamma=self.kwargs["gamma"],
         )
