@@ -41,6 +41,7 @@ CartPole-v1 = """
 
 
 [pdqn]
+
 CartPole-v1 = """
     python abcdrl/pdqn.py \
         --num-envs 1 \
@@ -59,4 +60,250 @@ CartPole-v1 = """
         --learning-starts 10000 \
         --target-network-frequency 500 \
         --train-frequency 10 \
+"""
+
+
+[ddpg]
+
+Hopper-v2 = """
+    python abcdrl/ddpg.py \
+        --num-envs 1 \
+        --eval-frequency 5000 \
+        --num-steps-eval 500 \
+        --total-timesteps 1000000 \
+        --gamma 0.99 \
+        --buffer-size 1000000 \
+        --exploration-noise 0.1 \
+        --batch-size 256 \
+        --learning-rate 3e-4 \
+        --tau 0.005 \
+        --learning-starts 25000 \
+        --train-frequency 1 \
+        --policy-frequency 2 \
+"""
+
+Walker2d-v2 = """
+    python abcdrl/ddpg.py \
+        --num-envs 1 \
+        --eval-frequency 5000 \
+        --num-steps-eval 500 \
+        --total-timesteps 1000000 \
+        --gamma 0.99 \
+        --buffer-size 1000000 \
+        --exploration-noise 0.1 \
+        --batch-size 256 \
+        --learning-rate 3e-4 \
+        --tau 0.005 \
+        --learning-starts 25000 \
+        --train-frequency 1 \
+        --policy-frequency 2 \
+"""
+
+HalfCheetah-v2 = """
+    python abcdrl/ddpg.py \
+        --num-envs 1 \
+        --eval-frequency 5000 \
+        --num-steps-eval 500 \
+        --total-timesteps 1000000 \
+        --gamma 0.99 \
+        --buffer-size 1000000 \
+        --exploration-noise 0.1 \
+        --batch-size 256 \
+        --learning-rate 3e-4 \
+        --tau 0.005 \
+        --learning-starts 25000 \
+        --train-frequency 1 \
+        --policy-frequency 2 \
+"""
+
+[td3]
+
+
+Hopper-v2 = """
+    python abcdrl/td3.py \
+        --num-envs 1 \
+        --eval-frequency 5000 \
+        --num-steps-eval 500 \
+        --total-timesteps 1000000 \
+        --gamma 0.99 \
+        --buffer-size 1000000 \
+        --exploration-noise 0.1 \
+        --noise-clip 0.5 \
+        --batch-size 256 \
+        --learning-rate 3e-4 \
+        --tau 0.005 \
+        --policy-noise 0.2 \
+        --learning-starts 25000 \
+        --train-frequency 1 \
+        --policy-frequency 2 \
+"""
+
+Walker2d-v2 = """
+    python abcdrl/td3.py \
+        --num-envs 1 \
+        --eval-frequency 5000 \
+        --num-steps-eval 500 \
+        --total-timesteps 1000000 \
+        --gamma 0.99 \
+        --buffer-size 1000000 \
+        --exploration-noise 0.1 \
+        --noise-clip 0.5 \
+        --batch-size 256 \
+        --learning-rate 3e-4 \
+        --tau 0.005 \
+        --policy-noise 0.2 \
+        --learning-starts 25000 \
+        --train-frequency 1 \
+        --policy-frequency 2 \
+"""
+
+HalfCheetah-v2 = """
+    python abcdrl/td3.py \
+        --num-envs 1 \
+        --eval-frequency 5000 \
+        --num-steps-eval 500 \
+        --total-timesteps 1000000 \
+        --gamma 0.99 \
+        --buffer-size 1000000 \
+        --exploration-noise 0.1 \
+        --noise-clip 0.5 \
+        --batch-size 256 \
+        --learning-rate 3e-4 \
+        --tau 0.005 \
+        --policy-noise 0.2 \
+        --learning-starts 25000 \
+        --train-frequency 1 \
+        --policy-frequency 2 \
+"""
+
+
+[sac]
+
+Hopper-v2 = """
+    python abcdrl/sac.py \
+        --num-envs 1 \
+        --eval-frequency 5000 \
+        --num-steps-eval 500 \
+        --total-timesteps 1000000 \
+        --gamma 0.99 \
+        --buffer-size 1000000 \
+        --exploration-noise 0.1 \
+        --batch-size 256 \
+        --q-lr 1e-3 \
+        --policy-lr 3e-4 \
+        --tau 0.005 \
+        --alpha 0.2 \
+        --autotune True \
+        --learning-starts 25000 \
+        --train-frequency 1 \
+        --policy-frequency 2 \
+        --target-network-frequency \
+"""
+
+Walker2d-v2 = """
+    python abcdrl/sac.py \
+        --num-envs 1 \
+        --eval-frequency 5000 \
+        --num-steps-eval 500 \
+        --total-timesteps 1000000 \
+        --gamma 0.99 \
+        --buffer-size 1000000 \
+        --exploration-noise 0.1 \
+        --batch-size 256 \
+        --q-lr 1e-3 \
+        --policy-lr 3e-4 \
+        --tau 0.005 \
+        --alpha 0.2 \
+        --autotune True \
+        --learning-starts 25000 \
+        --train-frequency 1 \
+        --policy-frequency 2 \
+        --target-network-frequency \
+"""
+
+HalfCheetah-v2 = """
+    python abcdrl/sac.py \
+        --num-envs 1 \
+        --eval-frequency 5000 \
+        --num-steps-eval 500 \
+        --total-timesteps 1000000 \
+        --gamma 0.99 \
+        --buffer-size 1000000 \
+        --exploration-noise 0.1 \
+        --batch-size 256 \
+        --q-lr 1e-3 \
+        --policy-lr 3e-4 \
+        --tau 0.005 \
+        --alpha 0.2 \
+        --autotune True \
+        --learning-starts 25000 \
+        --train-frequency 1 \
+        --policy-frequency 2 \
+        --target-network-frequency \
+"""
+
+
+[ppo]
+
+Hopper-v2 = """
+    python abcdrl/ppo.py \
+        --num-envs 1 \
+        --eval-frequency 5000 \
+        --num-steps-eval 500 \
+        --total-timesteps 1000000 \
+        --gamma 0.99 \
+        --num-steps 2048 \
+        --learning-rate 3e-4 \
+        --anneal-lr True \
+        --update-epochs 10
+        --norm-adv True \
+        --clip-coef 0.2 \
+        --clip-vloss True \
+        --ent-coef 0.0 \
+        --vf-coef 0.5 \
+        --max-grad-norm 0.5 \
+        --num-minibatches 32 \
+        --gae-lambda 0.95 \
+"""
+
+Walker2d-v2 = """
+    python abcdrl/ppo.py \
+        --num-envs 1 \
+        --eval-frequency 5000 \
+        --num-steps-eval 500 \
+        --total-timesteps 1000000 \
+        --gamma 0.99 \
+        --num-steps 2048 \
+        --learning-rate 3e-4 \
+        --anneal-lr True \
+        --update-epochs 10
+        --norm-adv True \
+        --clip-coef 0.2 \
+        --clip-vloss True \
+        --ent-coef 0.0 \
+        --vf-coef 0.5 \
+        --max-grad-norm 0.5 \
+        --num-minibatches 32 \
+        --gae-lambda 0.95 \
+"""
+
+HalfCheetah-v2 = """
+    python abcdrl/ppo.py \
+        --num-envs 1 \
+        --eval-frequency 5000 \
+        --num-steps-eval 500 \
+        --total-timesteps 1000000 \
+        --gamma 0.99 \
+        --num-steps 2048 \
+        --learning-rate 3e-4 \
+        --anneal-lr True \
+        --update-epochs 10
+        --norm-adv True \
+        --clip-coef 0.2 \
+        --clip-vloss True \
+        --ent-coef 0.0 \
+        --vf-coef 0.5 \
+        --max-grad-norm 0.5 \
+        --num-minibatches 32 \
+        --gae-lambda 0.95 \
 """
