@@ -22,7 +22,7 @@ CartPole-v1 = """
 [ddqn]
 
 CartPole-v1 = """
-    python abcdrl/dqn.py \
+    python abcdrl/ddqn.py \
         --num-envs 1 \
         --eval-frequency 1000 \
         --num-steps-eval 100 \
@@ -42,7 +42,7 @@ CartPole-v1 = """
 
 [pdqn]
 CartPole-v1 = """
-    python abcdrl/dqn.py \
+    python abcdrl/pdqn.py \
         --num-envs 1 \
         --eval-frequency 1000 \
         --num-steps-eval 100 \
