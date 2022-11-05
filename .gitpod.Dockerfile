@@ -1,16 +1,11 @@
-FROM ubuntu:22.04
-LABEL maintainer="pazyx728@gmail.com" \
-      version="gitpod-v0.1"
+FROM gitpod/workspace-full:2022-11-04-17-43-13
 
-ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update
-RUN apt-get -y install python3-pip
-RUN apt-get -y install wget unzip software-properties-common \
+RUN sudo apt-get -y install python3-pip
+RUN sudo apt-get -y install wget unzip software-properties-common \
     libgl1-mesa-dev \
     libgl1-mesa-glx \
     libglew-dev \
     libosmesa6-dev patchelf
-RUN ln -s /usr/bin/python3 /usr/bin/python
 
 ARG REQ_DIR=requirements/requirements-dev.txt
 RUN echo REQ_DIR=$REQ_DIR
