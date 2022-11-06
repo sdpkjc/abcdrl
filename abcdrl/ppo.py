@@ -43,41 +43,42 @@ class RolloutBuffer:
         act_space: gym.spaces.Space,
         buffer_size: int,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
-        gae_lambda: float = 1,
+        gae_lambda: float = 1.0,
         gamma: float = 0.99,
+        n_envs: int = 1,
     ):
-        self.obs_buf = np.zeros((buffer_size,) + get_space_shape(obs_space), dtype=obs_space.dtype)
-        self.next_obs_buf = np.zeros((buffer_size,) + get_space_shape(obs_space), dtype=obs_space.dtype)
-        self.acts_buf = np.zeros((buffer_size,) + get_space_shape(act_space), dtype=act_space.dtype)
-        self.rews_buf = np.zeros([buffer_size], dtype=np.float32)
-        self.done_buf = np.zeros(buffer_size, dtype=np.float32)
+        self.obs_space = obs_space
+        self.act_space = act_space
 
-        self.returns = np.zeros([buffer_size], dtype=np.float32)
-        self.episode_starts = np.zeros([buffer_size], dtype=np.float32)
-        self.values = np.zeros([buffer_size], dtype=np.float32)
-        self.log_probs = np.zeros([buffer_size], dtype=np.float32)
-        self.advantages = np.zeros([buffer_size], dtype=np.float32)
-
-        self.max_size = buffer_size
-        self.ptr = 0
-        self.size = 0
-        self.device = device
-
+        self.buffer_size = buffer_size
+        self.n_envs = n_envs
         self.gae_lambda = gae_lambda
         self.gamma = gamma
-        self.generator_ready = False
+        self.device = device
+        self.reset()
 
     def reset(self) -> None:
+        buf_shape_prefix = (self.buffer_size // self.n_envs, self.n_envs)
+        self.obs_buf = np.zeros(buf_shape_prefix + get_space_shape(self.obs_space), dtype=self.obs_space.dtype)
+        self.next_obs_buf = np.zeros(buf_shape_prefix + get_space_shape(self.obs_space), dtype=self.obs_space.dtype)
+        self.acts_buf = np.zeros(buf_shape_prefix + get_space_shape(self.act_space), dtype=self.act_space.dtype)
+        self.rews_buf = np.zeros(buf_shape_prefix, dtype=np.float32)
+        self.returns = np.zeros(buf_shape_prefix, dtype=np.float32)
+        self.episode_starts = np.zeros(buf_shape_prefix, dtype=np.float32)
+        self.values = np.zeros(buf_shape_prefix, dtype=np.float32)
+        self.log_probs = np.zeros(buf_shape_prefix, dtype=np.float32)
+        self.advantages = np.zeros(buf_shape_prefix, dtype=np.float32)
+
         self.ptr = 0
-        self.size = 0
+        self.full = False
         self.generator_ready = False
 
     def compute_returns_and_advantage(self, last_values: torch.Tensor, dones: np.ndarray) -> None:
         last_values = last_values.clone().cpu().numpy().flatten()
 
         last_gae_lam = 0
-        for step in reversed(range(self.max_size)):
-            if step == self.max_size - 1:
+        for step in reversed(range(self.buffer_size // self.n_envs)):
+            if step == self.buffer_size // self.n_envs - 1:
                 next_non_terminal = 1.0 - dones
                 next_values = last_values
             else:
@@ -98,37 +99,34 @@ class RolloutBuffer:
         val: torch.Tensor,
         log_prob: torch.Tensor,
     ) -> None:
+        assert not self.full
+
         if len(log_prob.shape) == 0:
-            # Reshape 0-d tensor to avoid error
             log_prob = log_prob.reshape(-1, 1)
 
-        for obs_i, act_i, rew_i, ep_st_i, val_i, log_p_i in zip(obs, act, rew, episode_start, val, log_prob):
-            assert self.ptr < self.max_size
-            self.obs_buf[self.ptr] = obs_i
-            self.acts_buf[self.ptr] = act_i
-            self.rews_buf[self.ptr] = rew_i
-            self.episode_starts[self.ptr] = ep_st_i
-            self.values[self.ptr] = val_i.clone().cpu().numpy().flatten()
-            self.log_probs[self.ptr] = log_p_i.clone().cpu().numpy()
+        self.obs_buf[self.ptr] = np.array(obs).copy()
+        self.acts_buf[self.ptr] = np.array(act).copy()
+        self.rews_buf[self.ptr] = np.array(rew).copy()
+        self.episode_starts[self.ptr] = np.array(episode_start).copy()
+        self.values[self.ptr] = val.clone().cpu().numpy().flatten()
+        self.log_probs[self.ptr] = log_prob.clone().cpu().numpy()
 
-            self.ptr = self.ptr + 1
-
-        if self.ptr == self.max_size:
+        self.ptr += 1
+        if self.ptr == self.buffer_size // self.n_envs:
             self.full = True
 
-    def get(self, batch_size: Optional[int] = None) -> Generator[Samples, None, None]:
+    def get(self, batch_size: int) -> Generator[Samples, None, None]:
         assert self.full
 
-        indices = np.random.permutation(self.max_size)
+        indices = np.random.permutation(self.buffer_size)
+        if not self.generator_ready:
+            for t_name in ["obs_buf", "acts_buf", "values", "log_probs", "advantages", "returns"]:
+                t_shape = self.__dict__[t_name].shape
+                self.__dict__[t_name] = self.__dict__[t_name].reshape((t_shape[0] * t_shape[1], *t_shape[2:]))
         self.generator_ready = True
 
-        if batch_size is None:
-            batch_size = self.max_size
-
-        start_idx = 0
-        while start_idx < self.max_size:
+        for start_idx in range(0, self.buffer_size, batch_size):
             yield self._get_samples(indices[start_idx : start_idx + batch_size])
-            start_idx += batch_size
 
     def _get_samples(self, batch_inds: np.ndarray) -> Samples:
         return RolloutBuffer.Samples(
@@ -389,10 +387,11 @@ class Trainer:
         self.buffer = RolloutBuffer(
             self.kwargs["obs_space"],
             self.kwargs["act_space"],
-            self.kwargs["num_steps"],
+            self.kwargs["batch_size"],
             self.kwargs["device"],
             gae_lambda=self.kwargs["gae_lambda"],
             gamma=self.kwargs["gamma"],
+            n_envs=self.kwargs["num_envs"],
         )
 
         self.obs, self.eval_obs = self.envs.reset(), self.eval_env.reset()
@@ -402,7 +401,7 @@ class Trainer:
         while self.agent.sample_step < self.kwargs["total_timesteps"]:
             self.buffer.reset()
 
-            for _ in range(self.kwargs["num_steps"]):
+            while not self.buffer.full:
                 yield self._run_collect()
                 if self.agent.sample_step % self.kwargs["eval_frequency"] == 0:
                     yield self._run_evaluate(n_steps=self.kwargs["num_steps_eval"])
