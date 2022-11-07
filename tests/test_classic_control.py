@@ -1,7 +1,7 @@
 import subprocess
 
 
-def test_dqn():
+def test_dqn() -> None:
     subprocess.run(
         "python abcdrl/dqn.py"
         + " --env-id CartPole-v1"
@@ -19,7 +19,7 @@ def test_dqn():
     )
 
 
-def test_ddqn():
+def test_ddqn() -> None:
     subprocess.run(
         "python abcdrl/ddqn.py"
         + " --env-id CartPole-v1"
@@ -37,7 +37,7 @@ def test_ddqn():
     )
 
 
-def test_pdqn():
+def test_pdqn() -> None:
     subprocess.run(
         "python abcdrl/pdqn.py"
         + " --env-id CartPole-v1"

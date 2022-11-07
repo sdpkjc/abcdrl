@@ -47,8 +47,8 @@ class Evaluater:
                     }
 
     # edit point
-    def _make_env(self, idx: int) -> Callable:
-        def thunk():
+    def _make_env(self, idx: int) -> Callable[[], gym.Env]:
+        def thunk() -> gym.Env:
             env = gym.make(self.kwargs["env_id"])
             env = gym.wrappers.RecordEpisodeStatistics(env)
             if self.kwargs["capture_video"]:

@@ -1,7 +1,7 @@
 import os
 import random
 import time
-from typing import Callable, Dict, Generator, List, NamedTuple, Optional, Tuple, Union
+from typing import Callable, Generator, NamedTuple, Optional, Union
 
 import dill
 import fire
@@ -15,7 +15,7 @@ from torch.distributions.normal import Normal
 from torch.utils.tensorboard import SummaryWriter
 
 
-def get_space_shape(env_space: gym.Space):
+def get_space_shape(env_space: gym.Space) -> tuple:
     if isinstance(env_space, gym.spaces.Box):
         return env_space.shape
     elif isinstance(env_space, gym.spaces.Discrete):
@@ -200,7 +200,7 @@ class Model(nn.Module):
 
     def action(
         self, obs: torch.Tensor, act: Optional[torch.Tensor] = None
-    ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         act_mean, act_std = self.actor_nn(obs)
         probs = Normal(act_mean, act_std)
         if act is None:
@@ -215,12 +215,12 @@ class Algorithm:
         self.model = Model(**self.kwargs).to(self.kwargs["device"])
         self.optimizer = optim.Adam(self.model.parameters(), lr=self.kwargs["learning_rate"])
 
-    def predict(self, obs: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    def predict(self, obs: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         act, _, log_prob = self.model.action(obs)
         val = self.model.value(obs)
         return act, log_prob, val
 
-    def learn(self, data_generator: Generator[RolloutBuffer.Samples, None, None]) -> Dict:
+    def learn(self, data_generator: Generator[RolloutBuffer.Samples, None, None]) -> dict:
         clipfracs = []
         for data in data_generator:
             _, entropy, newlogprob = self.model.action(data.observations, data.actions)
@@ -305,7 +305,7 @@ class Agent:
         act = act.cpu().numpy()
         return act
 
-    def sample(self, obs: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    def sample(self, obs: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
         # 训练
         obs = torch.Tensor(obs).to(next(self.alg.model.parameters()).device)
         with torch.no_grad():
@@ -314,7 +314,7 @@ class Agent:
         self.sample_step += self.kwargs["num_envs"]
         return act, log_prob, val
 
-    def learn(self, data_generator_list: List[Generator[RolloutBuffer.Samples, None, None]]) -> Dict:
+    def learn(self, data_generator_list: list[Generator[RolloutBuffer.Samples, None, None]]) -> dict:
         # 数据预处理
         self._update_lr()
         log_data_list = []
@@ -404,7 +404,7 @@ class Trainer:
         self.obs, self.eval_obs = self.envs.reset(), self.eval_env.reset()
         self.agent = Agent(**self.kwargs)
 
-    def __call__(self) -> Generator:
+    def __call__(self) -> Generator[dict, None, None]:
         while self.agent.sample_step < self.kwargs["total_timesteps"]:
             self.buffer.reset()
 
@@ -414,7 +414,7 @@ class Trainer:
                     yield self._run_evaluate(n_steps=self.kwargs["num_steps_eval"])
             yield self._run_train()
 
-    def _run_collect(self) -> Dict:
+    def _run_collect(self) -> dict:
         act, log_prob, val = self.agent.sample(self.obs)
         next_obs, reward, done, infos = self.envs.step(act)
         self.real_next_obs = next_obs.copy()
@@ -452,7 +452,7 @@ class Trainer:
 
         return {"log_type": "train", "sample_step": self.agent.sample_step, "logs": log_data}
 
-    def _run_evaluate(self, n_steps: int = 1) -> Dict:
+    def _run_evaluate(self, n_steps: int = 1) -> dict:
         el_list, er_list = [], []
         for _ in range(n_steps):
             act = self.agent.predict(self.eval_obs)
@@ -476,8 +476,8 @@ class Trainer:
 
         return {"log_type": "evaluate", "sample_step": self.agent.sample_step}
 
-    def _make_env(self, idx: int) -> Callable:
-        def thunk():
+    def _make_env(self, idx: int) -> Callable[[], gym.Env]:
+        def thunk() -> gym.Env:
             env = gym.make(self.kwargs["env_id"])
             env = gym.wrappers.RecordEpisodeStatistics(env)
             if self.kwargs["capture_video"]:
@@ -496,7 +496,7 @@ class Trainer:
         return thunk
 
 
-def logger(wrapped) -> Callable:
+def logger(wrapped) -> Callable[..., Generator[dict, None, None]]:
     def _wrapper(
         *args,
         track: bool = False,
@@ -504,7 +504,7 @@ def logger(wrapped) -> Callable:
         wandb_tags: list = [],
         wandb_entity: Optional[str] = None,
         **kwargs,
-    ) -> Generator:
+    ) -> Generator[dict, None, None]:
         if track:
             wandb.init(
                 project=wandb_project_name,
@@ -532,8 +532,8 @@ def logger(wrapped) -> Callable:
     return _wrapper
 
 
-def saver(wrapped) -> Callable:
-    def _wrapper(*args, save_frequency=1_000_0, **kwargs) -> Generator:
+def saver(wrapped) -> Callable[..., Generator[dict, None, None]]:
+    def _wrapper(*args, save_frequency: int = 1_000_0, **kwargs) -> Generator[dict, None, None]:
         save_frequency = max(save_frequency // args[0].kwargs["num_envs"] * args[0].kwargs["num_envs"], 1)
 
         gen = wrapped(*args, **kwargs)
@@ -548,8 +548,8 @@ def saver(wrapped) -> Callable:
     return _wrapper
 
 
-def filter(wrapped) -> Callable:
-    def _wrapper(*args, **kwargs) -> Generator:
+def filter(wrapped) -> Callable[..., Generator[dict, None, None]]:
+    def _wrapper(*args, **kwargs) -> Generator[dict, None, None]:
         gen = wrapped(*args, **kwargs)
         for log_data in gen:
             if "logs" in log_data and log_data["log_type"] != "train":

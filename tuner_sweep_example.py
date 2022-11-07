@@ -1,8 +1,9 @@
 import argparse
 import time
 
-import abcdrl
 import wandb
+
+import abcdrl
 
 
 def parse_args() -> argparse.Namespace:
@@ -30,7 +31,7 @@ sweep_configuration = {
 }
 
 
-def tune_agent():
+def tune_agent() -> None:
     writer = wandb.init(project=args.wandb_project_name, name=f"{sweep_configuration['name']}__{int(time.time())}")
     wandb.save("abcdrl/dqn.py")
 
@@ -55,7 +56,7 @@ def tune_agent():
 
 if __name__ == "__main__":
     args = parse_args()
-    
+
     sweep_id = args.sweep_id
     if sweep_id is None:
         sweep_id = wandb.sweep(sweep=sweep_configuration, project=args.wandb_project_name)

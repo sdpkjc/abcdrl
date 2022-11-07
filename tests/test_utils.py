@@ -1,7 +1,7 @@
 import subprocess
 
 
-def test_benchmark():
+def test_benchmark() -> None:
     try:
         subprocess.run(
             "python benchmark.py",
@@ -13,7 +13,7 @@ def test_benchmark():
         pass
 
 
-def test_eval():
+def test_eval() -> None:
     subprocess.run(
         "python abcdrl/dqn.py"
         + " --exp_name test_eval_dqn"

@@ -1,7 +1,7 @@
 import subprocess
 
 
-def test_ddpg():
+def test_ddpg() -> None:
     subprocess.run(
         "python abcdrl/ddpg.py"
         + " --env-id Hopper-v2"
@@ -19,7 +19,7 @@ def test_ddpg():
     )
 
 
-def test_td3():
+def test_td3() -> None:
     subprocess.run(
         "python abcdrl/td3.py"
         + " --env-id Hopper-v2"
@@ -37,7 +37,7 @@ def test_td3():
     )
 
 
-def test_sac():
+def test_sac() -> None:
     subprocess.run(
         "python abcdrl/sac.py"
         + " --env-id Hopper-v2"
@@ -55,7 +55,7 @@ def test_sac():
     )
 
 
-def test_ppo():
+def test_ppo() -> None:
     subprocess.run(
         "python abcdrl/ppo.py"
         + " --env-id Hopper-v2"

@@ -3,7 +3,7 @@ import inspect
 import abcdrl
 
 
-def test_codes_buffer():
+def test_codes_buffer() -> None:
     # ReplayBuffer
     assert inspect.getsource(abcdrl.dqn.ReplayBuffer) == inspect.getsource(abcdrl.ddqn.ReplayBuffer)
     assert inspect.getsource(abcdrl.dqn.ReplayBuffer) == inspect.getsource(abcdrl.ddpg.ReplayBuffer)
@@ -11,24 +11,24 @@ def test_codes_buffer():
     assert inspect.getsource(abcdrl.dqn.ReplayBuffer) == inspect.getsource(abcdrl.sac.ReplayBuffer)
 
 
-def test_codes_network():
+def test_codes_network() -> None:
     assert inspect.getsource(abcdrl.dqn.Network) == inspect.getsource(abcdrl.ddqn.Network)
     assert inspect.getsource(abcdrl.dqn.Network) == inspect.getsource(abcdrl.pdqn.Network)
 
     assert inspect.getsource(abcdrl.td3.CriticNetwork) == inspect.getsource(abcdrl.sac.CriticNetwork)
 
 
-def test_codes_model():
+def test_codes_model() -> None:
     assert inspect.getsource(abcdrl.dqn.Network) == inspect.getsource(abcdrl.ddqn.Network)
     assert inspect.getsource(abcdrl.dqn.Network) == inspect.getsource(abcdrl.pdqn.Network)
 
 
-def test_codes_agent():
+def test_codes_agent() -> None:
     assert inspect.getsource(abcdrl.dqn.Agent) == inspect.getsource(abcdrl.ddqn.Agent)
     assert inspect.getsource(abcdrl.ddpg.Agent) == inspect.getsource(abcdrl.td3.Agent)
 
 
-def test_codes_trainer():
+def test_codes_trainer() -> None:
     assert inspect.getsource(abcdrl.dqn.Trainer.__call__) == inspect.getsource(abcdrl.ddqn.Trainer.__call__)
     assert inspect.getsource(abcdrl.dqn.Trainer.__call__) == inspect.getsource(abcdrl.pdqn.Trainer.__call__)
     assert inspect.getsource(abcdrl.dqn.Trainer.__call__) == inspect.getsource(abcdrl.ddpg.Trainer.__call__)
@@ -61,7 +61,7 @@ def test_codes_trainer():
     assert inspect.getsource(abcdrl.dqn.Trainer) == inspect.getsource(abcdrl.ddqn.Trainer)
 
 
-def test_codes_wrapper():
+def test_codes_wrapper() -> None:
     # logger
     assert inspect.getsource(abcdrl.dqn.logger) == inspect.getsource(abcdrl.ddqn.logger)
     assert inspect.getsource(abcdrl.dqn.logger) == inspect.getsource(abcdrl.pdqn.logger)
@@ -87,7 +87,7 @@ def test_codes_wrapper():
     assert inspect.getsource(abcdrl.dqn.filter) == inspect.getsource(abcdrl.ppo.filter)
 
 
-def test_codes_other():
+def test_codes_other() -> None:
     # get_space_shape()
     assert inspect.getsource(abcdrl.dqn.get_space_shape) == inspect.getsource(abcdrl.ddqn.get_space_shape)
     assert inspect.getsource(abcdrl.dqn.get_space_shape) == inspect.getsource(abcdrl.pdqn.get_space_shape)
