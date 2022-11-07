@@ -3,7 +3,7 @@ import operator
 import os
 import random
 import time
-from typing import Callable, Dict, Generator, List, NamedTuple, Optional
+from typing import Callable, Dict, Generator, List, NamedTuple, Optional, Union
 
 import dill
 import fire
@@ -17,7 +17,7 @@ import wandb
 from torch.utils.tensorboard import SummaryWriter
 
 
-def get_space_shape(env_space: gym.spaces.Space):
+def get_space_shape(env_space: gym.Space):
     if isinstance(env_space, gym.spaces.Box):
         return env_space.shape
     elif isinstance(env_space, gym.spaces.Discrete):
@@ -32,16 +32,16 @@ def get_space_shape(env_space: gym.spaces.Space):
 
 class PrioritizedReplayBuffer:
     class Samples(NamedTuple):
-        observations: torch.Tensor
-        actions: torch.Tensor
-        next_observations: torch.Tensor
-        dones: torch.Tensor
-        rewards: torch.Tensor
-        weights: List
+        observations: Union[torch.Tensor, np.ndarray]
+        actions: Union[torch.Tensor, np.ndarray]
+        next_observations: Union[torch.Tensor, np.ndarray]
+        dones: Union[torch.Tensor, np.ndarray]
+        rewards: Union[torch.Tensor, np.ndarray]
+        weights: Union[torch.Tensor, np.ndarray]
         indices: List
 
     class SegmentTree:
-        def __init__(self, capacity: int, operation: Callable, init_value: float):
+        def __init__(self, capacity: int, operation: Callable, init_value: float) -> None:
             assert capacity > 0 and capacity % 2 == 0
 
             self.capacity = capacity
@@ -75,7 +75,7 @@ class PrioritizedReplayBuffer:
 
             return idx - self.capacity
 
-        def __setitem__(self, idx: int, val: float):
+        def __setitem__(self, idx: int, val: float) -> None:
             idx += self.capacity
             self.tree[idx] = val
 
@@ -88,29 +88,27 @@ class PrioritizedReplayBuffer:
 
     def __init__(
         self,
-        obs_space: gym.spaces,
-        act_space: gym.spaces,
+        obs_space: gym.Space,
+        act_space: gym.Space,
         buffer_size: int = 1_000_0,
-        device: str = "cuda" if torch.cuda.is_available() else "cpu",
         alpha: float = 0.2,
-    ):
+    ) -> None:
         assert alpha >= 0
 
         self.obs_buf = np.zeros((buffer_size,) + get_space_shape(obs_space), dtype=obs_space.dtype)
         self.next_obs_buf = np.zeros((buffer_size,) + get_space_shape(obs_space), dtype=obs_space.dtype)
         self.acts_buf = np.zeros((buffer_size,) + get_space_shape(act_space), dtype=act_space.dtype)
-        self.rews_buf = np.zeros([buffer_size], dtype=np.float32)
-        self.done_buf = np.zeros(buffer_size, dtype=np.float32)
+        self.rews_buf = np.zeros((buffer_size,), dtype=np.float32)
+        self.dones_buf = np.zeros((buffer_size,), dtype=np.float32)
 
-        self.max_size = buffer_size
+        self.buffer_size = buffer_size
         self.ptr = 0
         self.size = 0
-        self.device = device
 
         self.max_priority, self.tree_ptr = 1.0, 0
         self.alpha = alpha
         tree_capacity = 1
-        while tree_capacity < self.max_size:
+        while tree_capacity < self.buffer_size:
             tree_capacity *= 2
 
         self.sum_tree = self.SegmentTree(tree_capacity, operator.add, 0.0)
@@ -124,21 +122,21 @@ class PrioritizedReplayBuffer:
         rew: float,
         done: bool,
         infos: dict,
-    ):
+    ) -> None:
         for obs_i, next_obs_i, act_i, rew_i, done_i in zip(obs, next_obs, act, rew, done):
             self.obs_buf[self.ptr] = obs_i
             self.next_obs_buf[self.ptr] = next_obs_i
             self.acts_buf[self.ptr] = act_i
             self.rews_buf[self.ptr] = rew_i
-            self.done_buf[self.ptr] = done_i
-            self.ptr = (self.ptr + 1) % self.max_size
-            self.size = min(self.size + 1, self.max_size)
+            self.dones_buf[self.ptr] = done_i
+            self.ptr = (self.ptr + 1) % self.buffer_size
+            self.size = min(self.size + 1, self.buffer_size)
 
             self.sum_tree[self.tree_ptr] = self.max_priority**self.alpha
             self.min_tree[self.tree_ptr] = self.max_priority**self.alpha
-            self.tree_ptr = (self.tree_ptr + 1) % self.max_size
+            self.tree_ptr = (self.tree_ptr + 1) % self.buffer_size
 
-    def sample(self, batch_size=1, beta: float = 0.6) -> Samples:
+    def sample(self, batch_size: int = 1, beta: float = 0.6) -> Samples:
         assert len(self) >= batch_size
         assert beta > 0
 
@@ -148,20 +146,20 @@ class PrioritizedReplayBuffer:
         next_obs = self.next_obs_buf[indices]
         acts = self.acts_buf[indices]
         rews = self.rews_buf[indices]
-        done = self.done_buf[indices]
-        weights = np.array([self._calculate_weight(i, beta) for i in indices])
+        done = self.dones_buf[indices]
+        weights = np.array([self._calculate_weight(i, beta) for i in indices], dtype=np.float32).reshape(-1, 1)
 
         return PrioritizedReplayBuffer.Samples(
-            observations=torch.tensor(obs).to(self.device),
-            next_observations=torch.tensor(next_obs).to(self.device),
-            actions=torch.tensor(acts).to(self.device),
-            rewards=torch.tensor(rews).to(self.device),
-            dones=torch.tensor(done).to(self.device),
+            observations=obs,
+            next_observations=next_obs,
+            actions=acts,
+            rewards=rews,
+            dones=done,
             weights=weights,
             indices=indices,
         )
 
-    def update_priorities(self, indices: List[int], priorities: np.ndarray):
+    def update_priorities(self, indices: List[int], priorities: np.ndarray) -> None:
         assert len(indices) == len(priorities)
 
         for idx, priority in zip(indices, priorities):
@@ -175,7 +173,7 @@ class PrioritizedReplayBuffer:
     def __len__(self) -> int:
         return self.size
 
-    def _sample_proportional(self, batch_size=1) -> List[int]:
+    def _sample_proportional(self, batch_size: int = 1) -> List[int]:
         indices = []
         p_total = self.sum_tree.query(0, len(self) - 1)
         segment = p_total / batch_size
@@ -187,15 +185,14 @@ class PrioritizedReplayBuffer:
 
         return indices
 
-    def _calculate_weight(self, idx: int, beta: float):
+    def _calculate_weight(self, idx: int, beta: float) -> float:
         p_min = self.min_tree.query(0, len(self) - 1) / self.sum_tree.query(0, len(self) - 1)
         max_weight = (p_min * len(self)) ** (-beta)
 
         p_sample = self.sum_tree[idx] / self.sum_tree.query(0, len(self) - 1)
         weight = (p_sample * len(self)) ** (-beta)
         weight = weight / max_weight
-
-        return weight
+        return float(weight)
 
 
 class Network(nn.Module):
@@ -245,11 +242,8 @@ class Algorithm:
             td_target = data.rewards.flatten() + self.kwargs["gamma"] * target_max * (1 - data.dones.flatten())
 
         old_val = self.model.value(data.observations).gather(1, data.actions).squeeze()
-        td_loss = F.mse_loss(td_target, old_val)
-
-        weights = torch.FloatTensor(data.weights.reshape(-1, 1)).to(next(self.model.parameters()).device)
         elementwise_td_loss = F.mse_loss(td_target, old_val, reduction="none")
-        td_loss = torch.mean(elementwise_td_loss * weights)  # PER
+        td_loss = torch.mean(elementwise_td_loss * data.weights)  # PER
 
         self.optimizer.zero_grad()
         td_loss.backward()
@@ -292,6 +286,14 @@ class Agent:
 
     def learn(self, data: PrioritizedReplayBuffer.Samples) -> Dict:
         # 数据预处理 & 目标网络同步
+        data = data._replace(
+            **{
+                item[0]: torch.tensor(item[1]).to(self.kwargs["device"])
+                for item in data._asdict().items()
+                if type(item[1]) == np.ndarray
+            }
+        )
+
         log_data = self.alg.learn(data)
         if self.sample_step % self.kwargs["target_network_frequency"] == 0:
             self.alg.sync_target()
@@ -311,7 +313,7 @@ class Trainer:
         self,
         exp_name: Optional[str] = None,
         seed: int = 1,
-        device: str = "auto",
+        device: Union[str, torch.device] = "auto",
         capture_video: bool = False,
         env_id: str = "CartPole-v1",
         num_envs: int = 1,
@@ -362,7 +364,6 @@ class Trainer:
             self.kwargs["obs_space"],
             self.kwargs["act_space"],
             buffer_size=self.kwargs["buffer_size"],
-            device=self.kwargs["device"],
             alpha=self.kwargs["alpha"],
         )
 
@@ -404,13 +405,13 @@ class Trainer:
         return {"log_type": "collect", "sample_step": self.agent.sample_step}
 
     def _run_train(self) -> Dict:
-        data = self.buffer.sample(self.kwargs["batch_size"])
+        data = self.buffer.sample(batch_size=self.kwargs["batch_size"])
         log_data = self.agent.learn(data)
 
         loss_for_prior = log_data["elementwise_td_loss"].detach().cpu().numpy() + 1e-6
         self.buffer.update_priorities(data.indices, loss_for_prior)
-
         log_data.pop("elementwise_td_loss")
+
         return {"log_type": "train", "sample_step": self.agent.sample_step, "logs": log_data}
 
     def _run_evaluate(self, n_steps: int = 1) -> Dict:

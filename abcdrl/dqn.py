@@ -2,7 +2,7 @@ import copy
 import os
 import random
 import time
-from typing import Callable, Dict, Generator, NamedTuple, Optional
+from typing import Callable, Dict, Generator, NamedTuple, Optional, Union
 
 import dill
 import fire
@@ -16,7 +16,7 @@ import wandb
 from torch.utils.tensorboard import SummaryWriter
 
 
-def get_space_shape(env_space: gym.spaces.Space):
+def get_space_shape(env_space: gym.Space):
     if isinstance(env_space, gym.spaces.Box):
         return env_space.shape
     elif isinstance(env_space, gym.spaces.Discrete):
@@ -31,29 +31,27 @@ def get_space_shape(env_space: gym.spaces.Space):
 
 class ReplayBuffer:
     class Samples(NamedTuple):
-        observations: torch.Tensor
-        actions: torch.Tensor
-        next_observations: torch.Tensor
-        dones: torch.Tensor
-        rewards: torch.Tensor
+        observations: Union[torch.Tensor, np.ndarray]
+        actions: Union[torch.Tensor, np.ndarray]
+        next_observations: Union[torch.Tensor, np.ndarray]
+        dones: Union[torch.Tensor, np.ndarray]
+        rewards: Union[torch.Tensor, np.ndarray]
 
     def __init__(
         self,
         obs_space: gym.Space,
         act_space: gym.Space,
         buffer_size: int = 1_000_0,
-        device: str = "cuda" if torch.cuda.is_available() else "cpu",
-    ):
+    ) -> None:
         self.obs_buf = np.zeros((buffer_size,) + get_space_shape(obs_space), dtype=obs_space.dtype)
         self.next_obs_buf = np.zeros((buffer_size,) + get_space_shape(obs_space), dtype=obs_space.dtype)
         self.acts_buf = np.zeros((buffer_size,) + get_space_shape(act_space), dtype=act_space.dtype)
-        self.rews_buf = np.zeros([buffer_size], dtype=np.float32)
-        self.done_buf = np.zeros(buffer_size, dtype=np.float32)
+        self.rews_buf = np.zeros((buffer_size,), dtype=np.float32)
+        self.dones_buf = np.zeros((buffer_size,), dtype=np.float32)
 
-        self.max_size = buffer_size
+        self.buffer_size = buffer_size
         self.ptr = 0
         self.size = 0
-        self.device = device
 
     def add(
         self,
@@ -63,24 +61,24 @@ class ReplayBuffer:
         rew: float,
         done: bool,
         infos: dict,
-    ):
+    ) -> None:
         for obs_i, next_obs_i, act_i, rew_i, done_i in zip(obs, next_obs, act, rew, done):
-            self.obs_buf[self.ptr] = obs_i
-            self.next_obs_buf[self.ptr] = next_obs_i
-            self.acts_buf[self.ptr] = act_i
-            self.rews_buf[self.ptr] = rew_i
-            self.done_buf[self.ptr] = done_i
-            self.ptr = (self.ptr + 1) % self.max_size
-            self.size = min(self.size + 1, self.max_size)
+            self.obs_buf[self.ptr] = np.array(obs_i).copy()
+            self.next_obs_buf[self.ptr] = np.array(next_obs_i).copy()
+            self.acts_buf[self.ptr] = np.array(act_i).copy()
+            self.rews_buf[self.ptr] = np.array(rew_i).copy()
+            self.dones_buf[self.ptr] = np.array(done_i).copy()
+            self.ptr = (self.ptr + 1) % self.buffer_size
+            self.size = min(self.size + 1, self.buffer_size)
 
     def sample(self, batch_size=1) -> Samples:
         idxs = np.random.choice(self.size, size=batch_size, replace=False)
         return ReplayBuffer.Samples(
-            observations=torch.tensor(self.obs_buf[idxs]).to(self.device),
-            next_observations=torch.tensor(self.next_obs_buf[idxs]).to(self.device),
-            actions=torch.tensor(self.acts_buf[idxs]).to(self.device),
-            rewards=torch.tensor(self.rews_buf[idxs]).to(self.device),
-            dones=torch.tensor(self.done_buf[idxs]).to(self.device),
+            observations=self.obs_buf[idxs],
+            next_observations=self.next_obs_buf[idxs],
+            actions=self.acts_buf[idxs],
+            rewards=self.rews_buf[idxs],
+            dones=self.dones_buf[idxs],
         )
 
     def __len__(self) -> int:
@@ -177,6 +175,14 @@ class Agent:
 
     def learn(self, data: ReplayBuffer.Samples) -> Dict:
         # 数据预处理 & 目标网络同步
+        data = data._replace(
+            **{
+                item[0]: torch.tensor(item[1]).to(self.kwargs["device"])
+                for item in data._asdict().items()
+                if type(item[1]) == np.ndarray
+            }
+        )
+
         log_data = self.alg.learn(data)
         if self.sample_step % self.kwargs["target_network_frequency"] == 0:
             self.alg.sync_target()
@@ -196,7 +202,7 @@ class Trainer:
         self,
         exp_name: Optional[str] = None,
         seed: int = 1,
-        device: str = "auto",
+        device: Union[str, torch.device] = "auto",
         capture_video: bool = False,
         env_id: str = "CartPole-v1",
         num_envs: int = 1,
@@ -245,7 +251,6 @@ class Trainer:
             self.kwargs["obs_space"],
             self.kwargs["act_space"],
             buffer_size=self.kwargs["buffer_size"],
-            device=self.kwargs["device"],
         )
 
         self.obs, self.eval_obs = self.envs.reset(), self.eval_env.reset()
@@ -286,7 +291,7 @@ class Trainer:
         return {"log_type": "collect", "sample_step": self.agent.sample_step}
 
     def _run_train(self) -> Dict:
-        data = self.buffer.sample(self.kwargs["batch_size"])
+        data = self.buffer.sample(batch_size=self.kwargs["batch_size"])
         log_data = self.agent.learn(data)
 
         return {"log_type": "train", "sample_step": self.agent.sample_step, "logs": log_data}

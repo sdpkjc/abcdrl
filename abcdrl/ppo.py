@@ -1,7 +1,7 @@
 import os
 import random
 import time
-from typing import Callable, Dict, Generator, List, NamedTuple, Optional, Tuple
+from typing import Callable, Dict, Generator, List, NamedTuple, Optional, Tuple, Union
 
 import dill
 import fire
@@ -15,7 +15,7 @@ from torch.distributions.normal import Normal
 from torch.utils.tensorboard import SummaryWriter
 
 
-def get_space_shape(env_space: gym.spaces.Space):
+def get_space_shape(env_space: gym.Space):
     if isinstance(env_space, gym.spaces.Box):
         return env_space.shape
     elif isinstance(env_space, gym.spaces.Discrete):
@@ -30,23 +30,22 @@ def get_space_shape(env_space: gym.spaces.Space):
 
 class RolloutBuffer:
     class Samples(NamedTuple):
-        observations: torch.Tensor
-        actions: torch.Tensor
-        old_values: torch.Tensor
-        old_log_prob: torch.Tensor
-        advantages: torch.Tensor
-        returns: torch.Tensor
+        observations: Union[torch.Tensor, np.ndarray]
+        actions: Union[torch.Tensor, np.ndarray]
+        old_values: Union[torch.Tensor, np.ndarray]
+        old_log_prob: Union[torch.Tensor, np.ndarray]
+        advantages: Union[torch.Tensor, np.ndarray]
+        returns: Union[torch.Tensor, np.ndarray]
 
     def __init__(
         self,
-        obs_space: gym.spaces.Space,
-        act_space: gym.spaces.Space,
+        obs_space: gym.Space,
+        act_space: gym.Space,
         buffer_size: int,
-        device: str = "cuda" if torch.cuda.is_available() else "cpu",
+        n_envs: int = 1,
         gae_lambda: float = 1.0,
         gamma: float = 0.99,
-        n_envs: int = 1,
-    ):
+    ) -> None:
         self.obs_space = obs_space
         self.act_space = act_space
 
@@ -54,7 +53,6 @@ class RolloutBuffer:
         self.n_envs = n_envs
         self.gae_lambda = gae_lambda
         self.gamma = gamma
-        self.device = device
         self.reset()
 
     def reset(self) -> None:
@@ -115,28 +113,32 @@ class RolloutBuffer:
         if self.ptr == self.buffer_size // self.n_envs:
             self.full = True
 
-    def get(self, batch_size: int) -> Generator[Samples, None, None]:
+    def get(
+        self,
+        batch_size: Optional[int] = None,
+    ) -> Generator[Samples, None, None]:
         assert self.full
 
-        indices = np.random.permutation(self.buffer_size)
         if not self.generator_ready:
             for t_name in ["obs_buf", "acts_buf", "values", "log_probs", "advantages", "returns"]:
                 t_shape = self.__dict__[t_name].shape
                 self.__dict__[t_name] = self.__dict__[t_name].reshape((t_shape[0] * t_shape[1], *t_shape[2:]))
         self.generator_ready = True
 
-        for start_idx in range(0, self.buffer_size, batch_size):
-            yield self._get_samples(indices[start_idx : start_idx + batch_size])
+        if batch_size is None:
+            batch_size = self.buffer_size
 
-    def _get_samples(self, batch_inds: np.ndarray) -> Samples:
-        return RolloutBuffer.Samples(
-            observations=torch.tensor(self.obs_buf[batch_inds]).to(self.device),
-            actions=torch.tensor(self.acts_buf[batch_inds]).to(self.device),
-            old_values=torch.tensor(self.values[batch_inds]).to(self.device),
-            old_log_prob=torch.tensor(self.log_probs[batch_inds]).to(self.device),
-            advantages=torch.tensor(self.advantages[batch_inds]).to(self.device),
-            returns=torch.tensor(self.returns[batch_inds]).to(self.device),
-        )
+        indices = np.random.permutation(self.buffer_size)
+        for start_idx in range(0, self.buffer_size, batch_size):
+            idxs = indices[start_idx : start_idx + batch_size]
+            yield RolloutBuffer.Samples(
+                observations=self.obs_buf[idxs],
+                actions=self.acts_buf[idxs],
+                old_values=self.values[idxs],
+                old_log_prob=self.log_probs[idxs],
+                advantages=self.advantages[idxs],
+                returns=self.returns[idxs],
+            )
 
 
 def layer_init(layer, std=np.sqrt(2), bias_const=0.0):
@@ -317,6 +319,12 @@ class Agent:
         self._update_lr()
         log_data_list = []
         for data_generator in data_generator_list:
+            data_generator = (
+                data._replace(
+                    **{item[0]: torch.tensor(item[1]).to(self.kwargs["device"]) for item in data._asdict().items()}
+                )
+                for data in data_generator
+            )
             log_data_list += [self.alg.learn(data_generator)]
 
         self.learn_step += 1
@@ -334,7 +342,7 @@ class Trainer:
         self,
         exp_name: Optional[str] = None,
         seed: int = 1,
-        device: str = "auto",
+        device: Union[str, torch.device] = "auto",
         capture_video: bool = False,
         env_id: str = "Hopper-v2",
         num_envs: int = 1,
@@ -388,10 +396,9 @@ class Trainer:
             self.kwargs["obs_space"],
             self.kwargs["act_space"],
             self.kwargs["batch_size"],
-            self.kwargs["device"],
+            n_envs=self.kwargs["num_envs"],
             gae_lambda=self.kwargs["gae_lambda"],
             gamma=self.kwargs["gamma"],
-            n_envs=self.kwargs["num_envs"],
         )
 
         self.obs, self.eval_obs = self.envs.reset(), self.eval_env.reset()
@@ -438,7 +445,7 @@ class Trainer:
         self.buffer.compute_returns_and_advantage(next_val, next_done)
 
         data_generator_list = [
-            self.buffer.get(self.kwargs["minibatch_size"]) for _ in range(self.kwargs["update_epochs"])
+            self.buffer.get(batch_size=self.kwargs["minibatch_size"]) for _ in range(self.kwargs["update_epochs"])
         ]
 
         log_data = self.agent.learn(data_generator_list)[0]
