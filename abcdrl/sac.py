@@ -283,7 +283,7 @@ class Agent:
             **{
                 item[0]: torch.tensor(item[1]).to(self.kwargs["device"])
                 for item in data._asdict().items()
-                if type(item[1]) == np.ndarray
+                if isinstance(item[1], np.ndarray)
             }
         )
 

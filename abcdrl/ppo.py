@@ -321,7 +321,11 @@ class Agent:
         for data_generator in data_generator_list:
             data_generator = (
                 data._replace(
-                    **{item[0]: torch.tensor(item[1]).to(self.kwargs["device"]) for item in data._asdict().items()}
+                    **{
+                        item[0]: torch.tensor(item[1]).to(self.kwargs["device"])
+                        for item in data._asdict().items()
+                        if isinstance(item[1], np.ndarray)
+                    }
                 )
                 for data in data_generator
             )
