@@ -5,7 +5,7 @@ from typing import Callable, Generator, NamedTuple, Optional, Union
 
 import dill
 import fire
-import gym
+import gymnasium as gym
 import numpy as np
 import torch
 import torch.nn as nn
@@ -348,7 +348,7 @@ class Trainer:
         seed: int = 1,
         device: Union[str, torch.device] = "auto",
         capture_video: bool = False,
-        env_id: str = "Hopper-v2",
+        env_id: str = "Hopper-v4",
         num_envs: int = 1,
         eval_frequency: int = 5_000,
         num_steps_eval: int = 500,
@@ -388,9 +388,7 @@ class Trainer:
             self.kwargs["device"] = "cuda" if torch.cuda.is_available() else "cpu"
 
         self.envs = gym.vector.SyncVectorEnv([self._make_env(i) for i in range(self.kwargs["num_envs"])])
-        self.envs.single_observation_space.dtype = np.float32
         self.eval_env = gym.vector.SyncVectorEnv([self._make_env(1)])
-        self.eval_env.single_observation_space.dtype = np.float32
         assert isinstance(self.envs.single_action_space, gym.spaces.Box)
 
         self.kwargs["obs_space"] = self.envs.single_observation_space
@@ -405,7 +403,8 @@ class Trainer:
             gamma=self.kwargs["gamma"],
         )
 
-        self.obs, self.eval_obs = self.envs.reset(), self.eval_env.reset()
+        self.obs, _ = self.envs.reset(seed=[seed for seed in range(self.kwargs["num_envs"])])
+        self.eval_obs, _ = self.eval_env.reset(seed=1)
         self.agent = Agent(**self.kwargs)
 
     def __call__(self) -> Generator[dict, None, None]:
@@ -420,32 +419,34 @@ class Trainer:
 
     def _run_collect(self) -> dict:
         act, log_prob, val = self.agent.sample(self.obs)
-        next_obs, reward, done, infos = self.envs.step(act)
-        self.real_next_obs = next_obs.copy()
+        next_obs, reward, terminated, truncated, infos = self.envs.step(act)
+        done = terminated | truncated
 
-        for idx, done_i in enumerate(done):
-            if done_i and infos[idx].get("terminal_observation") is not None:
-                self.real_next_obs[idx] = infos[idx]["terminal_observation"]
+        self.real_next_obs = next_obs.copy()
+        if "final_observation" in infos.keys():
+            for idx, final_obs in enumerate(infos["final_observation"]):
+                self.real_next_obs[idx] = self.real_next_obs[idx] if final_obs is None else final_obs
 
         self.buffer.add(self.obs, act, reward, done, val, log_prob)
         self.obs = next_obs
 
-        log_data = {"log_type": "collect", "sample_step": self.agent.sample_step}
-        for info in infos:
-            if "episode" in info.keys():
-                log_data["sample_step"] = self.agent.sample_step
-                log_data["logs"] = {
-                    "episodic_length": info["episode"]["l"],
-                    "episodic_return": info["episode"]["r"],
-                }
-                break
+        if "final_info" in infos.keys():
+            final_info = next(item for item in infos["final_info"] if item is not None)
+            return {
+                "log_type": "collect",
+                "sample_step": self.agent.sample_step,
+                "logs": {
+                    "episodic_length": final_info["episode"]["l"][0],
+                    "episodic_return": final_info["episode"]["r"][0],
+                },
+            }
+        return {"log_type": "collect", "sample_step": self.agent.sample_step}
 
-        return log_data
-
-    def _run_train(self) -> None:
+    def _run_train(self) -> dict:
         act, _, next_val = self.agent.sample(self.real_next_obs)
         self.agent.sample_step -= self.kwargs["num_envs"]
-        _, _, next_done, _ = self.envs.step(act)
+        _, _, next_terminated, next_truncated, _ = self.envs.step(act)
+        next_done = next_terminated | next_truncated
         self.buffer.compute_returns_and_advantage(next_val, next_done)
 
         data_generator_list = [
@@ -460,13 +461,12 @@ class Trainer:
         el_list, er_list = [], []
         for _ in range(n_steps):
             act = self.agent.predict(self.eval_obs)
-            self.eval_obs, _, _, infos = self.eval_env.step(act)
+            self.eval_obs, _, _, _, infos = self.eval_env.step(act)
 
-            for info in infos:
-                if "episode" in info.keys():
-                    el_list.append(info["episode"]["l"])
-                    er_list.append(info["episode"]["r"])
-                    break
+            if "final_info" in infos.keys():
+                final_info = next(item for item in infos["final_info"] if item is not None)
+                el_list.append(final_info["episode"]["l"][0])
+                er_list.append(final_info["episode"]["r"][0])
 
         if el_list:
             return {
@@ -477,12 +477,12 @@ class Trainer:
                     "mean_episodic_return": sum(er_list) / len(er_list),
                 },
             }
-
         return {"log_type": "evaluate", "sample_step": self.agent.sample_step}
 
     def _make_env(self, idx: int) -> Callable[[], gym.Env]:
         def thunk() -> gym.Env:
-            env = gym.make(self.kwargs["env_id"])
+            env = gym.make(self.kwargs["env_id"], render_mode="rgb_array")
+            env.observation_space.dtype = np.float32
             env = gym.wrappers.RecordEpisodeStatistics(env)
             if self.kwargs["capture_video"]:
                 if idx == 0:
@@ -492,7 +492,6 @@ class Trainer:
             env = gym.wrappers.TransformObservation(env, lambda obs: np.clip(obs, -10, 10))
             env = gym.wrappers.NormalizeReward(env, gamma=self.kwargs["gamma"])
             env = gym.wrappers.TransformReward(env, lambda reward: np.clip(reward, -10, 10))
-            env.seed(self.kwargs["seed"])
             env.action_space.seed(self.kwargs["seed"])
             env.observation_space.seed(self.kwargs["seed"])
             return env

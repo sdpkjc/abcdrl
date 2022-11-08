@@ -6,7 +6,7 @@ from typing import Callable, Generator, NamedTuple, Optional, Union
 
 import dill
 import fire
-import gym
+import gymnasium as gym
 import numpy as np
 import torch
 import torch.nn as nn
@@ -71,7 +71,7 @@ class ReplayBuffer:
             self.ptr = (self.ptr + 1) % self.buffer_size
             self.size = min(self.size + 1, self.buffer_size)
 
-    def sample(self, batch_size=1) -> Samples:
+    def sample(self, batch_size: int = 1) -> Samples:
         idxs = np.random.choice(self.size, size=batch_size, replace=False)
         return ReplayBuffer.Samples(
             observations=self.obs_buf[idxs],
@@ -255,7 +255,8 @@ class Trainer:
             buffer_size=self.kwargs["buffer_size"],
         )
 
-        self.obs, self.eval_obs = self.envs.reset(), self.eval_env.reset()
+        self.obs, _ = self.envs.reset(seed=[seed for seed in range(self.kwargs["num_envs"])])
+        self.eval_obs, _ = self.eval_env.reset(seed=1)
         self.agent = Agent(**self.kwargs)
 
     def __call__(self) -> Generator[dict, None, None]:
@@ -270,26 +271,27 @@ class Trainer:
 
     def _run_collect(self) -> dict:
         act = self.agent.sample(self.obs)
-        next_obs, reward, done, infos = self.envs.step(act)
-        real_next_obs = next_obs.copy()
+        next_obs, reward, terminated, truncated, infos = self.envs.step(act)
+        done = terminated | truncated
 
-        for idx, done_i in enumerate(done):
-            if done_i and infos[idx].get("terminal_observation") is not None:
-                real_next_obs[idx] = infos[idx]["terminal_observation"]
+        real_next_obs = next_obs.copy()
+        if "final_observation" in infos.keys():
+            for idx, final_obs in enumerate(infos["final_observation"]):
+                real_next_obs[idx] = real_next_obs[idx] if final_obs is None else final_obs
 
         self.buffer.add(self.obs, real_next_obs, act, reward, done, infos)
         self.obs = next_obs
 
-        for info in infos:
-            if "episode" in info.keys():
-                return {
-                    "log_type": "collect",
-                    "sample_step": self.agent.sample_step,
-                    "logs": {
-                        "episodic_length": info["episode"]["l"],
-                        "episodic_return": info["episode"]["r"],
-                    },
-                }
+        if "final_info" in infos.keys():
+            final_info = next(item for item in infos["final_info"] if item is not None)
+            return {
+                "log_type": "collect",
+                "sample_step": self.agent.sample_step,
+                "logs": {
+                    "episodic_length": final_info["episode"]["l"][0],
+                    "episodic_return": final_info["episode"]["r"][0],
+                },
+            }
         return {"log_type": "collect", "sample_step": self.agent.sample_step}
 
     def _run_train(self) -> dict:
@@ -302,13 +304,12 @@ class Trainer:
         el_list, er_list = [], []
         for _ in range(n_steps):
             act = self.agent.predict(self.eval_obs)
-            self.eval_obs, _, _, infos = self.eval_env.step(act)
+            self.eval_obs, _, _, _, infos = self.eval_env.step(act)
 
-            for info in infos:
-                if "episode" in info.keys():
-                    el_list.append(info["episode"]["l"])
-                    er_list.append(info["episode"]["r"])
-                    break
+            if "final_info" in infos.keys():
+                final_info = next(item for item in infos["final_info"] if item is not None)
+                el_list.append(final_info["episode"]["l"][0])
+                er_list.append(final_info["episode"]["r"][0])
 
         if el_list:
             return {
@@ -319,17 +320,15 @@ class Trainer:
                     "mean_episodic_return": sum(er_list) / len(er_list),
                 },
             }
-
         return {"log_type": "evaluate", "sample_step": self.agent.sample_step}
 
     def _make_env(self, idx: int) -> Callable[[], gym.Env]:
         def thunk() -> gym.Env:
-            env = gym.make(self.kwargs["env_id"])
+            env = gym.make(self.kwargs["env_id"], render_mode="rgb_array")
             env = gym.wrappers.RecordEpisodeStatistics(env)
             if self.kwargs["capture_video"]:
                 if idx == 0:
                     env = gym.wrappers.RecordVideo(env, f"videos/{self.kwargs['exp_name']}")
-            env.seed(self.kwargs["seed"])
             env.action_space.seed(self.kwargs["seed"])
             env.observation_space.seed(self.kwargs["seed"])
             return env

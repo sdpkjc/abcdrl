@@ -4,7 +4,7 @@ from typing import Callable, Generator
 
 import dill
 import fire
-import gym
+import gymnasium as gym
 import numpy as np
 import torch
 
@@ -25,26 +25,26 @@ class Evaluater:
             self.kwargs["device"] = "cuda" if torch.cuda.is_available() else "cpu"
 
         self.eval_env = gym.vector.SyncVectorEnv([self._make_env(0)])
-        self.eval_obs = self.eval_env.reset()
+        self.eval_obs, _ = self.eval_env.reset(seed=0)
 
         with open(self.kwargs["model_path"], "rb") as file:
             self.agent = dill.load(file)
 
-    def __call__(self) -> Generator:
+    def __call__(self) -> Generator[dict, None, None]:
         for evaluate_step in range(self.kwargs["total_timesteps"]):
             act = self.agent.predict(self.eval_obs)
-            self.eval_obs, _, _, infos = self.eval_env.step(act)
+            self.eval_obs, _, _, _, infos = self.eval_env.step(act)
 
-            for info in infos:
-                if "episode" in info.keys():
-                    yield {
-                        "log_type": "evaluate",
-                        "evaluate_step": evaluate_step,
-                        "logs": {
-                            "episodic_length": info["episode"]["l"],
-                            "episodic_return": info["episode"]["r"],
-                        },
-                    }
+            if "final_info" in infos.keys():
+                final_info = next(item for item in infos["final_info"] if item is not None)
+                yield {
+                    "log_type": "evaluate",
+                    "evaluate_step": evaluate_step,
+                    "logs": {
+                        "episodic_length": final_info["episode"]["l"][0],
+                        "episodic_return": final_info["episode"]["r"][0],
+                    },
+                }
 
     # edit point
     def _make_env(self, idx: int) -> Callable[[], gym.Env]:
@@ -56,7 +56,6 @@ class Evaluater:
                     env = gym.wrappers.RecordVideo(
                         env, f"videos/{self.kwargs['env_id']}__{self.kwargs['seed']}__{int(time.time())}"
                     )
-            env.seed(self.kwargs["seed"])
             env.action_space.seed(self.kwargs["seed"])
             env.observation_space.seed(self.kwargs["seed"])
             return env
