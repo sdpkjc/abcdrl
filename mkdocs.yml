@@ -5,7 +5,7 @@ theme:
     scheme: default
     primary: blue
     accent: red
-  language: zh 
+  language: en
   features:
     # - navigation.tabs
     # - navigation.sections
@@ -17,7 +17,7 @@ repo_name: sdpkjc/abcdrl
 repo_url: https://github.com/sdpkjc/abcdrl
 plugins:
   - search:
-      lang: 
+      lang:
         - en
   - i18n:
       default_language: en
@@ -34,7 +34,6 @@ plugins:
           Installation: 安装
           Reference: 参考
           Reference material: 参考资料
-
 
 nav:
   - Overview:
@@ -56,7 +55,7 @@ markdown_extensions:
   - attr_list
   - md_in_html
   - pymdownx.tabbed:
-      alternate_style: true 
+      alternate_style: true
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid
