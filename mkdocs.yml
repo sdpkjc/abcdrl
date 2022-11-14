@@ -12,29 +12,41 @@ theme:
     - content.code.annotate
     - navigation.expand
   icon:
-      repo: fontawesome/brands/git
+      repo: fontawesome/brands/github
 repo_name: sdpkjc/abcdrl
-repo_url: https://sdpkjc.coding.net/public/abcdrl/abcdrl/git/files
+repo_url: https://github.com/sdpkjc/abcdrl
 plugins:
   - search:
       lang: 
         - en
+  - i18n:
+      default_language: en
+      languages:
+        en: English
+        zh: 中文
+      nav_translations:
+        zh:
+          Overview: 概览
+          Introduction: 简介
+          Feature: 特点
+          Abstractions: 模块设计
+          Getting started: 快速开始
+          Installation: 安装
+          Reference: 参考
+          Reference material: 参考资料
+
+
 nav:
-  - 概览:
-    - 简介: index.md
-    - 特点: features.md
-    - 模块设计: abstractions.md
-  - 安装:
-    - 安装: install.md
-  - 算法:
-    - Deep Q Network (DQN): algs/dqn.md
-    - Deep Deterministic Policy Gradient (DDPG): algs/ddpg.md
-    - Twin Delayed Deep Deterministic Policy Gradient (TD3): algs/td3.md
-    - Soft Actor-Critic (SAC): algs/sac.md
-    - Proximal Policy Optimization (PPO): algs/ppo.md
-  - 参考:
-    - 参考资料: ref.md
-    
+  - Overview:
+    - Introduction: index.md
+    - Feature: features.md
+    - Abstractions: abstractions.md
+  - Getting started:
+    - Installation: install.md
+  - Reference:
+    - Reference material: ref.md
+
+
 markdown_extensions:
   - pymdownx.highlight
   - pymdownx.inlinehilite
