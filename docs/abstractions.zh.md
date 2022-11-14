@@ -1,6 +1,6 @@
 # 模块设计
 
-我们的模块设计在 [PARL](https://parl.readthedocs.io/en/latest/overview/abstractions.html) 的抽象逻辑的基础上，对训练过程进行了封装。整体以 `Model📦`, `Algorithm👣`, `Agent🤖`, `Trainer🔁` 四个类为主组成，并以组合的方式进行交互。
+每个算法以 `Model📦`, `Algorithm👣`, `Agent🤖`, `Trainer🔁` 四个类为主组成，并以组合的方式进行交互。
 
 - `Model📦`：定义单个或多个前向网络；输入是环境状态，输出是网络的原始输出。
 - `Algorithm👣`：定义 `Model📦` 的更新算法和 `Model📦` 输出的后处理（`argmax`, ...）。
@@ -41,11 +41,11 @@ class Algorithm:
         # 2. 初始化 optimizer
         pass
 
-    def predict(self, obs: torch.Tensor) -> Tuple:
+    def predict(self, obs: torch.Tensor) -> Tuple[Any]:
         # 返回 动作 | 动作概率分布 | Q函数的预估值
         pass
 
-    def learn(self, data: BufferSamples) -> Dict:
+    def learn(self, data: BufferSamples) -> dict[str, Any]:
         # 根据训练数据（观测量和输入的reward），定义损失函数，用于更新 Model 中的参数。
 
         # 1. 计算目标
@@ -80,9 +80,10 @@ class Agent:
         # 4. 返回训练使用的 act
         pass
 
-    def learn(self, data: BufferSamples) -> Dict:
+    def learn(self, data: BufferSamples) -> dict[str, Any]:
         # 数据预处理
-        # 同步操作或定时操作控制
+        # 调用 Algorithm.learn
+        # 返回 Algorithm.learn 的返回值
         pass
 
 
@@ -95,24 +96,23 @@ class Trainer:
         # 4. 初始化 Agent
         pass
 
-    def __call__(self) -> Generator:
-        # 1. 初始化初始 obs
-        # 2. 规定训练流程
-        # 3. 返回一个生成器，生成器每步返回一个 log_data 字典
+    def __call__(self) -> Generator[dict[str, Any], None, None]:
+        # 1. 规定训练流程
+        # 2. 返回一个生成器，生成器每步返回一个 log_data 字典
         pass
 
-    def _run_collect(self) -> Dict:
+    def _run_collect(self) -> dict[str, Any]:
         # 1. 采样一步，并加入到 Buffer 中
         # 2. 返回 log_data 字典
         pass
 
-    def _run_train(self) -> Dict:
+    def _run_train(self) -> dict[str, Any]:
         # 1. 从 Buffer 取出一组训练数据
         # 2. 训练单步
         # 3. 返回 log_data 字典
         pass
 
-    def _run_evaluate(self, n_steps: int = 1) -> Dict:
+    def _run_evaluate(self, n_steps: int = 1) -> dict[str, Any]:
         # 1. 评估多步
         # 2. 返回 log_data 字典
         pass
