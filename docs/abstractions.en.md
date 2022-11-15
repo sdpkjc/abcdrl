@@ -63,7 +63,7 @@ class Agent:
     def __init__(self, **kwargs) -> None:
         self.alg = Algorithm(**kwargs)
         # 1. Initialize Algorithm
-        # 2. Initialize 运行步数变量
+        # 2. Initialize run steps variable
         pass
 
     def predict(self, obs: np.ndarray) -> np.ndarray:

@@ -14,7 +14,7 @@
 - 🛤 PEP8(code style) & PEP526(type hint) compliant
 
 !!! note "📐 Minimizing code differences"
-    In order to facilitate the comparison of the differences between different algorithms and to unify the code style, our code will try to minimize the differences between the wired code files as shown in the diagram below.
+    In order to facilitate the comparison of the differences between algorithms and to unify the code style, the code will try to minimize the differences between the wired code files as shown in the diagram below.
     ``` mermaid
     graph LR
     A[dqn.py] -->B[ddpg.py];

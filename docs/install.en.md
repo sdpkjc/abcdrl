@@ -33,7 +33,7 @@
     ```
 
     !!! note
-        There are many ways to install pytorch, see [Mu Li's video tutorials](https://b23.tv/qvAxVzd) for details.
+        There are many ways to install pytorch, refer to [Mu Li's video tutorials](https://b23.tv/qvAxVzd) for details.
 
         Version selection of `cudatoolkit` is related to Nvidia Driver version, refer to [Mu Li's video tutorial](https://b23.tv/qvAxVzd) and [Pytorch installation page](https://pytorch.org/get-started/locally/).
 
