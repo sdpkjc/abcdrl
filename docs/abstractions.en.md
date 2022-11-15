@@ -26,11 +26,11 @@ class Model(nn.Module):
         pass
 
     def value(self, x: torch.Tensor, a: Optional[torch.Tensor] = None) -> Tuple[Any]:
-        # Returns the output value of a single or multiple critics
+        # Returns output value of a single or multiple critics
         pass
 
     def action(self, x: torch.Tensor) -> Tuple[Any]:
-        # Returns the action or action probability distribution
+        # Returns action or action probability distribution
         pass
 
 
@@ -42,7 +42,7 @@ class Algorithm:
         pass
 
     def predict(self, obs: torch.Tensor) -> Tuple[Any]:
-        # Returns an estimated value of an action or an action probability distribution or Q-function
+        # Returns action or action probability distribution or Q-function
         pass
 
     def learn(self, data: BufferSamples) -> dict[str, Any]:

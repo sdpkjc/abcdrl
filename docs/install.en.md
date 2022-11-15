@@ -67,6 +67,6 @@
         Docker Container parameters and the detailed installation process of the NVIDIA Container Toolkit can be found here: [Nvidia Docker](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker)
 
     !!! warning
-        Build image using our provided Dockerfile and train on GPU. Nvidia Driver needs to support CUDA11.7.
+        Build docker image using our provided Dockerfile and train on GPU. Nvidia Driver needs to support CUDA11.7.
 
         Using `nvidia-smi` command, look at the `CUDA Version: xx.x` in the top right corner. It should be 11.7 or greater.
