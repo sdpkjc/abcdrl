@@ -1,4 +1,4 @@
-# abcdRL
+# **abcdRL** (简单四步实现一个强化学习算法)
 
 [English](./README.md) | 简体中文
 

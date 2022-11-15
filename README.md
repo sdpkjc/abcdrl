@@ -1,4 +1,4 @@
-# abcdRL
+# **abcdRL** (Implement a RL algorithm in four simple steps)
 
 English | [简体中文](./README.cn.md)
 
