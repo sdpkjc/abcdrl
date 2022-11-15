@@ -16,6 +16,8 @@ abcdRL 是一个**模块化单文件强化学习代码库🗄**，提供“有�
 
 ***使用文档 ➡️ [docs.abcdrl.xyz](https://docs.abcdrl.xyz)***
 
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/sdpkjc/abcdrl)
+
 ## 🐼 特点
 
 - 👨‍👩‍👧‍👦 统一的代码结构

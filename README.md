@@ -12,9 +12,11 @@ abcdRL is a **Modular single-file RL algorithms library🗄** that provides 🏗
 
 *When 📖reading the code, understand the full implementation details of the algorithm in the 📜single file quickly; When 🖌modifying the algorithm, benefiting from a 🍃lightweight modular design, only need to focus on a small number of modules.*
 
+> abcdRL mainly references the single-file design philosophy of [vwxyzjn/cleanrl](https://github.com/vwxyzjn/cleanrl/) and the module design of [PaddlePaddle/PARL](https://github.com/PaddlePaddle/PARL/).
+
 ***Documentation ➡️ [docs.abcdrl.xyz](https://abcdrl.xyz)***
 
-> abcdRL mainly references the single-file design philosophy of [vwxyzjn/cleanrl](https://github.com/vwxyzjn/cleanrl/) and the module design of [PaddlePaddle/PARL](https://github.com/PaddlePaddle/PARL/).
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/sdpkjc/abcdrl)
 
 ## 🐼 Features
 
