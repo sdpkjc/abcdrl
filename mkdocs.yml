@@ -23,26 +23,26 @@ plugins:
       default_language: en
       languages:
         en: English
-        zh: 中文
+        zh: 简体中文
       nav_translations:
         zh:
-          Overview: 概览
-          Introduction: 简介
-          Feature: 特点
-          Abstractions: 模块设计
-          Getting Started: 快速开始
-          Installation: 安装
-          Reference: 参考
-          Reference Material: 参考资料
+          Overview: 概览 🗺
+          Introduction: 简介 🎟
+          Feature: 特点 🤖
+          Abstractions: 模块设计 🏗
+          Getting Started: 教程 🧭
+          Installation: 安装 🛠
+          Reference: 参考 📎
+          Reference Material: 参考资料 💾
         en:
-          Overview: Overview
-          Introduction: Introduction
-          Feature: Feature
-          Abstractions: Abstractions
-          Getting Started: Getting Started
-          Installation: Installation
-          Reference: Reference
-          Reference material: Reference Material
+          Overview: Overview 🗺
+          Introduction: Introduction 🎟
+          Feature: Feature 🤖
+          Abstractions: Abstractions 🏗
+          Getting Started: Getting Started 🧭
+          Installation: Installation 🛠
+          Reference: Reference 📎
+          Reference material: Reference Material 💾
 
 nav:
   - Overview:

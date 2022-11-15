@@ -1,4 +1,4 @@
-# Abstractions
+# Abstractions 🏗
 
 Each algorithm is mainly composed of four classes: `Model📦`, `Algorithm👣`, `Agent🤖`, `Trainer🔁` with HAS-A relationship.
 

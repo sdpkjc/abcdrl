@@ -8,7 +8,7 @@
 [![Documentation Status](https://img.shields.io/badge/docs-latest-brightgreen.svg?style=flat)](https://docs.abcdrl.xyz)
 [![Documentation Status](https://img.shields.io/badge/中文文档-最新-brightgreen.svg)](https://docs.abcdrl.xyz/zh)
 
-abcdRL 是一个**模块化单文件强化学习代码库🗄**，提供“有但不严格🚥”的模块化设计🧱，和清晰的单文件算法实现📜。
+abcdRL 是一个**模块化单文件强化学习代码库🗄**，提供“有但不严格🚥”的模块化设计🏗，和清晰的单文件算法实现📜。
 
 *📖阅读代码时，在📜单文件代码中，快速了解算法的完整实现细节；🖌改进算法时，得益于🍃轻量的模块化设计，只需专注于少量的模块。*
 
