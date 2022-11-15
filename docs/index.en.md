@@ -9,10 +9,10 @@ abcdRL is a **Modular single-file RL algorithms library🗄** that provides modu
 
 ## 🗽 Design Philosophy
 
-- "Copy📋", not "Inheritance🧬"
-- "Single-file📜", not "Multi-file📚"
-- "Features reuse🛠", not "Algorithms reuse🖨"
-- "Unified logic🤖", not "Unified interface🔌"
+- "Copy📋", ~~not "Inheritance🧬"~~
+- "Single-file📜", ~~not "Multi-file📚"~~
+- "Features reuse🛠", ~~not "Algorithms reuse🖨"~~
+- "Unified logic🤖", ~~not "Unified interface🔌"~~
 
 ## ✅ Implemented Algorithms
 
