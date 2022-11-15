@@ -1,8 +1,12 @@
 # abcdRL
 
+English | [简体中文](./README.cn.md)
+
 [<img src="https://img.shields.io/badge/license-MIT-blue">](https://sdpkjc.coding.net/public/abcdrl/abcdrl/git/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
+[![Documentation Status](https://img.shields.io/badge/docs-latest-brightgreen.svg?style=flat)](https://parl.readthedocs.io/en/latest/index.html)
+[![Documentation Status](https://img.shields.io/badge/中文文档-最新-brightgreen.svg)](https://parl.readthedocs.io/zh_CN/latest/)
 
 abcdRL is a **Modular single-file RL algorithms library🗄** that provides modular design without strict and clean single-file implementation.
 
@@ -10,8 +14,7 @@ abcdRL is a **Modular single-file RL algorithms library🗄** that provides modu
 
 ***Documentation ➡️ [docs.abcdrl.xyz](https://abcdrl.xyz)***
 
-!!! note
-    abcdRL mainly references the single-file design philosophy of [vwxyzjn/cleanrl](https://github.com/vwxyzjn/cleanrl/) and the module design of [PaddlePaddle/PARL](https://github.com/PaddlePaddle/PARL/).
+> abcdRL mainly references the single-file design philosophy of [vwxyzjn/cleanrl](https://github.com/vwxyzjn/cleanrl/) and the module design of [PaddlePaddle/PARL](https://github.com/PaddlePaddle/PARL/).
 
 ## 🐼 Features
 
