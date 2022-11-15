@@ -30,20 +30,29 @@ plugins:
           Introduction: 简介
           Feature: 特点
           Abstractions: 模块设计
-          Getting started: 快速开始
+          Getting Started: 快速开始
           Installation: 安装
           Reference: 参考
-          Reference material: 参考资料
+          Reference Material: 参考资料
+        en:
+          Overview: Overview
+          Introduction: Introduction
+          Feature: Feature
+          Abstractions: Abstractions
+          Getting Started: Getting Started
+          Installation: Installation
+          Reference: Reference
+          Reference material: Reference Material
 
 nav:
   - Overview:
     - Introduction: index.md
     - Feature: features.md
     - Abstractions: abstractions.md
-  - Getting started:
+  - Getting Started:
     - Installation: install.md
   - Reference:
-    - Reference material: ref.md
+    - Reference Material: ref.md
 
 
 markdown_extensions:
