@@ -9,7 +9,7 @@ Each algorithm is mainly composed of four classes: `Model📦`, `Algorithm👣`,
 
 The `Trainer.__call__` function returns a generator that holds the training control-flow and all related data. The generator returns a `log_data` training log at each step. Keep calling the generator to complete the training and get all the `log_data`.
 
-The `logger📊` section uses [Tensorboard](https://www.tensorflow.org/tensorboard) and [Weights & Biases](https://wandb.ai/) to record training logs and decorates the `Trainer.__call__` function, see the core code for the specific implementation.
+The `logger📊` part uses [Tensorboard](https://www.tensorflow.org/tensorboard) and [Weights & Biases](https://wandb.ai/) to record training logs and decorates the `Trainer.__call__` function, see the core code for the specific implementation.
 
 ---
 
