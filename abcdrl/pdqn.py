@@ -126,11 +126,11 @@ class PrioritizedReplayBuffer:
         infos: dict,
     ) -> None:
         for obs_i, next_obs_i, act_i, rew_i, done_i in zip(obs, next_obs, act, rew, done):
-            self.obs_buf[self.ptr] = obs_i
-            self.next_obs_buf[self.ptr] = next_obs_i
-            self.acts_buf[self.ptr] = act_i
-            self.rews_buf[self.ptr] = rew_i
-            self.dones_buf[self.ptr] = done_i
+            self.obs_buf[self.ptr] = np.array(obs_i).copy()
+            self.next_obs_buf[self.ptr] = np.array(next_obs_i).copy()
+            self.acts_buf[self.ptr] = np.array(act_i).copy()
+            self.rews_buf[self.ptr] = np.array(rew_i).copy()
+            self.dones_buf[self.ptr] = np.array(done_i).copy()
             self.ptr = (self.ptr + 1) % self.buffer_size
             self.size = min(self.size + 1, self.buffer_size)
 
@@ -290,7 +290,7 @@ class Agent:
         # 数据预处理 & 目标网络同步
         data = data._replace(
             **{
-                item[0]: torch.tensor(item[1]).to(self.kwargs["device"])
+                item[0]: torch.as_tensor(item[1], device=self.kwargs["device"])
                 for item in data._asdict().items()
                 if isinstance(item[1], np.ndarray)
             }
