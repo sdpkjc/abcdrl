@@ -28,4 +28,4 @@ repos:
   hooks:
     - id: flake8
       args:
-        - --ignore=E501 W503 E128 E203
+        - --ignore=E501 W503 E128 E203 F401 F403
