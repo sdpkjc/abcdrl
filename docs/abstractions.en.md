@@ -4,10 +4,10 @@ Each algorithm is mainly composed of four classes: `Model📦`, `Algorithm👣`,
 
 - `Model📦`: Define single or multiple forward networks. The input is the observations and the output is the original output of networks.
 - `Algorithm👣`: Define the mechanism to update parameters in the `Model📦` and the post-processing of the output of `Model📦` (`argmax`, ...).
-- `Agent🤖`: A data bridge between the `Environment🗺` and the `Algorithm👣`.
+- `Agent🤖`: A data bridge between `Environment🗺` and `Algorithm👣`.
 - `Trainer🔁`: Define the overall training process of `Agent🤖` and the tools to assist the training (`Buffer`,...).
 
-The `Trainer.__call__` function returns a generator that holds the training control-flow and all related data. The generator returns a `log_data` training log at each step. Keep calling the generator to complete the training and get all the `log_data`.
+The `Trainer.__call__` function returns a generator that holds the training control-flow and all related data. The generator returns a `log_data` training log at each step, and the generator is called iteratively to complete the training and get all `log_data`.
 
 The `logger📊` part uses [Tensorboard](https://www.tensorflow.org/tensorboard) and [Weights & Biases](https://wandb.ai/) to record training logs and decorates the `Trainer.__call__` function, see the core code for the specific implementation.
 
