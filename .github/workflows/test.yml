@@ -1,4 +1,4 @@
-name: Python package
+name: pytests
 on:
   push:
     paths-ignore:
