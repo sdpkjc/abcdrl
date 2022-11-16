@@ -25,11 +25,11 @@ class Model(nn.Module):
     def __init__(self, **kwargs) -> None:
         pass
 
-    def value(self, x: torch.Tensor, a: Optional[torch.Tensor] = None) -> Tuple[Any]:
+    def value(self, x: torch.Tensor, a: Optional[torch.Tensor] = None) -> tuple[Any]:
         # Returns output value of a single or multiple critics
         pass
 
-    def action(self, x: torch.Tensor) -> Tuple[Any]:
+    def action(self, x: torch.Tensor) -> tuple[Any]:
         # Returns action or action probability distribution
         pass
 
@@ -41,7 +41,7 @@ class Algorithm:
         # 2. Initialize optimizer
         pass
 
-    def predict(self, obs: torch.Tensor) -> Tuple[Any]:
+    def predict(self, obs: torch.Tensor) -> tuple[Any]:
         # Returns action or action probability distribution or Q-function
         pass
 

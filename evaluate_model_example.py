@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import random
 import time
-from typing import Callable, Generator
+from typing import Any, Callable, Generator
 
 import dill
 import fire
@@ -32,7 +32,7 @@ class Evaluater:
         with open(self.kwargs["model_path"], "rb") as file:
             self.agent = dill.load(file)
 
-    def __call__(self) -> Generator[dict, None, None]:
+    def __call__(self) -> Generator[dict[str, Any], None, None]:
         for evaluate_step in range(self.kwargs["total_timesteps"]):
             act = self.agent.predict(self.eval_obs)
             self.eval_obs, _, _, _, infos = self.eval_env.step(act)
