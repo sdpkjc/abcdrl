@@ -336,7 +336,9 @@ class Trainer:
         return thunk
 
 
-def logger(wrapped) -> Callable[..., Generator[dict[str, Any], None, None]]:
+def logger(
+    wrapped: Callable[..., Generator[dict[str, Any], None, None]]
+) -> Callable[..., Generator[dict[str, Any], None, None]]:
     def _wrapper(
         *args,
         track: bool = False,
@@ -372,7 +374,9 @@ def logger(wrapped) -> Callable[..., Generator[dict[str, Any], None, None]]:
     return _wrapper
 
 
-def saver(wrapped) -> Callable[..., Generator[dict[str, Any], None, None]]:
+def saver(
+    wrapped: Callable[..., Generator[dict[str, Any], None, None]]
+) -> Callable[..., Generator[dict[str, Any], None, None]]:
     def _wrapper(*args, save_frequency: int = 1_000_0, **kwargs) -> Generator[dict[str, Any], None, None]:
         save_frequency = max(save_frequency // args[0].kwargs["num_envs"] * args[0].kwargs["num_envs"], 1)
 
@@ -388,7 +392,9 @@ def saver(wrapped) -> Callable[..., Generator[dict[str, Any], None, None]]:
     return _wrapper
 
 
-def filter(wrapped) -> Callable[..., Generator[dict[str, Any], None, None]]:
+def filter(
+    wrapped: Callable[..., Generator[dict[str, Any], None, None]]
+) -> Callable[..., Generator[dict[str, Any], None, None]]:
     def _wrapper(*args, **kwargs) -> Generator[dict[str, Any], None, None]:
         gen = wrapped(*args, **kwargs)
         for log_data in gen:
