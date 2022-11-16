@@ -1,5 +1,5 @@
 name: pre-commit
-on: [push, submitted]
+on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
