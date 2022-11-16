@@ -222,7 +222,7 @@ class Algorithm:
         val = self.model.value(obs)
         return act, log_prob, val
 
-    def learn(self, data_generator: Generator[RolloutBuffer.Samples, None, None]) -> dict:
+    def learn(self, data_generator: Generator[RolloutBuffer.Samples, None, None]) -> dict[str, Any]:
         clipfracs = []
         for data in data_generator:
             _, entropy, newlogprob = self.model.action(data.observations, data.actions)
@@ -316,7 +316,7 @@ class Agent:
         self.sample_step += self.kwargs["num_envs"]
         return act, log_prob, val
 
-    def learn(self, data_generator_list: list[Generator[RolloutBuffer.Samples, None, None]]) -> dict:
+    def learn(self, data_generator_list: list[Generator[RolloutBuffer.Samples, None, None]]) -> dict[str, Any]:
         # 数据预处理
         self._update_lr()
         log_data_list = []
@@ -419,7 +419,7 @@ class Trainer:
                     yield self._run_evaluate(n_steps=self.kwargs["num_steps_eval"])
             yield self._run_train()
 
-    def _run_collect(self) -> dict:
+    def _run_collect(self) -> dict[str, Any]:
         act, log_prob, val = self.agent.sample(self.obs)
         next_obs, reward, terminated, truncated, infos = self.envs.step(act)
         done = terminated | truncated
@@ -444,7 +444,7 @@ class Trainer:
             }
         return {"log_type": "collect", "sample_step": self.agent.sample_step}
 
-    def _run_train(self) -> dict:
+    def _run_train(self) -> dict[str, Any]:
         act, _, next_val = self.agent.sample(self.real_next_obs)
         self.agent.sample_step -= self.kwargs["num_envs"]
         _, _, next_terminated, next_truncated, _ = self.envs.step(act)
@@ -459,7 +459,7 @@ class Trainer:
 
         return {"log_type": "train", "sample_step": self.agent.sample_step, "logs": log_data}
 
-    def _run_evaluate(self, n_steps: int = 1) -> dict:
+    def _run_evaluate(self, n_steps: int = 1) -> dict[str, Any]:
         el_list, er_list = [], []
         for _ in range(n_steps):
             act = self.agent.predict(self.eval_obs)
@@ -501,7 +501,7 @@ class Trainer:
         return thunk
 
 
-def logger(wrapped) -> Callable[..., Generator[dict, None, None]]:
+def logger(wrapped) -> Callable[..., Generator[dict[str, Any], None, None]]:
     def _wrapper(
         *args,
         track: bool = False,
@@ -509,7 +509,7 @@ def logger(wrapped) -> Callable[..., Generator[dict, None, None]]:
         wandb_tags: list = [],
         wandb_entity: Optional[str] = None,
         **kwargs,
-    ) -> Generator[dict, None, None]:
+    ) -> Generator[dict[str, Any], None, None]:
         if track:
             wandb.init(
                 project=wandb_project_name,
@@ -537,8 +537,8 @@ def logger(wrapped) -> Callable[..., Generator[dict, None, None]]:
     return _wrapper
 
 
-def saver(wrapped) -> Callable[..., Generator[dict, None, None]]:
-    def _wrapper(*args, save_frequency: int = 1_000_0, **kwargs) -> Generator[dict, None, None]:
+def saver(wrapped) -> Callable[..., Generator[dict[str, Any], None, None]]:
+    def _wrapper(*args, save_frequency: int = 1_000_0, **kwargs) -> Generator[dict[str, Any], None, None]:
         save_frequency = max(save_frequency // args[0].kwargs["num_envs"] * args[0].kwargs["num_envs"], 1)
 
         gen = wrapped(*args, **kwargs)
@@ -553,8 +553,8 @@ def saver(wrapped) -> Callable[..., Generator[dict, None, None]]:
     return _wrapper
 
 
-def filter(wrapped) -> Callable[..., Generator[dict, None, None]]:
-    def _wrapper(*args, **kwargs) -> Generator[dict, None, None]:
+def filter(wrapped) -> Callable[..., Generator[dict[str, Any], None, None]]:
+    def _wrapper(*args, **kwargs) -> Generator[dict[str, Any], None, None]:
         gen = wrapped(*args, **kwargs)
         for log_data in gen:
             if "logs" in log_data and log_data["log_type"] != "train":
