@@ -290,7 +290,7 @@ class Agent:
         # 数据预处理 & 目标网络同步
         data = data._replace(
             **{
-                item[0]: torch.tensor(item[1]).to(self.kwargs["device"])
+                item[0]: torch.as_tensor(item[1], device=self.kwargs["device"])
                 for item in data._asdict().items()
                 if isinstance(item[1], np.ndarray)
             }
