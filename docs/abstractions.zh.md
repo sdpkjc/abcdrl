@@ -25,11 +25,11 @@ class Model(nn.Module):
     def __init__(self, **kwargs) -> None:
         pass
 
-    def value(self, x: torch.Tensor, a: Optional[torch.Tensor] = None) -> Tuple[Any]:
+    def value(self, x: torch.Tensor, a: Optional[torch.Tensor] = None) -> tuple[Any]:
         # 返回 单个 或 多个 critic 的输出值
         pass
 
-    def action(self, x: torch.Tensor) -> Tuple[Any]:
+    def action(self, x: torch.Tensor) -> tuple[Any]:
         # 返回 动作 | 动作概率分布
         pass
 
@@ -41,7 +41,7 @@ class Algorithm:
         # 2. 初始化 optimizer
         pass
 
-    def predict(self, obs: torch.Tensor) -> Tuple[Any]:
+    def predict(self, obs: torch.Tensor) -> tuple[Any]:
         # 返回 动作 | 动作概率分布 | Q函数的预估值
         pass
 
