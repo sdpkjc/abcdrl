@@ -2,10 +2,10 @@
 
 Each algorithm is mainly composed of four classes: `Model📦`, `Algorithm👣`, `Agent🤖`, `Trainer🔁` with HAS-A relationship.
 
-- `Model📦`: Define a single or multiple forward networks. The input is the observations and the output is the original output of networks.
+- `Model📦`: Define single or multiple forward networks. The input is the observations and the output is the original output of networks.
 - `Algorithm👣`: Define the mechanism to update parameters in the `Model📦` and the post-processing of the output of `Model📦` (`argmax`, ...).
 - `Agent🤖`: A data bridge between the `Environment🗺` and the `Algorithm👣`.
-- `Trainer🔁`: Define the overall training process of `Agent🤖` and the tools to assist the training (`Buffe`,...).
+- `Trainer🔁`: Define the overall training process of `Agent🤖` and the tools to assist the training (`Buffer`,...).
 
 The `Trainer.__call__` function returns a generator that holds the training control-flow and all related data. The generator returns a `log_data` training log at each step. Keep calling the generator to complete the training and get all the `log_data`.
 
