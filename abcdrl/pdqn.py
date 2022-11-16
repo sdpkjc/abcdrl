@@ -5,7 +5,7 @@ import operator
 import os
 import random
 import time
-from typing import Callable, Generator, NamedTuple, Optional, Union
+from typing import Any, Callable, Generator, NamedTuple, Optional, Union
 
 import dill
 import fire
@@ -19,7 +19,7 @@ import wandb
 from torch.utils.tensorboard import SummaryWriter
 
 
-def get_space_shape(env_space: gym.Space) -> tuple:
+def get_space_shape(env_space: gym.Space) -> tuple[Any]:
     if isinstance(env_space, gym.spaces.Box):
         return env_space.shape
     elif isinstance(env_space, gym.spaces.Discrete):
