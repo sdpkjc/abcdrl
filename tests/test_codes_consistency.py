@@ -46,13 +46,6 @@ def test_codes_trainer() -> None:
     assert inspect.getsource(abcdrl.dqn.Trainer._run_train) == inspect.getsource(abcdrl.td3.Trainer._run_train)
     assert inspect.getsource(abcdrl.dqn.Trainer._run_train) == inspect.getsource(abcdrl.sac.Trainer._run_train)
 
-    assert inspect.getsource(abcdrl.dqn.Trainer._run_evaluate) == inspect.getsource(abcdrl.ddqn.Trainer._run_evaluate)
-    assert inspect.getsource(abcdrl.dqn.Trainer._run_evaluate) == inspect.getsource(abcdrl.pdqn.Trainer._run_evaluate)
-    assert inspect.getsource(abcdrl.dqn.Trainer._run_evaluate) == inspect.getsource(abcdrl.ddpg.Trainer._run_evaluate)
-    assert inspect.getsource(abcdrl.dqn.Trainer._run_evaluate) == inspect.getsource(abcdrl.td3.Trainer._run_evaluate)
-    assert inspect.getsource(abcdrl.dqn.Trainer._run_evaluate) == inspect.getsource(abcdrl.sac.Trainer._run_evaluate)
-    assert inspect.getsource(abcdrl.dqn.Trainer._run_evaluate) == inspect.getsource(abcdrl.ppo.Trainer._run_evaluate)
-
     assert inspect.getsource(abcdrl.dqn.Trainer._make_env) == inspect.getsource(abcdrl.ddqn.Trainer._make_env)
     assert inspect.getsource(abcdrl.dqn.Trainer._make_env) == inspect.getsource(abcdrl.pdqn.Trainer._make_env)
     assert inspect.getsource(abcdrl.ddpg.Trainer._make_env) == inspect.getsource(abcdrl.td3.Trainer._make_env)
@@ -85,6 +78,14 @@ def test_codes_wrapper() -> None:
     assert inspect.getsource(abcdrl.dqn.filter) == inspect.getsource(abcdrl.td3.filter)
     assert inspect.getsource(abcdrl.dqn.filter) == inspect.getsource(abcdrl.sac.filter)
     assert inspect.getsource(abcdrl.dqn.filter) == inspect.getsource(abcdrl.ppo.filter)
+
+    # eval_step_wrapper
+    assert inspect.getsource(abcdrl.dqn.eval_step_wrapper) == inspect.getsource(abcdrl.ddqn.eval_step_wrapper)
+    assert inspect.getsource(abcdrl.dqn.eval_step_wrapper) == inspect.getsource(abcdrl.pdqn.eval_step_wrapper)
+    assert inspect.getsource(abcdrl.dqn.eval_step_wrapper) == inspect.getsource(abcdrl.ddpg.eval_step_wrapper)
+    assert inspect.getsource(abcdrl.dqn.eval_step_wrapper) == inspect.getsource(abcdrl.td3.eval_step_wrapper)
+    assert inspect.getsource(abcdrl.dqn.eval_step_wrapper) == inspect.getsource(abcdrl.sac.eval_step_wrapper)
+    assert inspect.getsource(abcdrl.dqn.eval_step_wrapper) == inspect.getsource(abcdrl.ppo.eval_step_wrapper)
 
 
 def test_codes_other() -> None:
