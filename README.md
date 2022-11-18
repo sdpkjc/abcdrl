@@ -10,7 +10,7 @@ English | [简体中文](./README.cn.md)
 
 abcdRL is a **Modular Single-file RL Algorithms Library🗄** that provides modular🏗 design without strict🚥 and clean single-file📜 implementation.
 
-![Adam](docs/imgs/adam.svg | width=200)
+<img src="docs/imgs/adam.svg" width="300"/>
 
 *When reading📖 the code, understand the full implementation details of the algorithm in the single file📜 quickly; When modifying🖌 the algorithm, benefiting from a lightweight🍃 modular design, only need to focus on a small number of modules.*
 
