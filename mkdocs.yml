@@ -19,6 +19,10 @@ theme:
       adam: adam
 repo_name: sdpkjc/abcdrl
 repo_url: https://github.com/sdpkjc/abcdrl
+copyright: Copyright &copy; 2022 - 2022 abcdRL
+analytics:
+  provider: google
+  property: G-7R09D17C3W
 plugins:
   - search:
       lang:
