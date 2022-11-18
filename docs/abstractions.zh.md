@@ -13,13 +13,14 @@
 
 ---
 
-!!! note
-    🧵 实线表示函数调用关系；虚线表示数据流向。
-
 <figure markdown>
   ![Adam](imgs/adam.svg){ width="500" }
   <figcaption>Adam</figcaption>
 </figure>
+
+!!! note
+    🧵 实线表示函数调用关系；虚线表示数据流向。
+
 <figure markdown>
   ![abstractions_img](/imgs/abstractions.png)
   <figcaption>模型结构图</figcaption>
