@@ -392,7 +392,7 @@ def eval_step_wrapper(
     return _wrapper
 
 
-def logger(
+def logger_wrapper(
     wrapped: Callable[..., Generator[dict[str, Any], None, None]]
 ) -> Callable[..., Generator[dict[str, Any], None, None]]:
     def _wrapper(
@@ -430,7 +430,7 @@ def logger(
     return _wrapper
 
 
-def saver(
+def save_model_wrapper(
     wrapped: Callable[..., Generator[dict[str, Any], None, None]]
 ) -> Callable[..., Generator[dict[str, Any], None, None]]:
     def _wrapper(*args, save_frequency: int = 1_000_0, **kwargs) -> Generator[dict[str, Any], None, None]:
@@ -448,7 +448,7 @@ def saver(
     return _wrapper
 
 
-def filter(
+def filter_wrapper(
     wrapped: Callable[..., Generator[dict[str, Any], None, None]]
 ) -> Callable[..., Generator[dict[str, Any], None, None]]:
     def _wrapper(*args, **kwargs) -> Generator[dict[str, Any], None, None]:
@@ -469,5 +469,8 @@ if __name__ == "__main__":
     torch.backends.cudnn.deterministic = True
     torch.cuda.manual_seed_all(1234)
 
-    Trainer.__call__ = filter(saver(logger(eval_step_wrapper(Trainer.__call__))))
+    Trainer.__call__ = eval_step_wrapper(Trainer.__call__)
+    Trainer.__call__ = logger_wrapper(Trainer.__call__)
+    Trainer.__call__ = save_model_wrapper(Trainer.__call__)
+    Trainer.__call__ = filter_wrapper(Trainer.__call__)
     fire.Fire(Trainer)
