@@ -16,7 +16,7 @@
 !!! note
     🧵 实线表示函数调用关系；虚线表示数据流向。
 
-![abstractions_img](/imgs/abstractions.jpg)
+![abstractions_img](/imgs/abstractions.png)
 
 ---
 
@@ -110,11 +110,6 @@ class Trainer:
         # 1. 从 Buffer 取出一组训练数据
         # 2. 训练单步
         # 3. 返回 log_data 字典
-        pass
-
-    def _run_evaluate(self, n_steps: int = 1) -> dict[str, Any]:
-        # 1. 评估多步
-        # 2. 返回 log_data 字典
         pass
 
 

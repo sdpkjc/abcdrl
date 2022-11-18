@@ -16,7 +16,7 @@ The `logger📊` part uses [Tensorboard](https://www.tensorflow.org/tensorboard)
 !!! note
     🧵 The solid line indicates the control-flow; The dotted line indicates the data-flow.
 
-![abstractions_img](/imgs/abstractions.jpg)
+![abstractions_img](/imgs/abstractions.png)
 
 ---
 
@@ -110,11 +110,6 @@ class Trainer:
         # 1. Samples data from the Buffer
         # 2. Training single step
         # 3. Returns log_data
-        pass
-
-    def _run_evaluate(self, n_steps: int = 1) -> dict[str, Any]:
-        # 1. Evaluating multiple steps
-        # 2. Returns log_data
         pass
 
 
