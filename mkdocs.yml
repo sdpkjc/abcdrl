@@ -51,6 +51,7 @@ plugins:
           Installation: Installation 🛠
           Reference: Reference 📎
           Reference Material: Reference Material 💾
+  - glightbox
 
 nav:
   - Overview:
