@@ -3,7 +3,7 @@ theme:
   name: material
   palette:
     scheme: default
-    primary: blue
+    primary: white
     accent: red
   language: en
   features:
@@ -11,8 +11,12 @@ theme:
     # - navigation.sections
     - content.code.annotate
     - navigation.expand
+  custom_dir: docs/overrides
+  favicon: imgs/logo.svg
   icon:
       repo: fontawesome/brands/github
+      logo: logo
+      adam: adam
 repo_name: sdpkjc/abcdrl
 repo_url: https://github.com/sdpkjc/abcdrl
 plugins:
@@ -75,3 +79,9 @@ markdown_extensions:
   - pymdownx.keys
   - pymdownx.mark
   - pymdownx.tilde
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+      options:
+        custom_icons:
+          - docs/overrides/.icons

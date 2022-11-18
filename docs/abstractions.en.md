@@ -16,7 +16,14 @@ The `logger📊` part uses [Tensorboard](https://www.tensorflow.org/tensorboard)
 !!! note
     🧵 The solid line indicates the control-flow; The dotted line indicates the data-flow.
 
-![abstractions_img](/imgs/abstractions.png)
+<figure markdown>
+  ![Adam](imgs/adam.svg){ width="500" }
+  <figcaption>Adam</figcaption>
+</figure>
+<figure markdown>
+  ![abstractions_img](/imgs/abstractions.png)
+  <figcaption>Model Structure Diagram</figcaption>
+</figure>
 
 ---
 
