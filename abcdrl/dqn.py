@@ -208,8 +208,6 @@ class Trainer:
         capture_video: bool = False,
         env_id: str = "CartPole-v1",
         num_envs: int = 1,
-        eval_frequency: int = 1_000,
-        num_steps_eval: int = 100,
         total_timesteps: int = 5_000_00,
         gamma: float = 0.99,
         # Collect
@@ -233,9 +231,6 @@ class Trainer:
                 f"{self.kwargs['env_id']}__{os.path.basename(__file__).rstrip('.py')}__"
                 + f"{self.kwargs['seed']}__{int(time.time())}"
             )
-        self.kwargs["eval_frequency"] = max(
-            self.kwargs["eval_frequency"] // self.kwargs["num_envs"] * self.kwargs["num_envs"], 1
-        )
         self.kwargs["target_network_frequency"] = max(
             self.kwargs["target_network_frequency"] // self.kwargs["num_envs"] * self.kwargs["num_envs"], 1
         )
@@ -310,21 +305,23 @@ class Trainer:
         return thunk
 
 
-def evaler_step(
+def eval_step_wrapper(
     wrapped: Callable[..., Generator[dict[str, Any], None, None]]
 ) -> Callable[..., Generator[dict[str, Any], None, None]]:
     def _wrapper(
         *args,
-        eval_frequency: int = 1_000,
-        num_steps_eval: int = 100,
+        eval_frequency: int = 5_000,
+        num_steps_eval: int = 500,
         eval_env_seed: int = 1,
         **kwargs,
     ) -> Generator[dict[str, Any], None, None]:
+        eval_frequency = max(eval_frequency // args[0].kwargs["num_envs"] * args[0].kwargs["num_envs"], 1)
         eval_env = gym.vector.SyncVectorEnv([args[0]._make_env(eval_env_seed)])
         eval_obs, _ = eval_env.reset(seed=1)
+
         gen = wrapped(*args, **kwargs)
         for log_data in gen:
-            if not log_data["sample_step"] % eval_frequency:
+            if not log_data["sample_step"] % eval_frequency and log_data["log_type"] == "collect":
                 el_list, er_list = [], []
                 for _ in range(num_steps_eval):
                     act = args[0].agent.predict(eval_obs)
@@ -333,17 +330,13 @@ def evaler_step(
                         final_info = next(item for item in infos["final_info"] if item is not None)
                         el_list.append(final_info["episode"]["l"][0])
                         er_list.append(final_info["episode"]["r"][0])
-                if el_list:
-                    yield {
-                        "log_type": "evaluate",
-                        "sample_step": args[0].agent.sample_step,
-                        "logs": {
-                            "mean_episodic_length": sum(el_list) / len(el_list),
-                            "mean_episodic_return": sum(er_list) / len(er_list),
-                        },
+                eval_log_data = {"log_type": "evaluate", "sample_step": log_data["sample_step"]}
+                if el_list and er_list:
+                    eval_log_data["logs"] = {
+                        "mean_episodic_length": sum(el_list) / len(el_list),
+                        "mean_episodic_return": sum(er_list) / len(er_list),
                     }
-                else:
-                    yield {"log_type": "evaluate", "sample_step": args[0].agent.sample_step}
+                yield eval_log_data
             yield log_data
 
     return _wrapper
@@ -426,5 +419,5 @@ if __name__ == "__main__":
     torch.backends.cudnn.deterministic = True
     torch.cuda.manual_seed_all(1234)
 
-    Trainer.__call__ = filter(saver(logger(evaler_step(Trainer.__call__))))
+    Trainer.__call__ = filter(saver(logger(eval_step_wrapper(Trainer.__call__))))
     fire.Fire(Trainer)
