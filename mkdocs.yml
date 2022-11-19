@@ -1,5 +1,6 @@
 site_name: abcdRL
 theme:
+  font: false
   name: material
   palette:
     scheme: default
@@ -17,12 +18,12 @@ theme:
       repo: fontawesome/brands/github
       logo: logo
       adam: adam
+  analytics:
+    provider: google
+    property: G-7R09D17C3W
 repo_name: sdpkjc/abcdrl
 repo_url: https://github.com/sdpkjc/abcdrl
 copyright: Copyright &copy; 2022 - 2022 abcdRL
-analytics:
-  provider: google
-  property: G-7R09D17C3W
 plugins:
   - search:
       lang:
