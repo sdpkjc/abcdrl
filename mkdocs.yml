@@ -3,7 +3,7 @@ theme:
   name: material
   palette:
     scheme: default
-    primary: blue
+    primary: white
     accent: red
   language: en
   features:
@@ -11,10 +11,28 @@ theme:
     # - navigation.sections
     - content.code.annotate
     - navigation.expand
+  custom_dir: docs/overrides
+  favicon: imgs/logo.svg
   icon:
       repo: fontawesome/brands/github
+      logo: logo
+      adam: adam
+
+extra:
+  analytics:
+    provider: google
+    property: !ENV GOOGLE_ANALYTICS_KEY
+  social:
+    - icon: fontawesome/solid/envelope
+      link: mailto:pazyx728@gmail.com
+    - icon: fontawesome/brands/github
+      link: https://github.com/sdpkjc
+    - icon: fontawesome/brands/docker
+      link: https://hub.docker.com/r/sdpkjc/abcdrl
+
 repo_name: sdpkjc/abcdrl
 repo_url: https://github.com/sdpkjc/abcdrl
+copyright: Copyright &copy; 2022 abcdRL
 plugins:
   - search:
       lang:
@@ -43,6 +61,7 @@ plugins:
           Installation: Installation 🛠
           Reference: Reference 📎
           Reference Material: Reference Material 💾
+  - glightbox
 
 nav:
   - Overview:
@@ -75,3 +94,9 @@ markdown_extensions:
   - pymdownx.keys
   - pymdownx.mark
   - pymdownx.tilde
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+      options:
+        custom_icons:
+          - docs/overrides/.icons

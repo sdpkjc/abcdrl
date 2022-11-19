@@ -1,6 +1,11 @@
-# **abcdRL** (Implement a RL algorithm in four simple steps)
+# **abcdRL:adam:** (Implement a RL algorithm in four simple steps)
 
 abcdRL is a **Modular Single-file RL Algorithms Library🗄** that provides modular🏗 design without strict🚥 and clean single-file📜 implementation.
+
+<figure markdown>
+  ![Adam](imgs/adam.svg){ width="300" }
+  <figcaption>Adam</figcaption>
+</figure>
 
 *When reading📖 the code, understand the full implementation details of the algorithm in the single file📜 quickly; When modifying🖌 the algorithm, benefiting from a lightweight🍃 modular design, only need to focus on a small number of modules.*
 
