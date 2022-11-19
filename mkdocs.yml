@@ -23,6 +23,8 @@ extra:
     provider: google
     property: !ENV GOOGLE_ANALYTICS_KEY
   social:
+    - icon: fontawesome/solid/envelope
+      link: mailto:pazyx728@gmail.com
     - icon: fontawesome/brands/github
       link: https://github.com/sdpkjc
     - icon: fontawesome/brands/docker
@@ -30,7 +32,7 @@ extra:
 
 repo_name: sdpkjc/abcdrl
 repo_url: https://github.com/sdpkjc/abcdrl
-copyright: Copyright &copy; 2022 - 2022 abcdRL
+copyright: Copyright &copy; 2022 abcdRL
 plugins:
   - search:
       lang:
