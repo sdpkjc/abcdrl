@@ -399,7 +399,7 @@ def logger_wrapper(
         *args,
         track: bool = False,
         wandb_project_name: str = "abcdrl",
-        wandb_tags: list = [],
+        wandb_tags: list[str] = [],
         wandb_entity: Optional[str] = None,
         **kwargs,
     ) -> Generator[dict[str, Any], None, None]:
