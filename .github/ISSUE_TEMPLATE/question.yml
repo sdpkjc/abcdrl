@@ -1,0 +1,21 @@
+name: "❓ Question"
+description: How to ask a question regarding abcdRL
+title: "[Question] question title"
+labels: ["question"]
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: Description
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Checklist
+      options:
+        - label: I have checked that there is no similar [issue](https://github.com/sdpkjc/abcdrl/issues) in the repo
+          required: true
+        - label: I have read the [documentation](https://docs.abcdrl.xyz)
+          required: true
