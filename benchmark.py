@@ -1,44 +1,62 @@
 from __future__ import annotations
 
-import copy
+import itertools
 import subprocess
-import threading
-from typing import Any, Optional
+from concurrent.futures import ThreadPoolExecutor
+from typing import Any, Optional, Union
 
 import fire
 import tomli
 
 
-def train_process(cmd: str, kwargs: dict[str, Any]) -> None:
+def train_process(alg: str, env_id: str, kwargs: dict[str, Any]) -> None:
+    with open("benchmark.toml", "rb") as file:
+        cmd = tomli.load(file)[alg][env_id]
     for param in kwargs.items():
-        cmd += f" --{param[0].replace('_','-')} {param[1]}"
+        if isinstance(param[1], list):
+            cmd += f' --{param[0]} "{param[1]}"'
+        else:
+            cmd += f" --{param[0]} {param[1]}"
     subprocess.run(cmd, shell=True, check=True)
 
 
 def main(
-    alg: str = "dqn",
-    env_id: str = "CartPole-v1",
+    algs: Union[str, list[str]] = ["dqn"],
+    env_ids: Union[str, list[str]] = ["CartPole-v1"],
+    seeds: Union[str, list[int]] = [1],
     device: str = "auto",
+    workers: int = 3,
     track: bool = False,
     wandb_project_name: str = "abcdrl",
     wandb_entity: Optional[str] = None,
-    wandb_tags: list[str] = [],
-    capture_video: bool = True,
-    seeds: list[int] = [1],
+    wandb_tags: Union[str, list[str]] = [],
+    capture_video: bool = False,
 ):
-    kwargs = locals()
-    with open("benchmark.toml", "rb") as file:
-        cmd = tomli.load(file)[kwargs["alg"]][kwargs["env_id"]]
+    if not isinstance(algs, list):
+        algs = [algs]
+    if not isinstance(env_ids, list):
+        env_ids = [env_ids]
+    if not isinstance(seeds, list):
+        seeds = [seeds]
+    if not isinstance(wandb_tags, list):
+        wandb_tags = [wandb_tags]
 
-    kwargs.pop("alg")
-    kwargs.pop("env_id")
-    seeds = kwargs.pop("seeds")
+    git_commit_sha = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode("ascii").strip()
+    wandb_tags.append(git_commit_sha)
 
-    for seed in seeds:
-        kwargs_tmp = copy.deepcopy(kwargs)
-        kwargs_tmp["seed"] = seed
-        thread = threading.Thread(target=train_process, args=(cmd, kwargs_tmp))
-        thread.start()
+    with ThreadPoolExecutor(max_workers=workers) as executor:
+        for element in itertools.product(algs, env_ids, seeds):
+            alg, env_id, seed = element
+            kwargs = {
+                "device": device,
+                "track": track,
+                "wandb-project-name": wandb_project_name,
+                "wandb-entity": wandb_entity,
+                "wandb-tags": wandb_tags,
+                "capture-video": capture_video,
+                "seed": seed,
+            }
+            executor.submit(train_process, alg, env_id, kwargs)
 
 
 if __name__ == "__main__":
