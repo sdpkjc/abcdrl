@@ -1,0 +1,69 @@
+name: "🐞 Bug Report"
+description: Submit a bug report to help us improve abcdRL
+title: "[Bug]: bug title"
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Thanks :heart: for taking the time to fill out this bug report!**
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear and concise description of what the bug is.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: To Reproduce
+      description: |
+        Steps to reproduce the behavior. Please try to provide a minimal example to reproduce the bug. Error messages and stack traces are also helpful.
+        Please use the [markdown code blocks](https://help.github.com/en/articles/creating-and-highlighting-code-blocks) for both code and stack traces.
+      value: |
+        ```python
+
+        ```
+
+  - type: textarea
+    id: traceback
+    attributes:
+      label: Relevant log output / Error message
+      description: Please copy and paste any relevant log output / error message. This will be automatically formatted into code, so no need for backticks.
+      placeholder: "Traceback (most recent call last): File ..."
+      render: shell
+
+  - type: textarea
+    id: system-info
+    attributes:
+      label: System Info
+      description: |
+        Describe the characteristic of your environment:
+         * Describe how installed the dependencies (`pip`, `docker`)
+         * Python version
+         * PyTorch version
+         * Versions of any other relevant libraries
+         * Information on any relevant hardware
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Checklist
+      options:
+        - label: I have checked that there is no similar [issue](https://github.com/sdpkjc/abcdrl/issues) in the repo
+          required: true
+        - label: I have read the [documentation](https://docs.abcdrl.xyz)
+          required: true
+        - label: I have provided a minimal working example to reproduce the bug
+          required: true
+        - label: I've used the [markdown code blocks](https://help.github.com/en/articles/creating-and-highlighting-code-blocks) for both code and stack traces.
+          required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Add any other context about the bug here.
