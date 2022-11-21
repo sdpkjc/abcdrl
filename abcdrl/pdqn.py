@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 import copy
+import dataclasses
 import operator
 import os
 import random
 import time
-from typing import Any, Callable, Generator, NamedTuple, Optional, Union
+from typing import Any, Callable, Generator, Optional, Union
 
 import fire
 import gymnasium as gym
@@ -32,7 +33,8 @@ def get_space_shape(env_space: gym.Space) -> tuple[Any]:
 
 
 class PrioritizedReplayBuffer:
-    class Samples(NamedTuple):
+    @dataclasses.dataclass
+    class Samples:
         observations: Union[torch.Tensor, np.ndarray]
         actions: Union[torch.Tensor, np.ndarray]
         next_observations: Union[torch.Tensor, np.ndarray]
@@ -287,12 +289,13 @@ class Agent:
 
     def learn(self, data: PrioritizedReplayBuffer.Samples) -> dict[str, Any]:
         # 数据预处理 & 目标网络同步
-        data = data._replace(
+        data = dataclasses.replace(
+            data,
             **{
                 item[0]: torch.as_tensor(item[1], device=self.kwargs["device"])
-                for item in data._asdict().items()
+                for item in dataclasses.asdict(data).items()
                 if isinstance(item[1], np.ndarray)
-            }
+            },
         )
 
         log_data = self.alg.learn(data)

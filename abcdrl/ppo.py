@@ -1,9 +1,10 @@
 from __future__ import annotations
 
+import dataclasses
 import os
 import random
 import time
-from typing import Any, Callable, Generator, NamedTuple, Optional, Union
+from typing import Any, Callable, Generator, Optional, Union
 
 import fire
 import gymnasium as gym
@@ -30,7 +31,8 @@ def get_space_shape(env_space: gym.Space) -> tuple[Any]:
 
 
 class RolloutBuffer:
-    class Samples(NamedTuple):
+    @dataclasses.dataclass
+    class Samples:
         observations: Union[torch.Tensor, np.ndarray]
         actions: Union[torch.Tensor, np.ndarray]
         old_values: Union[torch.Tensor, np.ndarray]
@@ -321,12 +323,13 @@ class Agent:
         log_data_list = []
         for data_generator in data_generator_list:
             data_generator = (
-                data._replace(
+                dataclasses.replace(
+                    data,
                     **{
                         item[0]: torch.as_tensor(item[1], device=self.kwargs["device"])
-                        for item in data._asdict().items()
+                        for item in dataclasses.asdict(data).items()
                         if isinstance(item[1], np.ndarray)
-                    }
+                    },
                 )
                 for data in data_generator
             )
