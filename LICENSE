@@ -22,7 +22,7 @@ THE SOFTWARE.
 
 --------------------------------------------------------------------------------
 
-Code in `abcdrl/{dqn, sac, ppo}.py` , `benchmark.py` and `.github/workflows/test.yml` adapted from [vwxyzjn/cleanrl](https://github.com/vwxyzjn/cleanrl)
+Code in `abcdrl/{dqn, sac, ppo}.py` , `abcdrl_utils/benchmark.py` and `.github/workflows/test.yml` adapted from [vwxyzjn/cleanrl](https://github.com/vwxyzjn/cleanrl)
 
 
 MIT License

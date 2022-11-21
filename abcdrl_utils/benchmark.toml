@@ -3,8 +3,6 @@
 CartPole-v1 = """
     python abcdrl/dqn.py \
         --num-envs 1 \
-        --eval-frequency 1000 \
-        --num-steps-eval 100 \
         --total-timesteps 500000 \
         --gamma 0.99 \
         --buffer-size 10000 \
@@ -24,8 +22,6 @@ CartPole-v1 = """
 CartPole-v1 = """
     python abcdrl/ddqn.py \
         --num-envs 1 \
-        --eval-frequency 1000 \
-        --num-steps-eval 100 \
         --total-timesteps 500000 \
         --gamma 0.99 \
         --buffer-size 10000 \
@@ -45,8 +41,6 @@ CartPole-v1 = """
 CartPole-v1 = """
     python abcdrl/pdqn.py \
         --num-envs 1 \
-        --eval-frequency 1000 \
-        --num-steps-eval 100 \
         --total-timesteps 500000 \
         --gamma 0.99 \
         --alpha 0.2 \
@@ -68,8 +62,6 @@ CartPole-v1 = """
 Hopper-v4 = """
     python abcdrl/ddpg.py \
         --num-envs 1 \
-        --eval-frequency 5000 \
-        --num-steps-eval 500 \
         --total-timesteps 1000000 \
         --gamma 0.99 \
         --buffer-size 1000000 \
@@ -85,8 +77,6 @@ Hopper-v4 = """
 Walker2d-v4 = """
     python abcdrl/ddpg.py \
         --num-envs 1 \
-        --eval-frequency 5000 \
-        --num-steps-eval 500 \
         --total-timesteps 1000000 \
         --gamma 0.99 \
         --buffer-size 1000000 \
@@ -102,8 +92,6 @@ Walker2d-v4 = """
 HalfCheetah-v4 = """
     python abcdrl/ddpg.py \
         --num-envs 1 \
-        --eval-frequency 5000 \
-        --num-steps-eval 500 \
         --total-timesteps 1000000 \
         --gamma 0.99 \
         --buffer-size 1000000 \
@@ -122,8 +110,6 @@ HalfCheetah-v4 = """
 Hopper-v4 = """
     python abcdrl/td3.py \
         --num-envs 1 \
-        --eval-frequency 5000 \
-        --num-steps-eval 500 \
         --total-timesteps 1000000 \
         --gamma 0.99 \
         --buffer-size 1000000 \
@@ -141,8 +127,6 @@ Hopper-v4 = """
 Walker2d-v4 = """
     python abcdrl/td3.py \
         --num-envs 1 \
-        --eval-frequency 5000 \
-        --num-steps-eval 500 \
         --total-timesteps 1000000 \
         --gamma 0.99 \
         --buffer-size 1000000 \
@@ -160,8 +144,6 @@ Walker2d-v4 = """
 HalfCheetah-v4 = """
     python abcdrl/td3.py \
         --num-envs 1 \
-        --eval-frequency 5000 \
-        --num-steps-eval 500 \
         --total-timesteps 1000000 \
         --gamma 0.99 \
         --buffer-size 1000000 \
@@ -182,8 +164,6 @@ HalfCheetah-v4 = """
 Hopper-v4 = """
     python abcdrl/sac.py \
         --num-envs 1 \
-        --eval-frequency 5000 \
-        --num-steps-eval 500 \
         --total-timesteps 1000000 \
         --gamma 0.99 \
         --buffer-size 1000000 \
@@ -203,8 +183,6 @@ Hopper-v4 = """
 Walker2d-v4 = """
     python abcdrl/sac.py \
         --num-envs 1 \
-        --eval-frequency 5000 \
-        --num-steps-eval 500 \
         --total-timesteps 1000000 \
         --gamma 0.99 \
         --buffer-size 1000000 \
@@ -224,8 +202,6 @@ Walker2d-v4 = """
 HalfCheetah-v4 = """
     python abcdrl/sac.py \
         --num-envs 1 \
-        --eval-frequency 5000 \
-        --num-steps-eval 500 \
         --total-timesteps 1000000 \
         --gamma 0.99 \
         --buffer-size 1000000 \
@@ -248,8 +224,6 @@ HalfCheetah-v4 = """
 Hopper-v4 = """
     python abcdrl/ppo.py \
         --num-envs 1 \
-        --eval-frequency 5000 \
-        --num-steps-eval 500 \
         --total-timesteps 1000000 \
         --gamma 0.99 \
         --num-steps 2048 \
@@ -269,8 +243,6 @@ Hopper-v4 = """
 Walker2d-v4 = """
     python abcdrl/ppo.py \
         --num-envs 1 \
-        --eval-frequency 5000 \
-        --num-steps-eval 500 \
         --total-timesteps 1000000 \
         --gamma 0.99 \
         --num-steps 2048 \
@@ -290,8 +262,6 @@ Walker2d-v4 = """
 HalfCheetah-v4 = """
     python abcdrl/ppo.py \
         --num-envs 1 \
-        --eval-frequency 5000 \
-        --num-steps-eval 500 \
         --total-timesteps 1000000 \
         --gamma 0.99 \
         --num-steps 2048 \

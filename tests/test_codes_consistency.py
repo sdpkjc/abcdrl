@@ -65,7 +65,7 @@ def test_codes_wrapper() -> None:
     assert inspect.getsource(abcdrl_utils.wrapper_logger) == inspect.getsource(abcdrl.sac.wrapper_logger)
     assert inspect.getsource(abcdrl_utils.wrapper_logger) == inspect.getsource(abcdrl.ppo.wrapper_logger)
     assert inspect.getsource(abcdrl_utils.wrapper_logger) == inspect.getsource(
-        abcdrl_utils.example_all_wrapper.wrapper_logger
+        abcdrl_utils.example_all_wrappers.wrapper_logger
     )
 
     # wrapper_filter
@@ -77,25 +77,25 @@ def test_codes_wrapper() -> None:
     assert inspect.getsource(abcdrl_utils.wrapper_filter) == inspect.getsource(abcdrl.sac.wrapper_filter)
     assert inspect.getsource(abcdrl_utils.wrapper_filter) == inspect.getsource(abcdrl.ppo.wrapper_filter)
     assert inspect.getsource(abcdrl_utils.wrapper_filter) == inspect.getsource(
-        abcdrl_utils.example_all_wrapper.wrapper_filter
+        abcdrl_utils.example_all_wrappers.wrapper_filter
     )
 
     # wrapper_eval_step
     assert inspect.getsource(abcdrl_utils.wrapper_eval_step) == inspect.getsource(
-        abcdrl_utils.example_all_wrapper.wrapper_eval_step
+        abcdrl_utils.example_all_wrappers.wrapper_eval_step
     )
 
     # wrapper_save_model
     assert inspect.getsource(abcdrl_utils.wrapper_save_model) == inspect.getsource(
-        abcdrl_utils.example_all_wrapper.wrapper_save_model
+        abcdrl_utils.example_all_wrappers.wrapper_save_model
     )
 
 
 def test_codes_example() -> None:
-    assert inspect.getsource(abcdrl.dqn.Trainer) == inspect.getsource(abcdrl_utils.example_all_wrapper.Trainer)
-    assert inspect.getsource(abcdrl.dqn.Agent) == inspect.getsource(abcdrl_utils.example_all_wrapper.Agent)
-    assert inspect.getsource(abcdrl.dqn.Algorithm) == inspect.getsource(abcdrl_utils.example_all_wrapper.Algorithm)
-    assert inspect.getsource(abcdrl.dqn.Model) == inspect.getsource(abcdrl_utils.example_all_wrapper.Model)
+    assert inspect.getsource(abcdrl.dqn.Trainer) == inspect.getsource(abcdrl_utils.example_all_wrappers.Trainer)
+    assert inspect.getsource(abcdrl.dqn.Agent) == inspect.getsource(abcdrl_utils.example_all_wrappers.Agent)
+    assert inspect.getsource(abcdrl.dqn.Algorithm) == inspect.getsource(abcdrl_utils.example_all_wrappers.Algorithm)
+    assert inspect.getsource(abcdrl.dqn.Model) == inspect.getsource(abcdrl_utils.example_all_wrappers.Model)
 
 
 def test_codes_other() -> None:

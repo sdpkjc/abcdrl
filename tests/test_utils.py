@@ -1,10 +1,11 @@
 import subprocess
+from typing import Any, Callable, Generator
 
 
 def test_benchmark() -> None:
     try:
         subprocess.run(
-            "python benchmark.py",
+            "python abcdrl_utils/benchmark.py",
             shell=True,
             check=True,
             timeout=3,
@@ -15,7 +16,7 @@ def test_benchmark() -> None:
 
 def test_example_all_wrapper() -> None:
     subprocess.run(
-        "python abcdrl_utils/example_all_wrapper.py"
+        "python abcdrl_utils/example_all_wrappers.py"
         + " --env-id CartPole-v1"
         + " --device auto"
         + " --num-envs 2"
@@ -31,9 +32,9 @@ def test_example_all_wrapper() -> None:
     )
 
 
-def test_eval() -> None:
+def test_example_eval_model() -> None:
     subprocess.run(
-        "python abcdrl_utils/example_all_wrapper.py"
+        "python abcdrl_utils/example_all_wrappers.py"
         + " --exp_name test_eval_dqn"
         + " --env-id CartPole-v1"
         + " --device auto"
@@ -46,8 +47,11 @@ def test_eval() -> None:
         shell=True,
         check=True,
     )
+
     subprocess.run(
-        "python evaluate_model_example.py" + " --model-path models/test_eval_dqn/s16.agent" + " --total_timesteps 100",
+        "python abcdrl_utils/example_eval_model.py"
+        + " --model-path models/test_eval_dqn/s16.agent"
+        + " --total_timesteps 100",
         shell=True,
         check=True,
     )
