@@ -409,7 +409,7 @@ class Trainer:
         return thunk
 
 
-def eval_step_wrapper(
+def wrapper_eval_step(
     wrapped: Callable[..., Generator[dict[str, Any], None, None]]
 ) -> Callable[..., Generator[dict[str, Any], None, None]]:
     def _wrapper(
@@ -446,7 +446,7 @@ def eval_step_wrapper(
     return _wrapper
 
 
-def logger_wrapper(
+def wrapper_logger(
     wrapped: Callable[..., Generator[dict[str, Any], None, None]]
 ) -> Callable[..., Generator[dict[str, Any], None, None]]:
     def _wrapper(
@@ -484,7 +484,7 @@ def logger_wrapper(
     return _wrapper
 
 
-def save_model_wrapper(
+def wrapper_save_model(
     wrapped: Callable[..., Generator[dict[str, Any], None, None]]
 ) -> Callable[..., Generator[dict[str, Any], None, None]]:
     def _wrapper(*args, save_frequency: int = 1_000_0, **kwargs) -> Generator[dict[str, Any], None, None]:
@@ -502,7 +502,7 @@ def save_model_wrapper(
     return _wrapper
 
 
-def filter_wrapper(
+def wrapper_filter(
     wrapped: Callable[..., Generator[dict[str, Any], None, None]]
 ) -> Callable[..., Generator[dict[str, Any], None, None]]:
     def _wrapper(*args, **kwargs) -> Generator[dict[str, Any], None, None]:
@@ -523,8 +523,8 @@ if __name__ == "__main__":
     torch.backends.cudnn.deterministic = True
     torch.cuda.manual_seed_all(1234)
 
-    Trainer.__call__ = eval_step_wrapper(Trainer.__call__)
-    Trainer.__call__ = logger_wrapper(Trainer.__call__)
-    Trainer.__call__ = save_model_wrapper(Trainer.__call__)
-    Trainer.__call__ = filter_wrapper(Trainer.__call__)
+    Trainer.__call__ = wrapper_eval_step(Trainer.__call__)
+    Trainer.__call__ = wrapper_logger(Trainer.__call__)
+    Trainer.__call__ = wrapper_save_model(Trainer.__call__)
+    Trainer.__call__ = wrapper_filter(Trainer.__call__)
     fire.Fire(Trainer)
