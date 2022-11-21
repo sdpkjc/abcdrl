@@ -7,13 +7,10 @@ def test_dqn() -> None:
         + " --env-id CartPole-v1"
         + " --device auto"
         + " --num-envs 2"
-        + " --eval-frequency 5"
-        + " --num-steps-eval 1"
         + " --learning-starts 8"
         + " --total-timesteps 32"
         + " --buffer-size 10"
-        + " --batch-size 4"
-        + " --save-frequency 16",
+        + " --batch-size 4",
         shell=True,
         check=True,
     )
@@ -25,13 +22,10 @@ def test_ddqn() -> None:
         + " --env-id CartPole-v1"
         + " --device auto"
         + " --num-envs 2"
-        + " --eval-frequency 5"
-        + " --num-steps-eval 1"
         + " --learning-starts 8"
         + " --total-timesteps 32"
         + " --buffer-size 10"
-        + " --batch-size 4"
-        + " --save-frequency 16",
+        + " --batch-size 4",
         shell=True,
         check=True,
     )
@@ -43,13 +37,10 @@ def test_pdqn() -> None:
         + " --env-id CartPole-v1"
         + " --device auto"
         + " --num-envs 2"
-        + " --eval-frequency 5"
-        + " --num-steps-eval 1"
         + " --learning-starts 8"
         + " --total-timesteps 32"
         + " --buffer-size 10"
-        + " --batch-size 4"
-        + " --save-frequency 16",
+        + " --batch-size 4",
         shell=True,
         check=True,
     )

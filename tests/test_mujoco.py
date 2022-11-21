@@ -6,14 +6,11 @@ def test_ddpg() -> None:
         "python abcdrl/ddpg.py"
         + " --env-id Hopper-v4"
         + " --device auto"
-        + " --num-envs 1"
-        + " --eval-frequency 5"
-        + " --num-steps-eval 1"
+        + " --num-envs 2"
         + " --learning-starts 64"
         + " --total-timesteps 256"
         + " --buffer-size 32"
-        + " --batch-size 4"
-        + " --save-frequency 128",
+        + " --batch-size 4",
         shell=True,
         check=True,
     )
@@ -25,13 +22,10 @@ def test_td3() -> None:
         + " --env-id Hopper-v4"
         + " --device auto"
         + " --num-envs 2"
-        + " --eval-frequency 5"
-        + " --num-steps-eval 1"
         + " --learning-starts 64"
         + " --total-timesteps 256"
         + " --buffer-size 32"
-        + " --batch-size 4"
-        + " --save-frequency 128",
+        + " --batch-size 4",
         shell=True,
         check=True,
     )
@@ -43,13 +37,10 @@ def test_sac() -> None:
         + " --env-id Hopper-v4"
         + " --device auto"
         + " --num-envs 2"
-        + " --eval-frequency 5"
-        + " --num-steps-eval 1"
         + " --learning-starts 64"
         + " --total-timesteps 256"
         + " --buffer-size 32"
-        + " --batch-size 4"
-        + " --save-frequency 128",
+        + " --batch-size 4",
         shell=True,
         check=True,
     )
@@ -61,12 +52,9 @@ def test_ppo() -> None:
         + " --env-id Hopper-v4"
         + " --device auto"
         + " --num-envs 2"
-        + " --eval-frequency 5"
-        + " --num-steps-eval 1"
         + " --num-steps 64"
         + " --num-minibatches 16"
-        + " --total-timesteps 256"
-        + " --save-frequency 128",
+        + " --total-timesteps 256",
         shell=True,
         check=True,
     )

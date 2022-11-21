@@ -13,9 +13,27 @@ def test_benchmark() -> None:
         pass
 
 
+def test_example_all_wrapper() -> None:
+    subprocess.run(
+        "python abcdrl_utils/example_all_wrapper.py"
+        + " --env-id CartPole-v1"
+        + " --device auto"
+        + " --num-envs 2"
+        + " --learning-starts 8"
+        + " --total-timesteps 32"
+        + " --buffer-size 10"
+        + " --batch-size 4"
+        + " --eval-frequency 5"
+        + " --num-steps-eval 1"
+        + " --save-frequency 16",
+        shell=True,
+        check=True,
+    )
+
+
 def test_eval() -> None:
     subprocess.run(
-        "python abcdrl/dqn.py"
+        "python abcdrl_utils/example_all_wrapper.py"
         + " --exp_name test_eval_dqn"
         + " --env-id CartPole-v1"
         + " --device auto"

@@ -5,7 +5,6 @@ import random
 import time
 from typing import Any, Callable, Generator, NamedTuple, Optional, Union
 
-import dill
 import fire
 import gymnasium as gym
 import numpy as np
@@ -470,43 +469,6 @@ class Trainer:
         return thunk
 
 
-def wrapper_eval_step(
-    wrapped: Callable[..., Generator[dict[str, Any], None, None]]
-) -> Callable[..., Generator[dict[str, Any], None, None]]:
-    def _wrapper(
-        *args,
-        eval_frequency: int = 5_000,
-        num_steps_eval: int = 500,
-        eval_env_seed: int = 1,
-        **kwargs,
-    ) -> Generator[dict[str, Any], None, None]:
-        eval_frequency = max(eval_frequency // args[0].kwargs["num_envs"] * args[0].kwargs["num_envs"], 1)
-        eval_env = gym.vector.SyncVectorEnv([args[0]._make_env(eval_env_seed)])
-        eval_obs, _ = eval_env.reset(seed=1)
-
-        gen = wrapped(*args, **kwargs)
-        for log_data in gen:
-            if not log_data["sample_step"] % eval_frequency and log_data["log_type"] == "collect":
-                el_list, er_list = [], []
-                for _ in range(num_steps_eval):
-                    act = args[0].agent.predict(eval_obs)
-                    eval_obs, _, _, _, infos = eval_env.step(act)
-                    if "final_info" in infos.keys():
-                        final_info = next(item for item in infos["final_info"] if item is not None)
-                        el_list.append(final_info["episode"]["l"][0])
-                        er_list.append(final_info["episode"]["r"][0])
-                eval_log_data = {"log_type": "evaluate", "sample_step": log_data["sample_step"]}
-                if el_list and er_list:
-                    eval_log_data["logs"] = {
-                        "mean_episodic_length": sum(el_list) / len(el_list),
-                        "mean_episodic_return": sum(er_list) / len(er_list),
-                    }
-                yield eval_log_data
-            yield log_data
-
-    return _wrapper
-
-
 def wrapper_logger(
     wrapped: Callable[..., Generator[dict[str, Any], None, None]]
 ) -> Callable[..., Generator[dict[str, Any], None, None]]:
@@ -545,24 +507,6 @@ def wrapper_logger(
     return _wrapper
 
 
-def wrapper_save_model(
-    wrapped: Callable[..., Generator[dict[str, Any], None, None]]
-) -> Callable[..., Generator[dict[str, Any], None, None]]:
-    def _wrapper(*args, save_frequency: int = 1_000_0, **kwargs) -> Generator[dict[str, Any], None, None]:
-        save_frequency = max(save_frequency // args[0].kwargs["num_envs"] * args[0].kwargs["num_envs"], 1)
-
-        gen = wrapped(*args, **kwargs)
-        for log_data in gen:
-            if not log_data["sample_step"] % save_frequency:
-                if not os.path.exists(f"models/{args[0].kwargs['exp_name']}"):
-                    os.makedirs(f"models/{args[0].kwargs['exp_name']}")
-                with open(f"models/{args[0].kwargs['exp_name']}/s{args[0].agent.sample_step}.agent", "ab+") as file:
-                    dill.dump(args[0].agent, file)
-            yield log_data
-
-    return _wrapper
-
-
 def wrapper_filter(
     wrapped: Callable[..., Generator[dict[str, Any], None, None]]
 ) -> Callable[..., Generator[dict[str, Any], None, None]]:
@@ -584,8 +528,6 @@ if __name__ == "__main__":
     torch.backends.cudnn.deterministic = True
     torch.cuda.manual_seed_all(1234)
 
-    Trainer.__call__ = wrapper_eval_step(Trainer.__call__)
     Trainer.__call__ = wrapper_logger(Trainer.__call__)
-    Trainer.__call__ = wrapper_save_model(Trainer.__call__)
     Trainer.__call__ = wrapper_filter(Trainer.__call__)
     fire.Fire(Trainer)
