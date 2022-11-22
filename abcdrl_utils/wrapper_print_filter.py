@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Any, Callable, Generator
 
 
-def wrapper_filter(
+def wrapper_print_filter(
     wrapped: Callable[..., Generator[dict[str, Any], None, None]]
 ) -> Callable[..., Generator[dict[str, Any], None, None]]:
     def _wrapper(instance, *args, **kwargs) -> Generator[dict[str, Any], None, None]:

@@ -68,7 +68,7 @@ def set_all_wrappers(
     func = abcdrl_utils.wrapper_eval_step(func)
     func = abcdrl_utils.wrapper_logger(func)
     func = abcdrl_utils.wrapper_save_model(func)
-    func = abcdrl_utils.wrapper_filter(func)
+    func = abcdrl_utils.wrapper_print_filter(func)
     return func
 
 

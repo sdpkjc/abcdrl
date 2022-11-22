@@ -464,7 +464,7 @@ def wrapper_logger(
     return _wrapper
 
 
-def wrapper_filter(
+def wrapper_print_filter(
     wrapped: Callable[..., Generator[dict[str, Any], None, None]]
 ) -> Callable[..., Generator[dict[str, Any], None, None]]:
     def _wrapper(instance, *args, **kwargs) -> Generator[dict[str, Any], None, None]:
@@ -486,5 +486,5 @@ if __name__ == "__main__":
     torch.cuda.manual_seed_all(1234)
 
     Trainer.__call__ = wrapper_logger(Trainer.__call__)
-    Trainer.__call__ = wrapper_filter(Trainer.__call__)
+    Trainer.__call__ = wrapper_print_filter(Trainer.__call__)
     fire.Fire(Trainer)

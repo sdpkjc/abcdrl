@@ -71,14 +71,14 @@ def test_codes_wrapper() -> None:
     )
 
     # wrapper_filter
-    assert inspect.getsource(abcdrl_utils.wrapper_filter) == inspect.getsource(abcdrl.dqn.wrapper_filter)
-    assert inspect.getsource(abcdrl_utils.wrapper_filter) == inspect.getsource(abcdrl.ddqn.wrapper_filter)
-    assert inspect.getsource(abcdrl_utils.wrapper_filter) == inspect.getsource(abcdrl.pdqn.wrapper_filter)
-    assert inspect.getsource(abcdrl_utils.wrapper_filter) == inspect.getsource(abcdrl.ddpg.wrapper_filter)
-    assert inspect.getsource(abcdrl_utils.wrapper_filter) == inspect.getsource(abcdrl.td3.wrapper_filter)
-    assert inspect.getsource(abcdrl_utils.wrapper_filter) == inspect.getsource(abcdrl.sac.wrapper_filter)
-    assert inspect.getsource(abcdrl_utils.wrapper_filter) == inspect.getsource(abcdrl.ppo.wrapper_filter)
-    assert inspect.getsource(abcdrl_utils.wrapper_filter) == inspect.getsource(
+    assert inspect.getsource(abcdrl_utils.wrapper_print_filter) == inspect.getsource(abcdrl.dqn.wrapper_filter)
+    assert inspect.getsource(abcdrl_utils.wrapper_print_filter) == inspect.getsource(abcdrl.ddqn.wrapper_filter)
+    assert inspect.getsource(abcdrl_utils.wrapper_print_filter) == inspect.getsource(abcdrl.pdqn.wrapper_filter)
+    assert inspect.getsource(abcdrl_utils.wrapper_print_filter) == inspect.getsource(abcdrl.ddpg.wrapper_filter)
+    assert inspect.getsource(abcdrl_utils.wrapper_print_filter) == inspect.getsource(abcdrl.td3.wrapper_filter)
+    assert inspect.getsource(abcdrl_utils.wrapper_print_filter) == inspect.getsource(abcdrl.sac.wrapper_filter)
+    assert inspect.getsource(abcdrl_utils.wrapper_print_filter) == inspect.getsource(abcdrl.ppo.wrapper_filter)
+    assert inspect.getsource(abcdrl_utils.wrapper_print_filter) == inspect.getsource(
         abcdrl_utils.example_all_wrappers.wrapper_filter
     )
 
