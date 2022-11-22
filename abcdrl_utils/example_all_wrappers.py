@@ -393,7 +393,7 @@ def wrapper_save_model(
             if not log_data["sample_step"] % save_frequency:
                 if not os.path.exists(f"models/{instance.kwargs['exp_name']}"):
                     os.makedirs(f"models/{instance.kwargs['exp_name']}")
-                with open(f"models/{instance.kwargs['exp_name']}/s{instance.agent.sample_step}.agent", "ab+") as file:
+                with open(f"models/{instance.kwargs['exp_name']}/s{instance.agent.sample_step}.agent", "wb+") as file:
                     dill.dump(instance.agent, file)
             yield log_data
 
