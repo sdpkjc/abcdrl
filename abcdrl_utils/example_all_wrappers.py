@@ -403,7 +403,7 @@ def wrapper_save_model(
     return _wrapper
 
 
-def wrapper_filter(
+def wrapper_print_filter(
     wrapped: Callable[..., Generator[dict[str, Any], None, None]]
 ) -> Callable[..., Generator[dict[str, Any], None, None]]:
     def _wrapper(instance, *args, **kwargs) -> Generator[dict[str, Any], None, None]:
@@ -427,5 +427,5 @@ if __name__ == "__main__":
     Trainer.__call__ = wrapper_eval_step(Trainer.__call__)
     Trainer.__call__ = wrapper_logger(Trainer.__call__)
     Trainer.__call__ = wrapper_save_model(Trainer.__call__)
-    Trainer.__call__ = wrapper_filter(Trainer.__call__)
+    Trainer.__call__ = wrapper_print_filter(Trainer.__call__)
     fire.Fire(Trainer)
