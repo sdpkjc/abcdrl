@@ -437,7 +437,7 @@ def wrapper_logger(
         writer = SummaryWriter(f"runs/{instance.kwargs['exp_name']}")
         writer.add_text(
             "hyperparameters",
-            "|param|value|\n|-|-|\n%s" % ("\n".join([f"|{key}|{value}|" for key, value in instance.kwargs.items()])),
+            "|param|value|\n|-|-|\n" + "\n".join([f"|{key}|{value}|" for key, value in instance.kwargs.items()]),
         )
 
         gen = wrapped(instance, *args, **kwargs)
