@@ -315,7 +315,9 @@ class Agent:
         self.sample_step += self.kwargs["num_envs"]
         return act_np, log_prob_np, val_np
 
-    def learn(self, data_generator_list: list[Generator[RolloutBuffer.Samples[np.ndarray], None, None]]) -> list[dict[str, Any]]:
+    def learn(
+        self, data_generator_list: list[Generator[RolloutBuffer.Samples[np.ndarray], None, None]]
+    ) -> list[dict[str, Any]]:
         # 数据预处理
         self._update_lr()
         log_data_list = []
