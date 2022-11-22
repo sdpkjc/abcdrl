@@ -26,8 +26,7 @@ def get_space_shape(env_space: gym.Space) -> tuple[int, ...]:
         return env_space.shape
     elif isinstance(env_space, gym.spaces.Discrete):
         return (1,)
-    else:
-        raise NotImplementedError(f"{env_space} observation space is not supported")
+    raise NotImplementedError(f"{env_space} observation space is not supported")
 
 
 class PrioritizedReplayBuffer:

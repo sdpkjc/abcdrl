@@ -1,0 +1,422 @@
+************* Module abcdrl
+abcdrl/__init__.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+************* Module abcdrl.ddqn
+abcdrl/ddqn.py:241:0: C0301: Line too long (131/121) (line-too-long)
+abcdrl/ddqn.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+abcdrl/ddqn.py:14:0: R0402: Use 'from torch import nn' instead (consider-using-from-import)
+abcdrl/ddqn.py:16:0: R0402: Use 'from torch import optim' instead (consider-using-from-import)
+abcdrl/ddqn.py:20:0: C0103: Type variable name "SamplesItemType" doesn't conform to predefined naming style (invalid-name)
+abcdrl/ddqn.py:24:4: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
+abcdrl/ddqn.py:31:0: R0902: Too many instance attributes (8/7) (too-many-instance-attributes)
+abcdrl/ddqn.py:56:4: R0913: Too many arguments (7/5) (too-many-arguments)
+abcdrl/ddqn.py:63:8: W0613: Unused argument 'infos' (unused-argument)
+abcdrl/ddqn.py:99:22: C0103: Argument name "x" doesn't conform to snake_case naming style (invalid-name)
+abcdrl/ddqn.py:103:0: W0223: Method 'forward' is abstract in class 'torch.nn.modules.module' but is not overridden (abstract-method)
+abcdrl/ddqn.py:160:17: E1101: Module 'torch' has no 'as_tensor' member; maybe 'is_tensor'? (no-member)
+abcdrl/ddqn.py:171:21: E1101: Module 'torch' has no 'as_tensor' member; maybe 'is_tensor'? (no-member)
+abcdrl/ddqn.py:182:25: E1101: Module 'torch' has no 'as_tensor' member; maybe 'is_tensor'? (no-member)
+abcdrl/ddqn.py:204:4: R0913: Too many arguments (18/5) (too-many-arguments)
+abcdrl/ddqn.py:204:4: R0914: Too many local variables (18/15) (too-many-locals)
+abcdrl/ddqn.py:253:43: R1721: Unnecessary use of a comprehension, use list(range(self.kwargs['num_envs'])) instead. (unnecessary-comprehension)
+abcdrl/ddqn.py:203:0: R0903: Too few public methods (1/2) (too-few-public-methods)
+abcdrl/ddqn.py:312:4: W0102: Dangerous default value [] as argument (dangerous-default-value)
+************* Module abcdrl.td3
+abcdrl/td3.py:316:0: C0301: Line too long (131/121) (line-too-long)
+abcdrl/td3.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+abcdrl/td3.py:14:0: R0402: Use 'from torch import nn' instead (consider-using-from-import)
+abcdrl/td3.py:16:0: R0402: Use 'from torch import optim' instead (consider-using-from-import)
+abcdrl/td3.py:20:0: C0103: Type variable name "SamplesItemType" doesn't conform to predefined naming style (invalid-name)
+abcdrl/td3.py:23:0:
+abcdrl/td3.py:24:4: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
+abcdrl/td3.py:31:0:
+abcdrl/td3.py:31:0: R0902: Too many instance attributes (8/7) (too-many-instance-attributes)
+abcdrl/td3.py:33:4:
+abcdrl/td3.py:56:4:
+abcdrl/td3.py:56:4: R0913: Too many arguments (7/5) (too-many-arguments)
+abcdrl/td3.py:63:8: W0613: Unused argument 'infos' (unused-argument)
+abcdrl/td3.py:74:4:
+abcdrl/td3.py:88:0:
+abcdrl/td3.py:100:4:
+abcdrl/td3.py:100:22: C0103: Argument name "x" doesn't conform to snake_case naming style (invalid-name)
+abcdrl/td3.py:104:0:
+abcdrl/td3.py:115:4:
+abcdrl/td3.py:115:22: C0103: Argument name "x" doesn't conform to snake_case naming style (invalid-name)
+abcdrl/td3.py:115:39: C0103: Argument name "a" doesn't conform to snake_case naming style (invalid-name)
+abcdrl/td3.py:116:28: E1101: Module 'torch' has no 'cat' member (no-member)
+abcdrl/td3.py:119:0:
+abcdrl/td3.py:119:0: W0223: Method 'forward' is abstract in class 'torch.nn.modules.module' but is not overridden (abstract-method)
+abcdrl/td3.py:137:12: E1101: Module 'torch' has no 'FloatTensor' member (no-member)
+abcdrl/td3.py:141:12: E1101: Module 'torch' has no 'FloatTensor' member (no-member)
+abcdrl/td3.py:144:4:
+abcdrl/td3.py:149:4:
+abcdrl/td3.py:154:0:
+abcdrl/td3.py:166:4:
+abcdrl/td3.py:170:4:
+abcdrl/td3.py:170:4: R0914: Too many local variables (16/15) (too-many-locals)
+abcdrl/td3.py:172:29: E1101: Module 'torch' has no 'randn_like' member (no-member)
+abcdrl/td3.py:180:27: E1101: Module 'torch' has no 'min' member (no-member)
+abcdrl/td3.py:215:4:
+abcdrl/td3.py:220:0:
+abcdrl/td3.py:228:28: E1101: Module 'torch' has no 'FloatTensor' member (no-member)
+abcdrl/td3.py:229:27: E1101: Module 'torch' has no 'FloatTensor' member (no-member)
+abcdrl/td3.py:231:4:
+abcdrl/td3.py:233:17: E1101: Module 'torch' has no 'as_tensor' member; maybe 'is_tensor'? (no-member)
+abcdrl/td3.py:239:4:
+abcdrl/td3.py:244:21: E1101: Module 'torch' has no 'as_tensor' member; maybe 'is_tensor'? (no-member)
+abcdrl/td3.py:251:20: E1101: Module 'torch' has no 'normal' member (no-member)
+abcdrl/td3.py:259:4:
+abcdrl/td3.py:263:25: E1101: Module 'torch' has no 'as_tensor' member; maybe 'is_tensor'? (no-member)
+abcdrl/td3.py:277:0:
+abcdrl/td3.py:278:4: R0913: Too many arguments (19/5) (too-many-arguments)
+abcdrl/td3.py:278:4: R0914: Too many local variables (19/15) (too-many-locals)
+abcdrl/td3.py:328:43: R1721: Unnecessary use of a comprehension, use list(range(self.kwargs['num_envs'])) instead. (unnecessary-comprehension)
+abcdrl/td3.py:277:0: R0903: Too few public methods (1/2) (too-few-public-methods)
+abcdrl/td3.py:385:0:
+abcdrl/td3.py:388:4: W0102: Dangerous default value [] as argument (dangerous-default-value)
+abcdrl/td3.py:424:0:
+************* Module abcdrl.sac
+abcdrl/sac.py:342:0: C0301: Line too long (131/121) (line-too-long)
+abcdrl/sac.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+abcdrl/sac.py:14:0: R0402: Use 'from torch import nn' instead (consider-using-from-import)
+abcdrl/sac.py:16:0: R0402: Use 'from torch import optim' instead (consider-using-from-import)
+abcdrl/sac.py:20:0: C0103: Type variable name "SamplesItemType" doesn't conform to predefined naming style (invalid-name)
+abcdrl/sac.py:23:0:
+abcdrl/sac.py:24:4: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
+abcdrl/sac.py:31:0:
+abcdrl/sac.py:31:0: R0902: Too many instance attributes (8/7) (too-many-instance-attributes)
+abcdrl/sac.py:33:4:
+abcdrl/sac.py:56:4:
+abcdrl/sac.py:56:4: R0913: Too many arguments (7/5) (too-many-arguments)
+abcdrl/sac.py:63:8: W0613: Unused argument 'infos' (unused-argument)
+abcdrl/sac.py:74:4:
+abcdrl/sac.py:88:0:
+abcdrl/sac.py:103:4:
+abcdrl/sac.py:103:22: C0103: Argument name "x" doesn't conform to snake_case naming style (invalid-name)
+abcdrl/sac.py:111:0:
+abcdrl/sac.py:122:4:
+abcdrl/sac.py:122:22: C0103: Argument name "x" doesn't conform to snake_case naming style (invalid-name)
+abcdrl/sac.py:122:39: C0103: Argument name "a" doesn't conform to snake_case naming style (invalid-name)
+abcdrl/sac.py:123:28: E1101: Module 'torch' has no 'cat' member (no-member)
+abcdrl/sac.py:126:0:
+abcdrl/sac.py:126:0: W0223: Method 'forward' is abstract in class 'torch.nn.modules.module' but is not overridden (abstract-method)
+abcdrl/sac.py:144:12: E1101: Module 'torch' has no 'FloatTensor' member (no-member)
+abcdrl/sac.py:148:12: E1101: Module 'torch' has no 'FloatTensor' member (no-member)
+abcdrl/sac.py:151:4:
+abcdrl/sac.py:156:4:
+abcdrl/sac.py:157:8: C0103: Variable name "LOG_STD_MAX" doesn't conform to snake_case naming style (invalid-name)
+abcdrl/sac.py:157:21: C0103: Variable name "LOG_STD_MIN" doesn't conform to snake_case naming style (invalid-name)
+abcdrl/sac.py:162:14: E1101: Module 'torch' has no 'tanh' member (no-member)
+abcdrl/sac.py:165:20: E1101: Module 'torch' has no 'log' member (no-member)
+abcdrl/sac.py:170:0:
+abcdrl/sac.py:170:0: R0902: Too many instance attributes (9/7) (too-many-instance-attributes)
+abcdrl/sac.py:184:35: E1101: Module 'torch' has no 'prod' member (no-member)
+abcdrl/sac.py:187:29: E1101: Module 'torch' has no 'zeros' member (no-member)
+abcdrl/sac.py:191:4:
+abcdrl/sac.py:195:4:
+abcdrl/sac.py:195:4: R0914: Too many local variables (22/15) (too-many-locals)
+abcdrl/sac.py:200:27: E1101: Module 'torch' has no 'min' member (no-member)
+abcdrl/sac.py:228:26: E1101: Module 'torch' has no 'min' member (no-member)
+abcdrl/sac.py:247:4:
+abcdrl/sac.py:252:0:
+abcdrl/sac.py:260:4:
+abcdrl/sac.py:262:17: E1101: Module 'torch' has no 'as_tensor' member; maybe 'is_tensor'? (no-member)
+abcdrl/sac.py:268:4:
+abcdrl/sac.py:273:21: E1101: Module 'torch' has no 'as_tensor' member; maybe 'is_tensor'? (no-member)
+abcdrl/sac.py:280:4:
+abcdrl/sac.py:284:25: E1101: Module 'torch' has no 'as_tensor' member; maybe 'is_tensor'? (no-member)
+abcdrl/sac.py:298:0:
+abcdrl/sac.py:299:4: R0913: Too many arguments (21/5) (too-many-arguments)
+abcdrl/sac.py:299:4: R0914: Too many local variables (21/15) (too-many-locals)
+abcdrl/sac.py:354:43: R1721: Unnecessary use of a comprehension, use list(range(self.kwargs['num_envs'])) instead. (unnecessary-comprehension)
+abcdrl/sac.py:301:8:
+abcdrl/sac.py:303:8: W0613: Unused argument 'device' (unused-argument)
+abcdrl/sac.py:304:8: W0613: Unused argument 'capture_video' (unused-argument)
+abcdrl/sac.py:305:8: W0613: Unused argument 'env_id' (unused-argument)
+abcdrl/sac.py:306:8: W0613: Unused argument 'num_envs' (unused-argument)
+abcdrl/sac.py:307:8: W0613: Unused argument 'total_timesteps' (unused-argument)
+abcdrl/sac.py:308:8: W0613: Unused argument 'gamma' (unused-argument)
+abcdrl/sac.py:310:8: W0613: Unused argument 'buffer_size' (unused-argument)
+abcdrl/sac.py:311:8: W0613: Unused argument 'exploration_noise' (unused-argument)
+abcdrl/sac.py:313:8: W0613: Unused argument 'batch_size' (unused-argument)
+abcdrl/sac.py:314:8: W0613: Unused argument 'q_lr' (unused-argument)
+abcdrl/sac.py:315:8: W0613: Unused argument 'policy_lr' (unused-argument)
+abcdrl/sac.py:316:8: W0613: Unused argument 'tau' (unused-argument)
+abcdrl/sac.py:317:8: W0613: Unused argument 'alpha' (unused-argument)
+abcdrl/sac.py:318:8: W0613: Unused argument 'autotune' (unused-argument)
+abcdrl/sac.py:320:8: W0613: Unused argument 'learning_starts' (unused-argument)
+abcdrl/sac.py:321:8: W0613: Unused argument 'train_frequency' (unused-argument)
+abcdrl/sac.py:322:8: W0613: Unused argument 'policy_frequency' (unused-argument)
+abcdrl/sac.py:323:8: W0613: Unused argument 'target_network_frequency' (unused-argument)
+abcdrl/sac.py:298:0: R0903: Too few public methods (1/2) (too-few-public-methods)
+abcdrl/sac.py:411:0:
+abcdrl/sac.py:414:4: W0102: Dangerous default value [] as argument (dangerous-default-value)
+abcdrl/sac.py:450:0:
+************* Module abcdrl.ddpg
+abcdrl/ddpg.py:288:0: C0301: Line too long (131/121) (line-too-long)
+abcdrl/ddpg.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+abcdrl/ddpg.py:14:0: R0402: Use 'from torch import nn' instead (consider-using-from-import)
+abcdrl/ddpg.py:16:0: R0402: Use 'from torch import optim' instead (consider-using-from-import)
+abcdrl/ddpg.py:20:0: C0103: Type variable name "SamplesItemType" doesn't conform to predefined naming style (invalid-name)
+abcdrl/ddpg.py:23:0:
+abcdrl/ddpg.py:24:4: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
+abcdrl/ddpg.py:31:0:
+abcdrl/ddpg.py:31:0: R0902: Too many instance attributes (8/7) (too-many-instance-attributes)
+abcdrl/ddpg.py:33:4:
+abcdrl/ddpg.py:56:4:
+abcdrl/ddpg.py:56:4: R0913: Too many arguments (7/5) (too-many-arguments)
+abcdrl/ddpg.py:63:8: W0613: Unused argument 'infos' (unused-argument)
+abcdrl/ddpg.py:74:4:
+abcdrl/ddpg.py:88:0:
+abcdrl/ddpg.py:100:4:
+abcdrl/ddpg.py:100:22: C0103: Argument name "x" doesn't conform to snake_case naming style (invalid-name)
+abcdrl/ddpg.py:104:0:
+abcdrl/ddpg.py:115:4:
+abcdrl/ddpg.py:115:22: C0103: Argument name "x" doesn't conform to snake_case naming style (invalid-name)
+abcdrl/ddpg.py:115:39: C0103: Argument name "a" doesn't conform to snake_case naming style (invalid-name)
+abcdrl/ddpg.py:116:28: E1101: Module 'torch' has no 'cat' member (no-member)
+abcdrl/ddpg.py:119:0:
+abcdrl/ddpg.py:119:0: W0223: Method 'forward' is abstract in class 'torch.nn.modules.module' but is not overridden (abstract-method)
+abcdrl/ddpg.py:133:12: E1101: Module 'torch' has no 'FloatTensor' member (no-member)
+abcdrl/ddpg.py:137:12: E1101: Module 'torch' has no 'FloatTensor' member (no-member)
+abcdrl/ddpg.py:140:4:
+abcdrl/ddpg.py:145:4:
+abcdrl/ddpg.py:150:0:
+abcdrl/ddpg.py:159:4:
+abcdrl/ddpg.py:163:4:
+abcdrl/ddpg.py:189:4:
+abcdrl/ddpg.py:194:0:
+abcdrl/ddpg.py:202:28: E1101: Module 'torch' has no 'FloatTensor' member (no-member)
+abcdrl/ddpg.py:203:27: E1101: Module 'torch' has no 'FloatTensor' member (no-member)
+abcdrl/ddpg.py:205:4:
+abcdrl/ddpg.py:207:17: E1101: Module 'torch' has no 'as_tensor' member; maybe 'is_tensor'? (no-member)
+abcdrl/ddpg.py:213:4:
+abcdrl/ddpg.py:218:21: E1101: Module 'torch' has no 'as_tensor' member; maybe 'is_tensor'? (no-member)
+abcdrl/ddpg.py:225:20: E1101: Module 'torch' has no 'normal' member (no-member)
+abcdrl/ddpg.py:233:4:
+abcdrl/ddpg.py:237:25: E1101: Module 'torch' has no 'as_tensor' member; maybe 'is_tensor'? (no-member)
+abcdrl/ddpg.py:251:0:
+abcdrl/ddpg.py:252:4: R0913: Too many arguments (17/5) (too-many-arguments)
+abcdrl/ddpg.py:252:4: R0914: Too many local variables (17/15) (too-many-locals)
+abcdrl/ddpg.py:300:43: R1721: Unnecessary use of a comprehension, use list(range(self.kwargs['num_envs'])) instead. (unnecessary-comprehension)
+abcdrl/ddpg.py:254:8:
+abcdrl/ddpg.py:256:8: W0613: Unused argument 'device' (unused-argument)
+abcdrl/ddpg.py:257:8: W0613: Unused argument 'capture_video' (unused-argument)
+abcdrl/ddpg.py:258:8: W0613: Unused argument 'env_id' (unused-argument)
+abcdrl/ddpg.py:259:8: W0613: Unused argument 'num_envs' (unused-argument)
+abcdrl/ddpg.py:260:8: W0613: Unused argument 'total_timesteps' (unused-argument)
+abcdrl/ddpg.py:261:8: W0613: Unused argument 'gamma' (unused-argument)
+abcdrl/ddpg.py:263:8: W0613: Unused argument 'buffer_size' (unused-argument)
+abcdrl/ddpg.py:264:8: W0613: Unused argument 'exploration_noise' (unused-argument)
+abcdrl/ddpg.py:266:8: W0613: Unused argument 'batch_size' (unused-argument)
+abcdrl/ddpg.py:267:8: W0613: Unused argument 'learning_rate' (unused-argument)
+abcdrl/ddpg.py:268:8: W0613: Unused argument 'tau' (unused-argument)
+abcdrl/ddpg.py:270:8: W0613: Unused argument 'learning_starts' (unused-argument)
+abcdrl/ddpg.py:271:8: W0613: Unused argument 'train_frequency' (unused-argument)
+abcdrl/ddpg.py:272:8: W0613: Unused argument 'policy_frequency' (unused-argument)
+abcdrl/ddpg.py:251:0: R0903: Too few public methods (1/2) (too-few-public-methods)
+abcdrl/ddpg.py:357:0:
+abcdrl/ddpg.py:360:4: W0102: Dangerous default value [] as argument (dangerous-default-value)
+abcdrl/ddpg.py:396:0:
+************* Module abcdrl.pdqn
+abcdrl/pdqn.py:352:0: C0301: Line too long (131/121) (line-too-long)
+abcdrl/pdqn.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+abcdrl/pdqn.py:15:0: R0402: Use 'from torch import nn' instead (consider-using-from-import)
+abcdrl/pdqn.py:17:0: R0402: Use 'from torch import optim' instead (consider-using-from-import)
+abcdrl/pdqn.py:21:0: C0103: Type variable name "SamplesItemType" doesn't conform to predefined naming style (invalid-name)
+abcdrl/pdqn.py:24:0:
+abcdrl/pdqn.py:25:4: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
+abcdrl/pdqn.py:32:0:
+abcdrl/pdqn.py:32:0: R0902: Too many instance attributes (13/7) (too-many-instance-attributes)
+abcdrl/pdqn.py:34:4:
+abcdrl/pdqn.py:43:4:
+abcdrl/pdqn.py:52:8:
+abcdrl/pdqn.py:55:8: R0913: Too many arguments (6/5) (too-many-arguments)
+abcdrl/pdqn.py:65:8:
+abcdrl/pdqn.py:66:19: W0143: Comparing against a callable, did you omit the parenthesis? (comparison-with-callable)
+abcdrl/pdqn.py:117:4:
+abcdrl/pdqn.py:117:4: R0913: Too many arguments (7/5) (too-many-arguments)
+abcdrl/pdqn.py:124:8: W0613: Unused argument 'infos' (unused-argument)
+abcdrl/pdqn.py:139:4:
+abcdrl/pdqn.py:162:4:
+abcdrl/pdqn.py:198:0:
+abcdrl/pdqn.py:209:4:
+abcdrl/pdqn.py:209:22: C0103: Argument name "x" doesn't conform to snake_case naming style (invalid-name)
+abcdrl/pdqn.py:213:0:
+abcdrl/pdqn.py:213:0: W0223: Method 'forward' is abstract in class 'torch.nn.modules.module' but is not overridden (abstract-method)
+abcdrl/pdqn.py:223:4:
+abcdrl/pdqn.py:227:0:
+abcdrl/pdqn.py:235:4:
+abcdrl/pdqn.py:239:4:
+abcdrl/pdqn.py:246:18: E1101: Module 'torch' has no 'mean' member (no-member)
+abcdrl/pdqn.py:255:4:
+abcdrl/pdqn.py:259:0:
+abcdrl/pdqn.py:267:4:
+abcdrl/pdqn.py:269:17: E1101: Module 'torch' has no 'as_tensor' member; maybe 'is_tensor'? (no-member)
+abcdrl/pdqn.py:275:4:
+abcdrl/pdqn.py:280:21: E1101: Module 'torch' has no 'as_tensor' member; maybe 'is_tensor'? (no-member)
+abcdrl/pdqn.py:287:4:
+abcdrl/pdqn.py:291:25: E1101: Module 'torch' has no 'as_tensor' member; maybe 'is_tensor'? (no-member)
+abcdrl/pdqn.py:312:0:
+abcdrl/pdqn.py:313:4: R0913: Too many arguments (20/5) (too-many-arguments)
+abcdrl/pdqn.py:313:4: R0914: Too many local variables (20/15) (too-many-locals)
+abcdrl/pdqn.py:365:43: R1721: Unnecessary use of a comprehension, use list(range(self.kwargs['num_envs'])) instead. (unnecessary-comprehension)
+abcdrl/pdqn.py:315:8:
+abcdrl/pdqn.py:317:8: W0613: Unused argument 'device' (unused-argument)
+abcdrl/pdqn.py:318:8: W0613: Unused argument 'capture_video' (unused-argument)
+abcdrl/pdqn.py:319:8: W0613: Unused argument 'env_id' (unused-argument)
+abcdrl/pdqn.py:320:8: W0613: Unused argument 'num_envs' (unused-argument)
+abcdrl/pdqn.py:321:8: W0613: Unused argument 'total_timesteps' (unused-argument)
+abcdrl/pdqn.py:322:8: W0613: Unused argument 'gamma' (unused-argument)
+abcdrl/pdqn.py:324:8: W0613: Unused argument 'alpha' (unused-argument)
+abcdrl/pdqn.py:325:8: W0613: Unused argument 'beta' (unused-argument)
+abcdrl/pdqn.py:326:8: W0613: Unused argument 'buffer_size' (unused-argument)
+abcdrl/pdqn.py:327:8: W0613: Unused argument 'start_epsilon' (unused-argument)
+abcdrl/pdqn.py:328:8: W0613: Unused argument 'end_epsilon' (unused-argument)
+abcdrl/pdqn.py:329:8: W0613: Unused argument 'exploration_fraction' (unused-argument)
+abcdrl/pdqn.py:331:8: W0613: Unused argument 'batch_size' (unused-argument)
+abcdrl/pdqn.py:332:8: W0613: Unused argument 'learning_rate' (unused-argument)
+abcdrl/pdqn.py:334:8: W0613: Unused argument 'learning_starts' (unused-argument)
+abcdrl/pdqn.py:335:8: W0613: Unused argument 'target_network_frequency' (unused-argument)
+abcdrl/pdqn.py:336:8: W0613: Unused argument 'train_frequency' (unused-argument)
+abcdrl/pdqn.py:312:0: R0903: Too few public methods (1/2) (too-few-public-methods)
+abcdrl/pdqn.py:425:0:
+abcdrl/pdqn.py:428:4: W0102: Dangerous default value [] as argument (dangerous-default-value)
+abcdrl/pdqn.py:464:0:
+************* Module abcdrl.dqn
+abcdrl/dqn.py:239:0: C0301: Line too long (131/121) (line-too-long)
+abcdrl/dqn.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+abcdrl/dqn.py:14:0: R0402: Use 'from torch import nn' instead (consider-using-from-import)
+abcdrl/dqn.py:16:0: R0402: Use 'from torch import optim' instead (consider-using-from-import)
+abcdrl/dqn.py:20:0: C0103: Type variable name "SamplesItemType" doesn't conform to predefined naming style (invalid-name)
+abcdrl/dqn.py:23:0:
+abcdrl/dqn.py:24:4: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
+abcdrl/dqn.py:31:0:
+abcdrl/dqn.py:31:0: R0902: Too many instance attributes (8/7) (too-many-instance-attributes)
+abcdrl/dqn.py:33:4:
+abcdrl/dqn.py:56:4:
+abcdrl/dqn.py:56:4: R0913: Too many arguments (7/5) (too-many-arguments)
+abcdrl/dqn.py:63:8: W0613: Unused argument 'infos' (unused-argument)
+abcdrl/dqn.py:74:4:
+abcdrl/dqn.py:88:0:
+abcdrl/dqn.py:99:4:
+abcdrl/dqn.py:99:22: C0103: Argument name "x" doesn't conform to snake_case naming style (invalid-name)
+abcdrl/dqn.py:103:0:
+abcdrl/dqn.py:103:0: W0223: Method 'forward' is abstract in class 'torch.nn.modules.module' but is not overridden (abstract-method)
+abcdrl/dqn.py:113:4:
+abcdrl/dqn.py:117:0:
+abcdrl/dqn.py:125:4:
+abcdrl/dqn.py:129:4:
+abcdrl/dqn.py:144:4:
+abcdrl/dqn.py:148:0:
+abcdrl/dqn.py:156:4:
+abcdrl/dqn.py:158:17: E1101: Module 'torch' has no 'as_tensor' member; maybe 'is_tensor'? (no-member)
+abcdrl/dqn.py:164:4:
+abcdrl/dqn.py:169:21: E1101: Module 'torch' has no 'as_tensor' member; maybe 'is_tensor'? (no-member)
+abcdrl/dqn.py:176:4:
+abcdrl/dqn.py:180:25: E1101: Module 'torch' has no 'as_tensor' member; maybe 'is_tensor'? (no-member)
+abcdrl/dqn.py:201:0:
+abcdrl/dqn.py:202:4: R0913: Too many arguments (18/5) (too-many-arguments)
+abcdrl/dqn.py:202:4: R0914: Too many local variables (18/15) (too-many-locals)
+abcdrl/dqn.py:251:43: R1721: Unnecessary use of a comprehension, use list(range(self.kwargs['num_envs'])) instead. (unnecessary-comprehension)
+abcdrl/dqn.py:204:8:
+abcdrl/dqn.py:206:8: W0613: Unused argument 'device' (unused-argument)
+abcdrl/dqn.py:207:8: W0613: Unused argument 'capture_video' (unused-argument)
+abcdrl/dqn.py:208:8: W0613: Unused argument 'env_id' (unused-argument)
+abcdrl/dqn.py:209:8: W0613: Unused argument 'num_envs' (unused-argument)
+abcdrl/dqn.py:210:8: W0613: Unused argument 'total_timesteps' (unused-argument)
+abcdrl/dqn.py:211:8: W0613: Unused argument 'gamma' (unused-argument)
+abcdrl/dqn.py:213:8: W0613: Unused argument 'buffer_size' (unused-argument)
+abcdrl/dqn.py:214:8: W0613: Unused argument 'start_epsilon' (unused-argument)
+abcdrl/dqn.py:215:8: W0613: Unused argument 'end_epsilon' (unused-argument)
+abcdrl/dqn.py:216:8: W0613: Unused argument 'exploration_fraction' (unused-argument)
+abcdrl/dqn.py:218:8: W0613: Unused argument 'batch_size' (unused-argument)
+abcdrl/dqn.py:219:8: W0613: Unused argument 'learning_rate' (unused-argument)
+abcdrl/dqn.py:221:8: W0613: Unused argument 'learning_starts' (unused-argument)
+abcdrl/dqn.py:222:8: W0613: Unused argument 'target_network_frequency' (unused-argument)
+abcdrl/dqn.py:223:8: W0613: Unused argument 'train_frequency' (unused-argument)
+abcdrl/dqn.py:201:0: R0903: Too few public methods (1/2) (too-few-public-methods)
+abcdrl/dqn.py:307:0:
+abcdrl/dqn.py:310:4: W0102: Dangerous default value [] as argument (dangerous-default-value)
+abcdrl/dqn.py:346:0:
+************* Module abcdrl.ppo
+abcdrl/ppo.py:388:0: C0301: Line too long (131/121) (line-too-long)
+abcdrl/ppo.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+abcdrl/ppo.py:13:0: R0402: Use 'from torch import nn' instead (consider-using-from-import)
+abcdrl/ppo.py:14:0: R0402: Use 'from torch import optim' instead (consider-using-from-import)
+abcdrl/ppo.py:19:0: C0103: Type variable name "SamplesItemType" doesn't conform to predefined naming style (invalid-name)
+abcdrl/ppo.py:22:0:
+abcdrl/ppo.py:23:4: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
+abcdrl/ppo.py:30:0:
+abcdrl/ppo.py:30:0: R0902: Too many instance attributes (18/7) (too-many-instance-attributes)
+abcdrl/ppo.py:32:4:
+abcdrl/ppo.py:40:4: R0913: Too many arguments (7/5) (too-many-arguments)
+abcdrl/ppo.py:58:4:
+abcdrl/ppo.py:74:4:
+abcdrl/ppo.py:91:4:
+abcdrl/ppo.py:91:4: R0913: Too many arguments (7/5) (too-many-arguments)
+abcdrl/ppo.py:116:4:
+abcdrl/ppo.py:89:8: W0201: Attribute 'returns' defined outside __init__ (attribute-defined-outside-init)
+abcdrl/ppo.py:114:12: W0201: Attribute 'full' defined outside __init__ (attribute-defined-outside-init)
+abcdrl/ppo.py:126:8: W0201: Attribute 'generator_ready' defined outside __init__ (attribute-defined-outside-init)
+abcdrl/ppo.py:144:0:
+abcdrl/ppo.py:150:0:
+abcdrl/ppo.py:163:43: E1101: Module 'torch' has no 'zeros' member (no-member)
+abcdrl/ppo.py:165:4:
+abcdrl/ppo.py:165:22: C0103: Argument name "x" doesn't conform to snake_case naming style (invalid-name)
+abcdrl/ppo.py:168:18: E1101: Module 'torch' has no 'exp' member (no-member)
+abcdrl/ppo.py:172:0:
+abcdrl/ppo.py:183:4:
+abcdrl/ppo.py:183:22: C0103: Argument name "x" doesn't conform to snake_case naming style (invalid-name)
+abcdrl/ppo.py:187:0:
+abcdrl/ppo.py:187:0: W0223: Method 'forward' is abstract in class 'torch.nn.modules.module' but is not overridden (abstract-method)
+abcdrl/ppo.py:198:4:
+abcdrl/ppo.py:201:4:
+abcdrl/ppo.py:211:0:
+abcdrl/ppo.py:218:4:
+abcdrl/ppo.py:223:4:
+abcdrl/ppo.py:223:4: R0914: Too many local variables (27/15) (too-many-locals)
+abcdrl/ppo.py:235:37: E1101: Module 'torch' has no 'clamp' member (no-member)
+abcdrl/ppo.py:236:22: E1101: Module 'torch' has no 'max' member (no-member)
+abcdrl/ppo.py:243:46: E1101: Module 'torch' has no 'clamp' member (no-member)
+abcdrl/ppo.py:249:29: E1101: Module 'torch' has no 'max' member (no-member)
+abcdrl/ppo.py:275:25: W0631: Using possibly undefined loop variable 'data' (undefined-loop-variable)
+abcdrl/ppo.py:275:56: W0631: Using possibly undefined loop variable 'data' (undefined-loop-variable)
+abcdrl/ppo.py:292:0:
+abcdrl/ppo.py:300:4:
+abcdrl/ppo.py:302:17: E1101: Module 'torch' has no 'as_tensor' member; maybe 'is_tensor'? (no-member)
+abcdrl/ppo.py:308:4:
+abcdrl/ppo.py:310:17: E1101: Module 'torch' has no 'as_tensor' member; maybe 'is_tensor'? (no-member)
+abcdrl/ppo.py:317:4:
+abcdrl/ppo.py:327:33: E1101: Module 'torch' has no 'as_tensor' member; maybe 'is_tensor'? (no-member)
+abcdrl/ppo.py:347:0:
+abcdrl/ppo.py:348:4: R0913: Too many arguments (22/5) (too-many-arguments)
+abcdrl/ppo.py:348:4: R0914: Too many local variables (22/15) (too-many-locals)
+abcdrl/ppo.py:403:43: R1721: Unnecessary use of a comprehension, use list(range(self.kwargs['num_envs'])) instead. (unnecessary-comprehension)
+abcdrl/ppo.py:350:8:
+abcdrl/ppo.py:352:8: W0613: Unused argument 'device' (unused-argument)
+abcdrl/ppo.py:353:8: W0613: Unused argument 'capture_video' (unused-argument)
+abcdrl/ppo.py:354:8: W0613: Unused argument 'env_id' (unused-argument)
+abcdrl/ppo.py:355:8: W0613: Unused argument 'num_envs' (unused-argument)
+abcdrl/ppo.py:356:8: W0613: Unused argument 'total_timesteps' (unused-argument)
+abcdrl/ppo.py:357:8: W0613: Unused argument 'gamma' (unused-argument)
+abcdrl/ppo.py:359:8: W0613: Unused argument 'num_steps' (unused-argument)
+abcdrl/ppo.py:361:8: W0613: Unused argument 'learning_rate' (unused-argument)
+abcdrl/ppo.py:362:8: W0613: Unused argument 'anneal_lr' (unused-argument)
+abcdrl/ppo.py:363:8: W0613: Unused argument 'update_epochs' (unused-argument)
+abcdrl/ppo.py:364:8: W0613: Unused argument 'norm_adv' (unused-argument)
+abcdrl/ppo.py:365:8: W0613: Unused argument 'clip_coef' (unused-argument)
+abcdrl/ppo.py:366:8: W0613: Unused argument 'clip_vloss' (unused-argument)
+abcdrl/ppo.py:367:8: W0613: Unused argument 'ent_coef' (unused-argument)
+abcdrl/ppo.py:368:8: W0613: Unused argument 'vf_coef' (unused-argument)
+abcdrl/ppo.py:369:8: W0613: Unused argument 'max_grad_norm' (unused-argument)
+abcdrl/ppo.py:370:8: W0613: Unused argument 'target_kl' (unused-argument)
+abcdrl/ppo.py:372:8: W0613: Unused argument 'num_minibatches' (unused-argument)
+abcdrl/ppo.py:373:8: W0613: Unused argument 'gae_lambda' (unused-argument)
+abcdrl/ppo.py:419:8: W0201: Attribute 'real_next_obs' defined outside __init__ (attribute-defined-outside-init)
+abcdrl/ppo.py:347:0: R0903: Too few public methods (1/2) (too-few-public-methods)
+abcdrl/ppo.py:474:0:
+abcdrl/ppo.py:477:4: W0102: Dangerous default value [] as argument (dangerous-default-value)
+abcdrl/ppo.py:513:0:
+
+------------------------------------------------------------------
+Your code has been rated at 6.11/10 (previous run: 6.11/10, +0.00)

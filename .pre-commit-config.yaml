@@ -8,13 +8,14 @@ repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
   rev: v2.3.0
   hooks:
-  - id: check-yaml
-    args: ['--unsafe']
-  - id: check-ast
-  - id: detect-private-key
-  - id: check-added-large-files
-  - id: end-of-file-fixer
-  - id: trailing-whitespace
+    - id: check-yaml
+      args:
+        - --unsafe
+    - id: check-ast
+    - id: detect-private-key
+    - id: check-added-large-files
+    - id: end-of-file-fixer
+    - id: trailing-whitespace
 - repo: https://github.com/PyCQA/isort
   rev: 5.10.1
   hooks:
@@ -39,4 +40,6 @@ repos:
   rev: v0.991
   hooks:
     - id: mypy
-      args: [--no-strict-optional, --ignore-missing-imports]
+      args:
+        - --no-strict-optional
+        - --ignore-missing-imports
