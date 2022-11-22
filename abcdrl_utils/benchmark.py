@@ -23,7 +23,7 @@ def train_process(alg: str, env_id: str, kwargs: dict[str, Any]) -> None:
 def main(
     algs: Union[str, list[str]] = ["dqn"],
     env_ids: Union[str, list[str]] = ["CartPole-v1"],
-    seeds: Union[str, list[int]] = [1],
+    seeds: Union[int, list[int]] = [1],
     device: str = "auto",
     workers: int = 3,
     track: bool = False,

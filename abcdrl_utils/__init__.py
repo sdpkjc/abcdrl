@@ -1,4 +1,5 @@
-from .example_all_wrappers import *
+import abcdrl_utils.example_all_wrappers
+
 from .wrapper_eval_step import wrapper_eval_step
 from .wrapper_logger import wrapper_logger
 from .wrapper_print_filter import wrapper_print_filter
