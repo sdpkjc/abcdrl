@@ -476,6 +476,7 @@ def wrapper_logger(
     wrapped: Callable[..., Generator[dict[str, Any], None, None]]
 ) -> Callable[..., Generator[dict[str, Any], None, None]]:
     def _wrapper(
+        instance,
         *args,
         track: bool = False,
         wandb_project_name: str = "abcdrl",
@@ -489,18 +490,18 @@ def wrapper_logger(
                 tags=wandb_tags,
                 entity=wandb_entity,
                 sync_tensorboard=True,
-                config=args[0].kwargs,
-                name=args[0].kwargs["exp_name"],
+                config=instance.kwargs,
+                name=instance.kwargs["exp_name"],
                 monitor_gym=True,
                 save_code=True,
             )
-        writer = SummaryWriter(f"runs/{args[0].kwargs['exp_name']}")
+        writer = SummaryWriter(f"runs/{instance.kwargs['exp_name']}")
         writer.add_text(
             "hyperparameters",
-            "|param|value|\n|-|-|\n%s" % ("\n".join([f"|{key}|{value}|" for key, value in args[0].kwargs.items()])),
+            "|param|value|\n|-|-|\n%s" % ("\n".join([f"|{key}|{value}|" for key, value in instance.kwargs.items()])),
         )
 
-        gen = wrapped(*args, **kwargs)
+        gen = wrapped(instance, *args, **kwargs)
         for log_data in gen:
             if "logs" in log_data:
                 for log_item in log_data["logs"].items():
@@ -513,8 +514,8 @@ def wrapper_logger(
 def wrapper_filter(
     wrapped: Callable[..., Generator[dict[str, Any], None, None]]
 ) -> Callable[..., Generator[dict[str, Any], None, None]]:
-    def _wrapper(*args, **kwargs) -> Generator[dict[str, Any], None, None]:
-        gen = wrapped(*args, **kwargs)
+    def _wrapper(instance, *args, **kwargs) -> Generator[dict[str, Any], None, None]:
+        gen = wrapped(instance, *args, **kwargs)
         for log_data in gen:
             if "logs" in log_data and log_data["log_type"] != "train":
                 yield log_data
