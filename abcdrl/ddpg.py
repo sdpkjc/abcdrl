@@ -5,7 +5,7 @@ import dataclasses
 import os
 import random
 import time
-from typing import Any, Callable, Generator, Generic, Optional, TypeVar, Union
+from typing import Any, Callable, Generator, Generic, TypeVar
 
 import fire
 import gymnasium as gym
@@ -138,7 +138,7 @@ class Model(nn.Module):
             torch.FloatTensor((self.kwargs["act_space"].high + self.kwargs["act_space"].low) / 2.0),
         )
 
-    def value(self, obs: torch.Tensor, act: Optional[torch.Tensor] = None) -> torch.Tensor:
+    def value(self, obs: torch.Tensor, act: torch.Tensor | None = None) -> torch.Tensor:
         if act is None:
             act = self.action(obs)
         return self.critic_nn(obs, act)
@@ -252,9 +252,9 @@ class Agent:
 class Trainer:
     def __init__(
         self,
-        exp_name: Optional[str] = None,
+        exp_name: str | None = None,
         seed: int = 1,
-        device: Union[str, torch.device] = "auto",
+        device: str | torch.device = "auto",
         capture_video: bool = False,
         env_id: str = "Hopper-v4",
         num_envs: int = 1,
@@ -364,7 +364,7 @@ def wrapper_logger(
         track: bool = False,
         wandb_project_name: str = "abcdrl",
         wandb_tags: list[str] = [],
-        wandb_entity: Optional[str] = None,
+        wandb_entity: str | None = None,
         **kwargs,
     ) -> Generator[dict[str, Any], None, None]:
         if track:

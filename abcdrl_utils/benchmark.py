@@ -3,7 +3,7 @@ from __future__ import annotations
 import itertools
 import subprocess
 from concurrent.futures import ThreadPoolExecutor
-from typing import Any, Optional, Union
+from typing import Any
 
 import fire
 import tomli
@@ -21,15 +21,15 @@ def train_process(alg: str, env_id: str, kwargs: dict[str, Any]) -> None:
 
 
 def main(
-    algs: Union[str, list[str]] = ["dqn"],
-    env_ids: Union[str, list[str]] = ["CartPole-v1"],
-    seeds: Union[int, list[int]] = [1],
+    algs: str | list[str] = ["dqn"],
+    env_ids: str | list[str] = ["CartPole-v1"],
+    seeds: int | list[int] = [1],
     device: str = "auto",
     workers: int = 3,
     track: bool = False,
     wandb_project_name: str = "abcdrl",
-    wandb_entity: Optional[str] = None,
-    wandb_tags: Union[str, list[str]] = [],
+    wandb_entity: str | None = None,
+    wandb_tags: str | list[str] = [],
     capture_video: bool = False,
 ):
     if not isinstance(algs, list):

@@ -4,7 +4,7 @@ import dataclasses
 import os
 import random
 import time
-from typing import Any, Callable, Generator, Generic, Optional, TypeVar, Union
+from typing import Any, Callable, Generator, Generic, TypeVar
 
 import fire
 import gymnasium as gym
@@ -116,7 +116,7 @@ class RolloutBuffer:
 
     def get(
         self,
-        batch_size: Optional[int] = None,
+        batch_size: int | None = None,
     ) -> Generator[Samples, None, None]:
         assert self.full
 
@@ -200,7 +200,7 @@ class Model(nn.Module):
         return self.critic_nn(obs)
 
     def action(
-        self, obs: torch.Tensor, act: Optional[torch.Tensor] = None
+        self, obs: torch.Tensor, act: torch.Tensor | None = None
     ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         act_mean, act_std = self.actor_nn(obs)
         probs = Normal(act_mean, act_std)
@@ -348,9 +348,9 @@ class Agent:
 class Trainer:
     def __init__(
         self,
-        exp_name: Optional[str] = None,
+        exp_name: str | None = None,
         seed: int = 1,
-        device: Union[str, torch.device] = "auto",
+        device: str | torch.device = "auto",
         capture_video: bool = False,
         env_id: str = "Hopper-v4",
         num_envs: int = 1,
@@ -368,7 +368,7 @@ class Trainer:
         ent_coef: float = 0.0,
         vf_coef: float = 0.5,
         max_grad_norm: float = 0.5,
-        target_kl: Optional[float] = None,
+        target_kl: float | None = None,
         # Train
         num_minibatches: int = 32,
         gae_lambda: float = 0.95,
@@ -481,7 +481,7 @@ def wrapper_logger(
         track: bool = False,
         wandb_project_name: str = "abcdrl",
         wandb_tags: list[str] = [],
-        wandb_entity: Optional[str] = None,
+        wandb_entity: str | None = None,
         **kwargs,
     ) -> Generator[dict[str, Any], None, None]:
         if track:

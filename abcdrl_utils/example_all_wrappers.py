@@ -5,7 +5,7 @@ import dataclasses
 import os
 import random
 import time
-from typing import Any, Callable, Generator, Generic, Optional, TypeVar, Union
+from typing import Any, Callable, Generator, Generic, TypeVar
 
 import dill
 import fire
@@ -203,9 +203,9 @@ class Agent:
 class Trainer:
     def __init__(
         self,
-        exp_name: Optional[str] = None,
+        exp_name: str | None = None,
         seed: int = 1,
-        device: Union[str, torch.device] = "auto",
+        device: str | torch.device = "auto",
         capture_video: bool = False,
         env_id: str = "CartPole-v1",
         num_envs: int = 1,
@@ -353,7 +353,7 @@ def wrapper_logger(
         track: bool = False,
         wandb_project_name: str = "abcdrl",
         wandb_tags: list[str] = [],
-        wandb_entity: Optional[str] = None,
+        wandb_entity: str | None = None,
         **kwargs,
     ) -> Generator[dict[str, Any], None, None]:
         if track:
