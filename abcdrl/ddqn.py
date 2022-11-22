@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 import copy
+import dataclasses
 import os
 import random
 import time
-from typing import Any, Callable, Generator, NamedTuple, Optional, Union
+from typing import Any, Callable, Generator, Optional, Union
 
-import dill
 import fire
 import gymnasium as gym
 import numpy as np
@@ -32,7 +32,8 @@ def get_space_shape(env_space: gym.Space) -> tuple[Any]:
 
 
 class ReplayBuffer:
-    class Samples(NamedTuple):
+    @dataclasses.dataclass
+    class Samples:
         observations: Union[torch.Tensor, np.ndarray]
         actions: Union[torch.Tensor, np.ndarray]
         next_observations: Union[torch.Tensor, np.ndarray]
@@ -179,12 +180,13 @@ class Agent:
 
     def learn(self, data: ReplayBuffer.Samples) -> dict[str, Any]:
         # 数据预处理 & 目标网络同步
-        data = data._replace(
+        data = dataclasses.replace(
+            data,
             **{
                 item[0]: torch.as_tensor(item[1], device=self.kwargs["device"])
-                for item in data._asdict().items()
+                for item in dataclasses.asdict(data).items()
                 if isinstance(item[1], np.ndarray)
-            }
+            },
         )
 
         log_data = self.alg.learn(data)
@@ -307,47 +309,11 @@ class Trainer:
         return thunk
 
 
-def eval_step_wrapper(
+def wrapper_logger(
     wrapped: Callable[..., Generator[dict[str, Any], None, None]]
 ) -> Callable[..., Generator[dict[str, Any], None, None]]:
     def _wrapper(
-        *args,
-        eval_frequency: int = 5_000,
-        num_steps_eval: int = 500,
-        eval_env_seed: int = 1,
-        **kwargs,
-    ) -> Generator[dict[str, Any], None, None]:
-        eval_frequency = max(eval_frequency // args[0].kwargs["num_envs"] * args[0].kwargs["num_envs"], 1)
-        eval_env = gym.vector.SyncVectorEnv([args[0]._make_env(eval_env_seed)])
-        eval_obs, _ = eval_env.reset(seed=1)
-
-        gen = wrapped(*args, **kwargs)
-        for log_data in gen:
-            if not log_data["sample_step"] % eval_frequency and log_data["log_type"] == "collect":
-                el_list, er_list = [], []
-                for _ in range(num_steps_eval):
-                    act = args[0].agent.predict(eval_obs)
-                    eval_obs, _, _, _, infos = eval_env.step(act)
-                    if "final_info" in infos.keys():
-                        final_info = next(item for item in infos["final_info"] if item is not None)
-                        el_list.append(final_info["episode"]["l"][0])
-                        er_list.append(final_info["episode"]["r"][0])
-                eval_log_data = {"log_type": "evaluate", "sample_step": log_data["sample_step"]}
-                if el_list and er_list:
-                    eval_log_data["logs"] = {
-                        "mean_episodic_length": sum(el_list) / len(el_list),
-                        "mean_episodic_return": sum(er_list) / len(er_list),
-                    }
-                yield eval_log_data
-            yield log_data
-
-    return _wrapper
-
-
-def logger_wrapper(
-    wrapped: Callable[..., Generator[dict[str, Any], None, None]]
-) -> Callable[..., Generator[dict[str, Any], None, None]]:
-    def _wrapper(
+        instance,
         *args,
         track: bool = False,
         wandb_project_name: str = "abcdrl",
@@ -361,18 +327,18 @@ def logger_wrapper(
                 tags=wandb_tags,
                 entity=wandb_entity,
                 sync_tensorboard=True,
-                config=args[0].kwargs,
-                name=args[0].kwargs["exp_name"],
+                config=instance.kwargs,
+                name=instance.kwargs["exp_name"],
                 monitor_gym=True,
                 save_code=True,
             )
-        writer = SummaryWriter(f"runs/{args[0].kwargs['exp_name']}")
+        writer = SummaryWriter(f"runs/{instance.kwargs['exp_name']}")
         writer.add_text(
             "hyperparameters",
-            "|param|value|\n|-|-|\n%s" % ("\n".join([f"|{key}|{value}|" for key, value in args[0].kwargs.items()])),
+            "|param|value|\n|-|-|\n" + "\n".join([f"|{key}|{value}|" for key, value in instance.kwargs.items()]),
         )
 
-        gen = wrapped(*args, **kwargs)
+        gen = wrapped(instance, *args, **kwargs)
         for log_data in gen:
             if "logs" in log_data:
                 for log_item in log_data["logs"].items():
@@ -382,29 +348,11 @@ def logger_wrapper(
     return _wrapper
 
 
-def save_model_wrapper(
+def wrapper_print_filter(
     wrapped: Callable[..., Generator[dict[str, Any], None, None]]
 ) -> Callable[..., Generator[dict[str, Any], None, None]]:
-    def _wrapper(*args, save_frequency: int = 1_000_0, **kwargs) -> Generator[dict[str, Any], None, None]:
-        save_frequency = max(save_frequency // args[0].kwargs["num_envs"] * args[0].kwargs["num_envs"], 1)
-
-        gen = wrapped(*args, **kwargs)
-        for log_data in gen:
-            if not log_data["sample_step"] % save_frequency:
-                if not os.path.exists(f"models/{args[0].kwargs['exp_name']}"):
-                    os.makedirs(f"models/{args[0].kwargs['exp_name']}")
-                with open(f"models/{args[0].kwargs['exp_name']}/s{args[0].agent.sample_step}.agent", "ab+") as file:
-                    dill.dump(args[0].agent, file)
-            yield log_data
-
-    return _wrapper
-
-
-def filter_wrapper(
-    wrapped: Callable[..., Generator[dict[str, Any], None, None]]
-) -> Callable[..., Generator[dict[str, Any], None, None]]:
-    def _wrapper(*args, **kwargs) -> Generator[dict[str, Any], None, None]:
-        gen = wrapped(*args, **kwargs)
+    def _wrapper(instance, *args, **kwargs) -> Generator[dict[str, Any], None, None]:
+        gen = wrapped(instance, *args, **kwargs)
         for log_data in gen:
             if "logs" in log_data and log_data["log_type"] != "train":
                 yield log_data
@@ -421,8 +369,6 @@ if __name__ == "__main__":
     torch.backends.cudnn.deterministic = True
     torch.cuda.manual_seed_all(1234)
 
-    Trainer.__call__ = eval_step_wrapper(Trainer.__call__)
-    Trainer.__call__ = logger_wrapper(Trainer.__call__)
-    Trainer.__call__ = save_model_wrapper(Trainer.__call__)
-    Trainer.__call__ = filter_wrapper(Trainer.__call__)
+    Trainer.__call__ = wrapper_logger(Trainer.__call__)
+    Trainer.__call__ = wrapper_print_filter(Trainer.__call__)
     fire.Fire(Trainer)

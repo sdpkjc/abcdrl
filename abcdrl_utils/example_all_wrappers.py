@@ -7,6 +7,7 @@ import random
 import time
 from typing import Any, Callable, Generator, Optional, Union
 
+import dill
 import fire
 import gymnasium as gym
 import numpy as np
@@ -88,35 +89,19 @@ class ReplayBuffer:
         return self.size
 
 
-class ActorNetwork(nn.Module):
+class Network(nn.Module):
     def __init__(self, in_n: int, out_n: int) -> None:
         super().__init__()
         self.network = nn.Sequential(
-            nn.Linear(in_n, 256),
+            nn.Linear(in_n, 120),
             nn.ReLU(),
-            nn.Linear(256, 256),
+            nn.Linear(120, 84),
             nn.ReLU(),
-            nn.Linear(256, out_n),
-            nn.Tanh(),
+            nn.Linear(84, out_n),
         )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         return self.network(x)
-
-
-class CriticNetwork(nn.Module):
-    def __init__(self, in_n: int) -> None:
-        super().__init__()
-        self.network = nn.Sequential(
-            nn.Linear(in_n, 256),
-            nn.ReLU(),
-            nn.Linear(256, 256),
-            nn.ReLU(),
-            nn.Linear(256, 1),
-        )
-
-    def forward(self, x: torch.Tensor, a: torch.Tensor) -> torch.Tensor:
-        return self.network(torch.cat([x, a], 1))
 
 
 class Model(nn.Module):
@@ -124,34 +109,13 @@ class Model(nn.Module):
         super().__init__()
         self.kwargs = kwargs
 
-        self.actor_nn = ActorNetwork(
-            int(np.prod(get_space_shape(self.kwargs["obs_space"]))),
-            int(np.prod(get_space_shape(self.kwargs["act_space"]))),
-        )
-        self.critic_nn_0 = CriticNetwork(
-            int(np.prod(get_space_shape(self.kwargs["obs_space"])) + np.prod(get_space_shape(self.kwargs["act_space"])))
-        )
-        self.critic_nn_1 = CriticNetwork(
-            int(np.prod(get_space_shape(self.kwargs["obs_space"])) + np.prod(get_space_shape(self.kwargs["act_space"])))
+        self.network = Network(
+            np.prod(get_space_shape(self.kwargs["obs_space"])),
+            self.kwargs["act_space"].n,
         )
 
-        self.register_buffer(
-            "action_scale",
-            torch.FloatTensor((self.kwargs["act_space"].high - self.kwargs["act_space"].low) / 2.0),
-        )
-        self.register_buffer(
-            "action_bias",
-            torch.FloatTensor((self.kwargs["act_space"].high + self.kwargs["act_space"].low) / 2.0),
-        )
-
-    def value(self, obs: torch.Tensor, act: Optional[torch.Tensor] = None) -> tuple[torch.Tensor, torch.Tensor]:
-        if act is None:
-            act = self.action(obs)
-        return self.critic_nn_0(obs, act), self.critic_nn_1(obs, act)
-
-    def action(self, obs: torch.Tensor) -> torch.Tensor:
-        act = self.actor_nn(obs) * self.action_scale + self.action_bias
-        return act
+    def value(self, obs: torch.Tensor) -> torch.Tensor:
+        return self.network(obs)
 
 
 class Algorithm:
@@ -160,64 +124,29 @@ class Algorithm:
 
         self.model = Model(**self.kwargs).to(self.kwargs["device"])
         self.model_t = copy.deepcopy(self.model)
-        self.optimizer_actor = optim.Adam(self.model.actor_nn.parameters(), lr=self.kwargs["learning_rate"])
-        self.optimizer_critic = optim.Adam(
-            list(self.model.critic_nn_0.parameters()) + list(self.model.critic_nn_1.parameters()),
-            lr=self.kwargs["learning_rate"],
-        )
+        self.optimizer = optim.Adam(self.model.parameters(), lr=self.kwargs["learning_rate"])
 
     def predict(self, obs: torch.Tensor) -> torch.Tensor:
-        act = self.model.action(obs)
-        return act
+        val = self.model.value(obs)
+        return val
 
-    def learn(self, data: ReplayBuffer.Samples, update_actor: bool) -> dict[str, Any]:
+    def learn(self, data: ReplayBuffer.Samples) -> dict[str, Any]:
         with torch.no_grad():
-            clipped_noise = (torch.randn_like(torch.Tensor(data.actions[0])) * self.kwargs["policy_noise"]).clamp(
-                -self.kwargs["noise_clip"], self.kwargs["noise_clip"]
-            )
-            next_state_action = self.model_t.action(data.next_observations)
-            next_state_action = (next_state_action + clipped_noise.to(next(self.model_t.parameters()).device)).clamp(
-                self.kwargs["act_space"].low[0], self.kwargs["act_space"].high[0]
-            )
-            next_q_value_0, next_q_value_1 = self.model_t.value(data.next_observations, next_state_action)
-            next_q_value = torch.min(next_q_value_0, next_q_value_1)
-            td_target = data.rewards.flatten() + self.kwargs["gamma"] * next_q_value.view(-1) * (
-                1 - data.dones.flatten()
-            )
+            target_max, _ = self.model_t.value(data.next_observations).max(dim=1)
+            td_target = data.rewards.flatten() + self.kwargs["gamma"] * target_max * (1 - data.dones.flatten())
 
-        old_val_0, old_val_1 = self.model.value(data.observations, data.actions)
-        old_val_0, old_val_1 = old_val_0.view(-1), old_val_1.view(-1)
+        old_val = self.model.value(data.observations).gather(1, data.actions).squeeze()
+        td_loss = F.mse_loss(td_target, old_val)
 
-        critic_loss_0 = F.mse_loss(td_target, old_val_0)
-        critic_loss_1 = F.mse_loss(td_target, old_val_1)
-        critic_loss = critic_loss_0 + critic_loss_1
-        self.optimizer_critic.zero_grad()
-        critic_loss.backward()
-        self.optimizer_critic.step()
+        self.optimizer.zero_grad()
+        td_loss.backward()
+        self.optimizer.step()
 
-        log_data = {
-            "td_loss": critic_loss / 2,
-            "td_loss_0": critic_loss_0,
-            "td_loss_1": critic_loss_1,
-            "q_value": ((old_val_0 + old_val_1) / 2).mean(),
-            "q_value_0": old_val_0.mean(),
-            "q_value_1": old_val_1.mean(),
-        }
-
-        if update_actor:
-            actor_loss, _ = self.model.value(data.observations)
-            actor_loss = -actor_loss.mean()
-            self.optimizer_actor.zero_grad()
-            actor_loss.backward()
-            self.optimizer_actor.step()
-
-            log_data["actor_loss"] = actor_loss
-
+        log_data = {"td_loss": td_loss, "q_value": old_val.mean()}
         return log_data
 
     def sync_target(self) -> None:
-        for param, target_param in zip(self.model.parameters(), self.model_t.parameters()):
-            target_param.data.copy_(self.kwargs["tau"] * param.data + (1 - self.kwargs["tau"]) * target_param.data)
+        self.model_t.load_state_dict(self.model.state_dict())
 
 
 class Agent:
@@ -228,34 +157,23 @@ class Agent:
         self.sample_step = 0
         self.learn_step = 0
 
-        self.action_scale = torch.FloatTensor((self.kwargs["act_space"].high - self.kwargs["act_space"].low) / 2.0)
-        self.action_bias = torch.FloatTensor((self.kwargs["act_space"].high + self.kwargs["act_space"].low) / 2.0)
-
     def predict(self, obs: np.ndarray) -> np.ndarray:
         # 评估
         obs = torch.Tensor(obs).to(next(self.alg.model.parameters()).device)
         with torch.no_grad():
-            act = self.alg.predict(obs)
+            _, act = self.alg.predict(obs).max(dim=1)
         act = act.cpu().numpy()
         return act
 
     def sample(self, obs: np.ndarray) -> np.ndarray:
         # 训练
-        if self.sample_step < self.kwargs["learning_starts"]:
+        if random.random() < self._get_epsilon():
             act = np.array([self.kwargs["act_space"].sample() for _ in range(self.kwargs["num_envs"])])
         else:
             obs = torch.Tensor(obs).to(next(self.alg.model.parameters()).device)
             with torch.no_grad():
-                act = self.alg.predict(obs)
-            # 可能有三种噪声设置
-            # noise = torch.normal(self.action_bias, self.action_scale * self.kwargs["exploration_noise"]).to(
-            #     next(self.alg.model.parameters()).device
-            # )
-            noise = torch.normal(0, self.action_scale * self.kwargs["exploration_noise"]).to(
-                next(self.alg.model.parameters()).device
-            )
-            act += noise
-            act = act.cpu().numpy().clip(self.kwargs["act_space"].low, self.kwargs["act_space"].high)
+                _, act = self.alg.predict(obs).max(dim=1)
+            act = act.cpu().numpy()
         self.sample_step += self.kwargs["num_envs"]
         return act
 
@@ -270,11 +188,18 @@ class Agent:
             },
         )
 
-        log_data = self.alg.learn(data, self.sample_step % self.kwargs["policy_frequency"] == 0)
-        if self.sample_step % self.kwargs["policy_frequency"] == 0:
+        log_data = self.alg.learn(data)
+        if self.sample_step % self.kwargs["target_network_frequency"] == 0:
             self.alg.sync_target()
         self.learn_step += 1
+        log_data["epsilon"] = self._get_epsilon()
         return log_data
+
+    def _get_epsilon(self) -> float:
+        slope = (self.kwargs["end_epsilon"] - self.kwargs["start_epsilon"]) * (
+            self.sample_step / (self.kwargs["exploration_fraction"] * self.kwargs["total_timesteps"])
+        ) + self.kwargs["start_epsilon"]
+        return max(slope, self.kwargs["end_epsilon"])
 
 
 class Trainer:
@@ -284,23 +209,22 @@ class Trainer:
         seed: int = 1,
         device: Union[str, torch.device] = "auto",
         capture_video: bool = False,
-        env_id: str = "Hopper-v4",
+        env_id: str = "CartPole-v1",
         num_envs: int = 1,
-        total_timesteps: int = 1_000_000,
+        total_timesteps: int = 5_000_00,
         gamma: float = 0.99,
         # Collect
-        buffer_size: int = 1_000_000,
-        exploration_noise: float = 0.1,
-        noise_clip: float = 0.5,
+        buffer_size: int = 1_000_0,
+        start_epsilon: float = 1.0,
+        end_epsilon: float = 0.05,
+        exploration_fraction: float = 0.5,
         # Learn
-        batch_size: int = 256,
-        learning_rate: float = 3e-4,
-        tau: float = 0.005,
-        policy_noise: float = 0.2,
+        batch_size: int = 128,
+        learning_rate: float = 2.5e-4,
         # Train
-        learning_starts: int = 25_000,
-        train_frequency: int = 1,
-        policy_frequency: int = 2,
+        learning_starts: int = 1_000_0,
+        target_network_frequency: int = 500,
+        train_frequency: int = 10,
     ) -> None:
         self.kwargs = locals()
         self.kwargs.pop("self")
@@ -310,14 +234,14 @@ class Trainer:
                 f"{self.kwargs['env_id']}__{os.path.basename(__file__).rstrip('.py')}__"
                 + f"{self.kwargs['seed']}__{int(time.time())}"
             )
-        self.kwargs["policy_frequency"] = max(
-            self.kwargs["policy_frequency"] // self.kwargs["num_envs"] * self.kwargs["num_envs"], 1
+        self.kwargs["target_network_frequency"] = max(
+            self.kwargs["target_network_frequency"] // self.kwargs["num_envs"] * self.kwargs["num_envs"], 1
         )
         if self.kwargs["device"] == "auto":
             self.kwargs["device"] = "cuda" if torch.cuda.is_available() else "cpu"
 
         self.envs = gym.vector.SyncVectorEnv([self._make_env(i) for i in range(self.kwargs["num_envs"])])
-        assert isinstance(self.envs.single_action_space, gym.spaces.Box)
+        assert isinstance(self.envs.single_action_space, gym.spaces.Discrete)
 
         self.kwargs["obs_space"] = self.envs.single_observation_space
         self.kwargs["act_space"] = self.envs.single_action_space
@@ -373,7 +297,6 @@ class Trainer:
     def _make_env(self, idx: int) -> Callable[[], gym.Env]:
         def thunk() -> gym.Env:
             env = gym.make(self.kwargs["env_id"], render_mode="rgb_array")
-            env.observation_space.dtype = np.float32
             env = gym.wrappers.RecordEpisodeStatistics(env)
             if self.kwargs["capture_video"]:
                 if idx == 0:
@@ -383,6 +306,44 @@ class Trainer:
             return env
 
         return thunk
+
+
+def wrapper_eval_step(
+    wrapped: Callable[..., Generator[dict[str, Any], None, None]]
+) -> Callable[..., Generator[dict[str, Any], None, None]]:
+    def _wrapper(
+        instance,
+        *args,
+        eval_frequency: int = 5_000,
+        num_steps_eval: int = 500,
+        eval_env_seed: int = 1,
+        **kwargs,
+    ) -> Generator[dict[str, Any], None, None]:
+        eval_frequency = max(eval_frequency // instance.kwargs["num_envs"] * instance.kwargs["num_envs"], 1)
+        eval_env = gym.vector.SyncVectorEnv([instance._make_env(eval_env_seed)])
+        eval_obs, _ = eval_env.reset(seed=1)
+
+        gen = wrapped(instance, *args, **kwargs)
+        for log_data in gen:
+            if not log_data["sample_step"] % eval_frequency and log_data["log_type"] == "collect":
+                el_list, er_list = [], []
+                for _ in range(num_steps_eval):
+                    act = instance.agent.predict(eval_obs)
+                    eval_obs, _, _, _, infos = eval_env.step(act)
+                    if "final_info" in infos.keys():
+                        final_info = next(item for item in infos["final_info"] if item is not None)
+                        el_list.append(final_info["episode"]["l"][0])
+                        er_list.append(final_info["episode"]["r"][0])
+                eval_log_data = {"log_type": "evaluate", "sample_step": log_data["sample_step"]}
+                if el_list and er_list:
+                    eval_log_data["logs"] = {
+                        "mean_episodic_length": sum(el_list) / len(el_list),
+                        "mean_episodic_return": sum(er_list) / len(er_list),
+                    }
+                yield eval_log_data
+            yield log_data
+
+    return _wrapper
 
 
 def wrapper_logger(
@@ -424,6 +385,24 @@ def wrapper_logger(
     return _wrapper
 
 
+def wrapper_save_model(
+    wrapped: Callable[..., Generator[dict[str, Any], None, None]]
+) -> Callable[..., Generator[dict[str, Any], None, None]]:
+    def _wrapper(instance, *args, save_frequency: int = 1_000_0, **kwargs) -> Generator[dict[str, Any], None, None]:
+        save_frequency = max(save_frequency // instance.kwargs["num_envs"] * instance.kwargs["num_envs"], 1)
+
+        gen = wrapped(instance, *args, **kwargs)
+        for log_data in gen:
+            if not log_data["sample_step"] % save_frequency:
+                if not os.path.exists(f"models/{instance.kwargs['exp_name']}"):
+                    os.makedirs(f"models/{instance.kwargs['exp_name']}")
+                with open(f"models/{instance.kwargs['exp_name']}/s{instance.agent.sample_step}.agent", "ab+") as file:
+                    dill.dump(instance.agent, file)
+            yield log_data
+
+    return _wrapper
+
+
 def wrapper_print_filter(
     wrapped: Callable[..., Generator[dict[str, Any], None, None]]
 ) -> Callable[..., Generator[dict[str, Any], None, None]]:
@@ -445,6 +424,8 @@ if __name__ == "__main__":
     torch.backends.cudnn.deterministic = True
     torch.cuda.manual_seed_all(1234)
 
+    Trainer.__call__ = wrapper_eval_step(Trainer.__call__)
     Trainer.__call__ = wrapper_logger(Trainer.__call__)
+    Trainer.__call__ = wrapper_save_model(Trainer.__call__)
     Trainer.__call__ = wrapper_print_filter(Trainer.__call__)
     fire.Fire(Trainer)

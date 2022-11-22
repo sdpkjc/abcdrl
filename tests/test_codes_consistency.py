@@ -1,6 +1,9 @@
+from __future__ import annotations
+
 import inspect
 
 import abcdrl
+import abcdrl_utils
 
 
 def test_codes_buffer() -> None:
@@ -55,37 +58,46 @@ def test_codes_trainer() -> None:
 
 
 def test_codes_wrapper() -> None:
-    # logger_wrapper
-    assert inspect.getsource(abcdrl.dqn.logger_wrapper) == inspect.getsource(abcdrl.ddqn.logger_wrapper)
-    assert inspect.getsource(abcdrl.dqn.logger_wrapper) == inspect.getsource(abcdrl.pdqn.logger_wrapper)
-    assert inspect.getsource(abcdrl.dqn.logger_wrapper) == inspect.getsource(abcdrl.ddpg.logger_wrapper)
-    assert inspect.getsource(abcdrl.dqn.logger_wrapper) == inspect.getsource(abcdrl.td3.logger_wrapper)
-    assert inspect.getsource(abcdrl.dqn.logger_wrapper) == inspect.getsource(abcdrl.sac.logger_wrapper)
-    assert inspect.getsource(abcdrl.dqn.logger_wrapper) == inspect.getsource(abcdrl.ppo.logger_wrapper)
+    # wrapper_logger
+    assert inspect.getsource(abcdrl_utils.wrapper_logger) == inspect.getsource(abcdrl.dqn.wrapper_logger)
+    assert inspect.getsource(abcdrl_utils.wrapper_logger) == inspect.getsource(abcdrl.ddqn.wrapper_logger)
+    assert inspect.getsource(abcdrl_utils.wrapper_logger) == inspect.getsource(abcdrl.pdqn.wrapper_logger)
+    assert inspect.getsource(abcdrl_utils.wrapper_logger) == inspect.getsource(abcdrl.ddpg.wrapper_logger)
+    assert inspect.getsource(abcdrl_utils.wrapper_logger) == inspect.getsource(abcdrl.td3.wrapper_logger)
+    assert inspect.getsource(abcdrl_utils.wrapper_logger) == inspect.getsource(abcdrl.sac.wrapper_logger)
+    assert inspect.getsource(abcdrl_utils.wrapper_logger) == inspect.getsource(abcdrl.ppo.wrapper_logger)
+    assert inspect.getsource(abcdrl_utils.wrapper_logger) == inspect.getsource(
+        abcdrl_utils.example_all_wrappers.wrapper_logger
+    )
 
-    # save_model_wrapper
-    assert inspect.getsource(abcdrl.dqn.save_model_wrapper) == inspect.getsource(abcdrl.ddqn.save_model_wrapper)
-    assert inspect.getsource(abcdrl.dqn.save_model_wrapper) == inspect.getsource(abcdrl.pdqn.save_model_wrapper)
-    assert inspect.getsource(abcdrl.dqn.save_model_wrapper) == inspect.getsource(abcdrl.ddpg.save_model_wrapper)
-    assert inspect.getsource(abcdrl.dqn.save_model_wrapper) == inspect.getsource(abcdrl.td3.save_model_wrapper)
-    assert inspect.getsource(abcdrl.dqn.save_model_wrapper) == inspect.getsource(abcdrl.sac.save_model_wrapper)
-    assert inspect.getsource(abcdrl.dqn.save_model_wrapper) == inspect.getsource(abcdrl.ppo.save_model_wrapper)
+    # wrapper_filter
+    assert inspect.getsource(abcdrl_utils.wrapper_print_filter) == inspect.getsource(abcdrl.dqn.wrapper_print_filter)
+    assert inspect.getsource(abcdrl_utils.wrapper_print_filter) == inspect.getsource(abcdrl.ddqn.wrapper_print_filter)
+    assert inspect.getsource(abcdrl_utils.wrapper_print_filter) == inspect.getsource(abcdrl.pdqn.wrapper_print_filter)
+    assert inspect.getsource(abcdrl_utils.wrapper_print_filter) == inspect.getsource(abcdrl.ddpg.wrapper_print_filter)
+    assert inspect.getsource(abcdrl_utils.wrapper_print_filter) == inspect.getsource(abcdrl.td3.wrapper_print_filter)
+    assert inspect.getsource(abcdrl_utils.wrapper_print_filter) == inspect.getsource(abcdrl.sac.wrapper_print_filter)
+    assert inspect.getsource(abcdrl_utils.wrapper_print_filter) == inspect.getsource(abcdrl.ppo.wrapper_print_filter)
+    assert inspect.getsource(abcdrl_utils.wrapper_print_filter) == inspect.getsource(
+        abcdrl_utils.example_all_wrappers.wrapper_print_filter
+    )
 
-    # filter_wrapper
-    assert inspect.getsource(abcdrl.dqn.filter_wrapper) == inspect.getsource(abcdrl.ddqn.filter_wrapper)
-    assert inspect.getsource(abcdrl.dqn.filter_wrapper) == inspect.getsource(abcdrl.pdqn.filter_wrapper)
-    assert inspect.getsource(abcdrl.dqn.filter_wrapper) == inspect.getsource(abcdrl.ddpg.filter_wrapper)
-    assert inspect.getsource(abcdrl.dqn.filter_wrapper) == inspect.getsource(abcdrl.td3.filter_wrapper)
-    assert inspect.getsource(abcdrl.dqn.filter_wrapper) == inspect.getsource(abcdrl.sac.filter_wrapper)
-    assert inspect.getsource(abcdrl.dqn.filter_wrapper) == inspect.getsource(abcdrl.ppo.filter_wrapper)
+    # wrapper_eval_step
+    assert inspect.getsource(abcdrl_utils.wrapper_eval_step) == inspect.getsource(
+        abcdrl_utils.example_all_wrappers.wrapper_eval_step
+    )
 
-    # eval_step_wrapper
-    assert inspect.getsource(abcdrl.dqn.eval_step_wrapper) == inspect.getsource(abcdrl.ddqn.eval_step_wrapper)
-    assert inspect.getsource(abcdrl.dqn.eval_step_wrapper) == inspect.getsource(abcdrl.pdqn.eval_step_wrapper)
-    assert inspect.getsource(abcdrl.dqn.eval_step_wrapper) == inspect.getsource(abcdrl.ddpg.eval_step_wrapper)
-    assert inspect.getsource(abcdrl.dqn.eval_step_wrapper) == inspect.getsource(abcdrl.td3.eval_step_wrapper)
-    assert inspect.getsource(abcdrl.dqn.eval_step_wrapper) == inspect.getsource(abcdrl.sac.eval_step_wrapper)
-    assert inspect.getsource(abcdrl.dqn.eval_step_wrapper) == inspect.getsource(abcdrl.ppo.eval_step_wrapper)
+    # wrapper_save_model
+    assert inspect.getsource(abcdrl_utils.wrapper_save_model) == inspect.getsource(
+        abcdrl_utils.example_all_wrappers.wrapper_save_model
+    )
+
+
+def test_codes_example() -> None:
+    assert inspect.getsource(abcdrl.dqn.Trainer) == inspect.getsource(abcdrl_utils.example_all_wrappers.Trainer)
+    assert inspect.getsource(abcdrl.dqn.Agent) == inspect.getsource(abcdrl_utils.example_all_wrappers.Agent)
+    assert inspect.getsource(abcdrl.dqn.Algorithm) == inspect.getsource(abcdrl_utils.example_all_wrappers.Algorithm)
+    assert inspect.getsource(abcdrl.dqn.Model) == inspect.getsource(abcdrl_utils.example_all_wrappers.Model)
 
 
 def test_codes_other() -> None:

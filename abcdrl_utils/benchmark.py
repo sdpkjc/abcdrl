@@ -10,7 +10,7 @@ import tomli
 
 
 def train_process(alg: str, env_id: str, kwargs: dict[str, Any]) -> None:
-    with open("benchmark.toml", "rb") as file:
+    with open("abcdrl_utils/benchmark.toml", "rb") as file:
         cmd = tomli.load(file)[alg][env_id]
     for param in kwargs.items():
         if isinstance(param[1], list):
