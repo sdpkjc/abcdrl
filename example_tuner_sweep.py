@@ -1,22 +1,11 @@
 from __future__ import annotations
 
-import argparse
 import time
 
+import fire
 import wandb
 
 import abcdrl
-
-
-def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--sweep-id", type=str, default=None)
-    parser.add_argument("--run-count", type=str, default=1)
-    parser.add_argument("--wandb-project-name", type=str, default="abcdrl")
-
-    args = parser.parse_args()
-    return args
-
 
 sweep_configuration = {
     "method": "random",
@@ -34,7 +23,7 @@ sweep_configuration = {
 
 
 def tune_agent() -> None:
-    writer = wandb.init(project=args.wandb_project_name, name=f"{sweep_configuration['name']}__{int(time.time())}")
+    writer = wandb.init(name=f"{sweep_configuration['name']}__{int(time.time())}")
     wandb.save("abcdrl/dqn.py")
 
     trainer = abcdrl.dqn.Trainer(
@@ -56,10 +45,14 @@ def tune_agent() -> None:
             writer.log({"global_step": log_data["sample_step"]}, step=log_data["sample_step"])
 
 
-if __name__ == "__main__":
-    args = parse_args()
-
-    sweep_id = args.sweep_id
+def main(
+    sweep_id: str | None = None, run_count: int = 1, wandb_project_name: str = "abcdrl", wandb_entity: str | None = None
+):
+    sweep_id = sweep_id
     if sweep_id is None:
-        sweep_id = wandb.sweep(sweep=sweep_configuration, project=args.wandb_project_name)
-    wandb.agent(sweep_id, function=tune_agent, count=args.run_count)
+        sweep_id = wandb.sweep(sweep=sweep_configuration, project=wandb_project_name)
+    wandb.agent(sweep_id, function=tune_agent, count=run_count)
+
+
+if __name__ == "__main__":
+    fire.Fire(main)
