@@ -4,7 +4,7 @@ import dataclasses
 import os
 import random
 import time
-from typing import Any, Callable, Generator, Optional, Union
+from typing import Any, Callable, Generator, Generic, TypeVar
 
 import fire
 import gymnasium as gym
@@ -16,29 +16,26 @@ import wandb
 from torch.distributions.normal import Normal
 from torch.utils.tensorboard import SummaryWriter
 
+SamplesItemType = TypeVar("SamplesItemType", torch.Tensor, np.ndarray)
 
-def get_space_shape(env_space: gym.Space) -> tuple[Any]:
+
+def get_space_shape(env_space: gym.Space) -> tuple[int, ...]:
     if isinstance(env_space, gym.spaces.Box):
         return env_space.shape
     elif isinstance(env_space, gym.spaces.Discrete):
         return (1,)
-    elif isinstance(env_space, gym.spaces.MultiDiscrete):
-        return (int(len(env_space.nvec)),)
-    elif isinstance(env_space, gym.spaces.MultiBinary):
-        return (int(env_space.n),)
-    else:
-        raise NotImplementedError(f"{env_space} observation space is not supported")
+    raise NotImplementedError(f"{env_space} observation space is not supported")
 
 
 class RolloutBuffer:
     @dataclasses.dataclass
-    class Samples:
-        observations: Union[torch.Tensor, np.ndarray]
-        actions: Union[torch.Tensor, np.ndarray]
-        old_values: Union[torch.Tensor, np.ndarray]
-        old_log_prob: Union[torch.Tensor, np.ndarray]
-        advantages: Union[torch.Tensor, np.ndarray]
-        returns: Union[torch.Tensor, np.ndarray]
+    class Samples(Generic[SamplesItemType]):
+        observations: SamplesItemType
+        actions: SamplesItemType
+        old_values: SamplesItemType
+        old_log_prob: SamplesItemType
+        advantages: SamplesItemType
+        returns: SamplesItemType
 
     def __init__(
         self,
@@ -74,8 +71,8 @@ class RolloutBuffer:
         self.full = False
         self.generator_ready = False
 
-    def compute_returns_and_advantage(self, last_values: torch.Tensor, dones: np.ndarray) -> None:
-        last_values = last_values.clone().cpu().numpy().flatten()
+    def compute_returns_and_advantage(self, last_values: np.ndarray, dones: np.ndarray) -> None:
+        last_values = last_values.flatten()
 
         last_gae_lam = 0
         for step in reversed(range(self.buffer_size // self.n_envs)):
@@ -97,8 +94,8 @@ class RolloutBuffer:
         act: np.ndarray,
         rew: np.ndarray,
         episode_start: np.ndarray,
-        val: torch.Tensor,
-        log_prob: torch.Tensor,
+        val: np.ndarray,
+        log_prob: np.ndarray,
     ) -> None:
         assert not self.full
 
@@ -109,8 +106,8 @@ class RolloutBuffer:
         self.acts_buf[self.ptr] = np.array(act).copy()
         self.rews_buf[self.ptr] = np.array(rew).copy()
         self.episode_starts[self.ptr] = np.array(episode_start).copy()
-        self.values[self.ptr] = val.clone().cpu().numpy().flatten()
-        self.log_probs[self.ptr] = log_prob.clone().cpu().numpy()
+        self.values[self.ptr] = np.array(val).copy().flatten()
+        self.log_probs[self.ptr] = np.array(log_prob).copy()
 
         self.ptr += 1
         if self.ptr == self.buffer_size // self.n_envs:
@@ -118,7 +115,7 @@ class RolloutBuffer:
 
     def get(
         self,
-        batch_size: Optional[int] = None,
+        batch_size: int | None = None,
     ) -> Generator[Samples, None, None]:
         assert self.full
 
@@ -134,7 +131,7 @@ class RolloutBuffer:
         indices = np.random.permutation(self.buffer_size)
         for start_idx in range(0, self.buffer_size, batch_size):
             idxs = indices[start_idx : start_idx + batch_size]
-            yield RolloutBuffer.Samples(
+            yield RolloutBuffer.Samples[np.ndarray](
                 observations=self.obs_buf[idxs],
                 actions=self.acts_buf[idxs],
                 old_values=self.values[idxs],
@@ -165,7 +162,7 @@ class ActorNetwork(nn.Module):
         )
         self.network_logstd = nn.Parameter(torch.zeros(1, out_n))
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
+    def forward(self, x: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
         act_mean = self.network_mean(x)
         act_logstd = self.network_logstd.expand_as(act_mean)
         act_std = torch.exp(act_logstd)
@@ -202,7 +199,7 @@ class Model(nn.Module):
         return self.critic_nn(obs)
 
     def action(
-        self, obs: torch.Tensor, act: Optional[torch.Tensor] = None
+        self, obs: torch.Tensor, act: torch.Tensor | None = None
     ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         act_mean, act_std = self.actor_nn(obs)
         probs = Normal(act_mean, act_std)
@@ -223,7 +220,7 @@ class Algorithm:
         val = self.model.value(obs)
         return act, log_prob, val
 
-    def learn(self, data_generator: Generator[RolloutBuffer.Samples, None, None]) -> dict[str, Any]:
+    def learn(self, data_generator: Generator[RolloutBuffer.Samples[torch.Tensor], None, None]) -> dict[str, Any]:
         clipfracs = []
         for data in data_generator:
             _, entropy, newlogprob = self.model.action(data.observations, data.actions)
@@ -302,38 +299,40 @@ class Agent:
 
     def predict(self, obs: np.ndarray) -> np.ndarray:
         # 评估
-        obs = torch.Tensor(obs).to(next(self.alg.model.parameters()).device)
+        obs_ts = torch.as_tensor(obs, device=next(self.alg.model.parameters()).device)
         with torch.no_grad():
-            act, _, _ = self.alg.predict(obs)
-        act = act.cpu().numpy()
-        return act
+            act_ts, _, _ = self.alg.predict(obs_ts)
+        act_np = act_ts.cpu().numpy()
+        return act_np
 
     def sample(self, obs: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
         # 训练
-        obs = torch.Tensor(obs).to(next(self.alg.model.parameters()).device)
+        obs_ts = torch.as_tensor(obs, device=next(self.alg.model.parameters()).device)
         with torch.no_grad():
-            act, log_prob, val = self.alg.predict(obs)
-        act = act.cpu().numpy()
+            act_ts, log_prob_ts, val_ts = self.alg.predict(obs_ts)
+        act_np, log_prob_np, val_np = act_ts.cpu().numpy(), log_prob_ts.cpu().numpy(), val_ts.cpu().numpy()
         self.sample_step += self.kwargs["num_envs"]
-        return act, log_prob, val
+        return act_np, log_prob_np, val_np
 
-    def learn(self, data_generator_list: list[Generator[RolloutBuffer.Samples, None, None]]) -> dict[str, Any]:
+    def learn(
+        self, data_generator_list: list[Generator[RolloutBuffer.Samples[np.ndarray], None, None]]
+    ) -> list[dict[str, Any]]:
         # 数据预处理
         self._update_lr()
         log_data_list = []
-        for data_generator in data_generator_list:
-            data_generator = (
-                dataclasses.replace(
-                    data,
+        for data_generator_np in data_generator_list:
+            data_generator_ts = (
+                RolloutBuffer.Samples[torch.Tensor](
                     **{
                         item[0]: torch.as_tensor(item[1], device=self.kwargs["device"])
-                        for item in dataclasses.asdict(data).items()
                         if isinstance(item[1], np.ndarray)
-                    },
+                        else item[1]
+                        for item in dataclasses.asdict(data).items()
+                    }
                 )
-                for data in data_generator
+                for data in data_generator_np
             )
-            log_data_list += [self.alg.learn(data_generator)]
+            log_data_list += [self.alg.learn(data_generator_ts)]
 
         self.learn_step += 1
         return log_data_list
@@ -348,9 +347,9 @@ class Agent:
 class Trainer:
     def __init__(
         self,
-        exp_name: Optional[str] = None,
+        exp_name: str | None = None,
         seed: int = 1,
-        device: Union[str, torch.device] = "auto",
+        device: str | torch.device = "auto",
         capture_video: bool = False,
         env_id: str = "Hopper-v4",
         num_envs: int = 1,
@@ -368,7 +367,7 @@ class Trainer:
         ent_coef: float = 0.0,
         vf_coef: float = 0.5,
         max_grad_norm: float = 0.5,
-        target_kl: Optional[float] = None,
+        target_kl: float | None = None,
         # Train
         num_minibatches: int = 32,
         gae_lambda: float = 0.95,
@@ -386,7 +385,7 @@ class Trainer:
         if self.kwargs["device"] == "auto":
             self.kwargs["device"] = "cuda" if torch.cuda.is_available() else "cpu"
 
-        self.envs = gym.vector.SyncVectorEnv([self._make_env(i) for i in range(self.kwargs["num_envs"])])
+        self.envs = gym.vector.SyncVectorEnv([self._make_env(i) for i in range(self.kwargs["num_envs"])])  # type: ignore[arg-type]
         assert isinstance(self.envs.single_action_space, gym.spaces.Box)
 
         self.kwargs["obs_space"] = self.envs.single_observation_space
@@ -455,7 +454,7 @@ class Trainer:
     def _make_env(self, idx: int) -> Callable[[], gym.Env]:
         def thunk() -> gym.Env:
             env = gym.make(self.kwargs["env_id"], render_mode="rgb_array")
-            env.observation_space.dtype = np.float32
+            env.observation_space.dtype = np.float32  # type: ignore[assignment]
             env = gym.wrappers.RecordEpisodeStatistics(env)
             if self.kwargs["capture_video"]:
                 if idx == 0:
@@ -481,7 +480,7 @@ def wrapper_logger(
         track: bool = False,
         wandb_project_name: str = "abcdrl",
         wandb_tags: list[str] = [],
-        wandb_entity: Optional[str] = None,
+        wandb_entity: str | None = None,
         **kwargs,
     ) -> Generator[dict[str, Any], None, None]:
         if track:
@@ -532,6 +531,6 @@ if __name__ == "__main__":
     torch.backends.cudnn.deterministic = True
     torch.cuda.manual_seed_all(1234)
 
-    Trainer.__call__ = wrapper_logger(Trainer.__call__)
-    Trainer.__call__ = wrapper_print_filter(Trainer.__call__)
+    Trainer.__call__ = wrapper_logger(Trainer.__call__)  # type: ignore[assignment]
+    Trainer.__call__ = wrapper_print_filter(Trainer.__call__)  # type: ignore[assignment]
     fire.Fire(Trainer)

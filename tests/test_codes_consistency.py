@@ -22,8 +22,8 @@ def test_codes_network() -> None:
 
 
 def test_codes_model() -> None:
-    assert inspect.getsource(abcdrl.dqn.Network) == inspect.getsource(abcdrl.ddqn.Network)
-    assert inspect.getsource(abcdrl.dqn.Network) == inspect.getsource(abcdrl.pdqn.Network)
+    assert inspect.getsource(abcdrl.dqn.Model) == inspect.getsource(abcdrl.ddqn.Model)
+    assert inspect.getsource(abcdrl.dqn.Model) == inspect.getsource(abcdrl.pdqn.Model)
 
 
 def test_codes_agent() -> None:
@@ -98,6 +98,12 @@ def test_codes_example() -> None:
     assert inspect.getsource(abcdrl.dqn.Agent) == inspect.getsource(abcdrl_utils.example_all_wrappers.Agent)
     assert inspect.getsource(abcdrl.dqn.Algorithm) == inspect.getsource(abcdrl_utils.example_all_wrappers.Algorithm)
     assert inspect.getsource(abcdrl.dqn.Model) == inspect.getsource(abcdrl_utils.example_all_wrappers.Model)
+    assert inspect.getsource(abcdrl.dqn.ReplayBuffer) == inspect.getsource(
+        abcdrl_utils.example_all_wrappers.ReplayBuffer
+    )
+    assert inspect.getsource(abcdrl.dqn.get_space_shape) == inspect.getsource(
+        abcdrl_utils.example_all_wrappers.get_space_shape
+    )
 
 
 def test_codes_other() -> None:

@@ -6,7 +6,7 @@ import operator
 import os
 import random
 import time
-from typing import Any, Callable, Generator, Optional, Union
+from typing import Any, Callable, Generator, Generic, TypeVar
 
 import fire
 import gymnasium as gym
@@ -18,30 +18,27 @@ import torch.optim as optim
 import wandb
 from torch.utils.tensorboard import SummaryWriter
 
+SamplesItemType = TypeVar("SamplesItemType", torch.Tensor, np.ndarray)
 
-def get_space_shape(env_space: gym.Space) -> tuple[Any]:
+
+def get_space_shape(env_space: gym.Space) -> tuple[int, ...]:
     if isinstance(env_space, gym.spaces.Box):
         return env_space.shape
     elif isinstance(env_space, gym.spaces.Discrete):
         return (1,)
-    elif isinstance(env_space, gym.spaces.MultiDiscrete):
-        return (int(len(env_space.nvec)),)
-    elif isinstance(env_space, gym.spaces.MultiBinary):
-        return (int(env_space.n),)
-    else:
-        raise NotImplementedError(f"{env_space} observation space is not supported")
+    raise NotImplementedError(f"{env_space} observation space is not supported")
 
 
 class PrioritizedReplayBuffer:
     @dataclasses.dataclass
-    class Samples:
-        observations: Union[torch.Tensor, np.ndarray]
-        actions: Union[torch.Tensor, np.ndarray]
-        next_observations: Union[torch.Tensor, np.ndarray]
-        dones: Union[torch.Tensor, np.ndarray]
-        rewards: Union[torch.Tensor, np.ndarray]
-        weights: Union[torch.Tensor, np.ndarray]
-        indices: list
+    class Samples(Generic[SamplesItemType]):
+        observations: SamplesItemType
+        actions: SamplesItemType
+        next_observations: SamplesItemType
+        dones: SamplesItemType
+        rewards: SamplesItemType
+        weights: SamplesItemType
+        indices: list[int]
 
     class SegmentTree:
         def __init__(self, capacity: int, operation: Callable[[float, float], float], init_value: float) -> None:
@@ -126,7 +123,7 @@ class PrioritizedReplayBuffer:
         done: bool,
         infos: dict[str, Any],
     ) -> None:
-        for obs_i, next_obs_i, act_i, rew_i, done_i in zip(obs, next_obs, act, rew, done):
+        for obs_i, next_obs_i, act_i, rew_i, done_i in zip(obs, next_obs, act, rew, done):  # type: ignore[call-overload]
             self.obs_buf[self.ptr] = np.array(obs_i).copy()
             self.next_obs_buf[self.ptr] = np.array(next_obs_i).copy()
             self.acts_buf[self.ptr] = np.array(act_i).copy()
@@ -219,7 +216,7 @@ class Model(nn.Module):
         self.kwargs = kwargs
 
         self.network = Network(
-            np.prod(get_space_shape(self.kwargs["obs_space"])),
+            int(np.prod(get_space_shape(self.kwargs["obs_space"]))),
             self.kwargs["act_space"].n,
         )
 
@@ -239,7 +236,7 @@ class Algorithm:
         val = self.model.value(obs)
         return val
 
-    def learn(self, data: PrioritizedReplayBuffer.Samples) -> dict[str, Any]:
+    def learn(self, data: PrioritizedReplayBuffer.Samples[torch.Tensor]) -> dict[str, Any]:
         with torch.no_grad():
             target_max, _ = self.model_t.value(data.next_observations).max(dim=1)
             td_target = data.rewards.flatten() + self.kwargs["gamma"] * target_max * (1 - data.dones.flatten())
@@ -269,36 +266,36 @@ class Agent:
 
     def predict(self, obs: np.ndarray) -> np.ndarray:
         # 评估
-        obs = torch.Tensor(obs).to(next(self.alg.model.parameters()).device)
+        obs_ts = torch.as_tensor(obs, device=next(self.alg.model.parameters()).device)
         with torch.no_grad():
-            _, act = self.alg.predict(obs).max(dim=1)
-        act = act.cpu().numpy()
-        return act
+            _, act_ts = self.alg.predict(obs_ts).max(dim=1)
+        act_np = act_ts.cpu().numpy()
+        return act_np
 
     def sample(self, obs: np.ndarray) -> np.ndarray:
         # 训练
         if random.random() < self._get_epsilon():
-            act = np.array([self.kwargs["act_space"].sample() for _ in range(self.kwargs["num_envs"])])
+            act_np = np.array([self.kwargs["act_space"].sample() for _ in range(self.kwargs["num_envs"])])
         else:
-            obs = torch.Tensor(obs).to(next(self.alg.model.parameters()).device)
+            obs_ts = torch.as_tensor(obs, device=next(self.alg.model.parameters()).device)
             with torch.no_grad():
-                _, act = self.alg.predict(obs).max(dim=1)
-            act = act.cpu().numpy()
+                _, act_ts = self.alg.predict(obs_ts).max(dim=1)
+            act_np = act_ts.cpu().numpy()
         self.sample_step += self.kwargs["num_envs"]
-        return act
+        return act_np
 
-    def learn(self, data: PrioritizedReplayBuffer.Samples) -> dict[str, Any]:
+    def learn(self, data: PrioritizedReplayBuffer.Samples[np.ndarray]) -> dict[str, Any]:
         # 数据预处理 & 目标网络同步
-        data = dataclasses.replace(
-            data,
+        data_ts = PrioritizedReplayBuffer.Samples[torch.Tensor](
             **{
                 item[0]: torch.as_tensor(item[1], device=self.kwargs["device"])
-                for item in dataclasses.asdict(data).items()
                 if isinstance(item[1], np.ndarray)
-            },
+                else item[1]
+                for item in dataclasses.asdict(data).items()
+            }
         )
 
-        log_data = self.alg.learn(data)
+        log_data = self.alg.learn(data_ts)
         if self.sample_step % self.kwargs["target_network_frequency"] == 0:
             self.alg.sync_target()
         self.learn_step += 1
@@ -315,9 +312,9 @@ class Agent:
 class Trainer:
     def __init__(
         self,
-        exp_name: Optional[str] = None,
+        exp_name: str | None = None,
         seed: int = 1,
-        device: Union[str, torch.device] = "auto",
+        device: str | torch.device = "auto",
         capture_video: bool = False,
         env_id: str = "CartPole-v1",
         num_envs: int = 1,
@@ -352,7 +349,7 @@ class Trainer:
         if self.kwargs["device"] == "auto":
             self.kwargs["device"] = "cuda" if torch.cuda.is_available() else "cpu"
 
-        self.envs = gym.vector.SyncVectorEnv([self._make_env(i) for i in range(self.kwargs["num_envs"])])
+        self.envs = gym.vector.SyncVectorEnv([self._make_env(i) for i in range(self.kwargs["num_envs"])])  # type: ignore[arg-type]
         assert isinstance(self.envs.single_action_space, gym.spaces.Discrete)
 
         self.kwargs["obs_space"] = self.envs.single_observation_space
@@ -434,7 +431,7 @@ def wrapper_logger(
         track: bool = False,
         wandb_project_name: str = "abcdrl",
         wandb_tags: list[str] = [],
-        wandb_entity: Optional[str] = None,
+        wandb_entity: str | None = None,
         **kwargs,
     ) -> Generator[dict[str, Any], None, None]:
         if track:
@@ -485,6 +482,6 @@ if __name__ == "__main__":
     torch.backends.cudnn.deterministic = True
     torch.cuda.manual_seed_all(1234)
 
-    Trainer.__call__ = wrapper_logger(Trainer.__call__)
-    Trainer.__call__ = wrapper_print_filter(Trainer.__call__)
+    Trainer.__call__ = wrapper_logger(Trainer.__call__)  # type: ignore[assignment]
+    Trainer.__call__ = wrapper_print_filter(Trainer.__call__)  # type: ignore[assignment]
     fire.Fire(Trainer)
