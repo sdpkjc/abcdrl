@@ -2,8 +2,12 @@ name: pytest
 on:
   push:
     paths-ignore:
-      - '**/README.*'
       - 'docs/**/*'
+      - '**/README.*'
+      - 'LICENSE'
+      - 'mkdocs.yml'
+      - '.gitignore'
+      - '.pre-commit-config.yaml'
 jobs:
   build:
     runs-on: ubuntu-22.04
