@@ -10,7 +10,7 @@ import abcdrl_utils
 def test_benchmark() -> None:
     try:
         subprocess.run(
-            "python abcdrl_utils/benchmark.py",
+            "python benchmark.py",
             shell=True,
             check=True,
             timeout=3,
@@ -54,9 +54,7 @@ def test_example_eval_model() -> None:
     )
 
     subprocess.run(
-        "python abcdrl_utils/example_eval_model.py"
-        + " --model-path models/test_eval_dqn/s16.agent"
-        + " --total_timesteps 100",
+        "python example_eval_model.py" + " --model-path models/test_eval_dqn/s16.agent" + " --total_timesteps 100",
         shell=True,
         check=True,
     )
