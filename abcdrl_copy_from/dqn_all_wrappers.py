@@ -317,7 +317,7 @@ def wrapper_eval_step(
         **kwargs,
     ) -> Generator[dict[str, Any], None, None]:
         eval_frequency = max(eval_frequency // instance.kwargs["num_envs"] * instance.kwargs["num_envs"], 1)
-        eval_env = gym.vector.SyncVectorEnv([instance._make_env(eval_env_seed)])
+        eval_env = gym.vector.SyncVectorEnv([instance._make_env(eval_env_seed)])  # type: ignore[arg-type]
         eval_obs, _ = eval_env.reset(seed=1)
 
         gen = wrapped(instance, *args, **kwargs)

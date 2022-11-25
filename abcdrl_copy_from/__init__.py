@@ -1,4 +1,4 @@
-import abcdrl_utils.example_all_wrappers  # noqa
+import abcdrl_copy_from.dqn_all_wrappers  # noqa
 
 from .wrapper_eval_step import wrapper_eval_step  # noqa
 from .wrapper_logger import wrapper_logger  # noqa

@@ -3,7 +3,7 @@ from __future__ import annotations
 import inspect
 
 import abcdrl
-import abcdrl_utils
+import abcdrl_copy_from
 
 
 def test_codes_buffer() -> None:
@@ -59,50 +59,64 @@ def test_codes_trainer() -> None:
 
 def test_codes_wrapper() -> None:
     # wrapper_logger
-    assert inspect.getsource(abcdrl_utils.wrapper_logger) == inspect.getsource(abcdrl.dqn.wrapper_logger)
-    assert inspect.getsource(abcdrl_utils.wrapper_logger) == inspect.getsource(abcdrl.ddqn.wrapper_logger)
-    assert inspect.getsource(abcdrl_utils.wrapper_logger) == inspect.getsource(abcdrl.pdqn.wrapper_logger)
-    assert inspect.getsource(abcdrl_utils.wrapper_logger) == inspect.getsource(abcdrl.ddpg.wrapper_logger)
-    assert inspect.getsource(abcdrl_utils.wrapper_logger) == inspect.getsource(abcdrl.td3.wrapper_logger)
-    assert inspect.getsource(abcdrl_utils.wrapper_logger) == inspect.getsource(abcdrl.sac.wrapper_logger)
-    assert inspect.getsource(abcdrl_utils.wrapper_logger) == inspect.getsource(abcdrl.ppo.wrapper_logger)
-    assert inspect.getsource(abcdrl_utils.wrapper_logger) == inspect.getsource(
-        abcdrl_utils.example_all_wrappers.wrapper_logger
+    assert inspect.getsource(abcdrl_copy_from.wrapper_logger) == inspect.getsource(abcdrl.dqn.wrapper_logger)
+    assert inspect.getsource(abcdrl_copy_from.wrapper_logger) == inspect.getsource(abcdrl.ddqn.wrapper_logger)
+    assert inspect.getsource(abcdrl_copy_from.wrapper_logger) == inspect.getsource(abcdrl.pdqn.wrapper_logger)
+    assert inspect.getsource(abcdrl_copy_from.wrapper_logger) == inspect.getsource(abcdrl.ddpg.wrapper_logger)
+    assert inspect.getsource(abcdrl_copy_from.wrapper_logger) == inspect.getsource(abcdrl.td3.wrapper_logger)
+    assert inspect.getsource(abcdrl_copy_from.wrapper_logger) == inspect.getsource(abcdrl.sac.wrapper_logger)
+    assert inspect.getsource(abcdrl_copy_from.wrapper_logger) == inspect.getsource(abcdrl.ppo.wrapper_logger)
+    assert inspect.getsource(abcdrl_copy_from.wrapper_logger) == inspect.getsource(
+        abcdrl_copy_from.dqn_all_wrappers.wrapper_logger
     )
 
     # wrapper_filter
-    assert inspect.getsource(abcdrl_utils.wrapper_print_filter) == inspect.getsource(abcdrl.dqn.wrapper_print_filter)
-    assert inspect.getsource(abcdrl_utils.wrapper_print_filter) == inspect.getsource(abcdrl.ddqn.wrapper_print_filter)
-    assert inspect.getsource(abcdrl_utils.wrapper_print_filter) == inspect.getsource(abcdrl.pdqn.wrapper_print_filter)
-    assert inspect.getsource(abcdrl_utils.wrapper_print_filter) == inspect.getsource(abcdrl.ddpg.wrapper_print_filter)
-    assert inspect.getsource(abcdrl_utils.wrapper_print_filter) == inspect.getsource(abcdrl.td3.wrapper_print_filter)
-    assert inspect.getsource(abcdrl_utils.wrapper_print_filter) == inspect.getsource(abcdrl.sac.wrapper_print_filter)
-    assert inspect.getsource(abcdrl_utils.wrapper_print_filter) == inspect.getsource(abcdrl.ppo.wrapper_print_filter)
-    assert inspect.getsource(abcdrl_utils.wrapper_print_filter) == inspect.getsource(
-        abcdrl_utils.example_all_wrappers.wrapper_print_filter
+    assert inspect.getsource(abcdrl_copy_from.wrapper_print_filter) == inspect.getsource(
+        abcdrl.dqn.wrapper_print_filter
+    )
+    assert inspect.getsource(abcdrl_copy_from.wrapper_print_filter) == inspect.getsource(
+        abcdrl.ddqn.wrapper_print_filter
+    )
+    assert inspect.getsource(abcdrl_copy_from.wrapper_print_filter) == inspect.getsource(
+        abcdrl.pdqn.wrapper_print_filter
+    )
+    assert inspect.getsource(abcdrl_copy_from.wrapper_print_filter) == inspect.getsource(
+        abcdrl.ddpg.wrapper_print_filter
+    )
+    assert inspect.getsource(abcdrl_copy_from.wrapper_print_filter) == inspect.getsource(
+        abcdrl.td3.wrapper_print_filter
+    )
+    assert inspect.getsource(abcdrl_copy_from.wrapper_print_filter) == inspect.getsource(
+        abcdrl.sac.wrapper_print_filter
+    )
+    assert inspect.getsource(abcdrl_copy_from.wrapper_print_filter) == inspect.getsource(
+        abcdrl.ppo.wrapper_print_filter
+    )
+    assert inspect.getsource(abcdrl_copy_from.wrapper_print_filter) == inspect.getsource(
+        abcdrl_copy_from.dqn_all_wrappers.wrapper_print_filter
     )
 
     # wrapper_eval_step
-    assert inspect.getsource(abcdrl_utils.wrapper_eval_step) == inspect.getsource(
-        abcdrl_utils.example_all_wrappers.wrapper_eval_step
+    assert inspect.getsource(abcdrl_copy_from.wrapper_eval_step) == inspect.getsource(
+        abcdrl_copy_from.dqn_all_wrappers.wrapper_eval_step
     )
 
     # wrapper_save_model
-    assert inspect.getsource(abcdrl_utils.wrapper_save_model) == inspect.getsource(
-        abcdrl_utils.example_all_wrappers.wrapper_save_model
+    assert inspect.getsource(abcdrl_copy_from.wrapper_save_model) == inspect.getsource(
+        abcdrl_copy_from.dqn_all_wrappers.wrapper_save_model
     )
 
 
 def test_codes_example() -> None:
-    assert inspect.getsource(abcdrl.dqn.Trainer) == inspect.getsource(abcdrl_utils.example_all_wrappers.Trainer)
-    assert inspect.getsource(abcdrl.dqn.Agent) == inspect.getsource(abcdrl_utils.example_all_wrappers.Agent)
-    assert inspect.getsource(abcdrl.dqn.Algorithm) == inspect.getsource(abcdrl_utils.example_all_wrappers.Algorithm)
-    assert inspect.getsource(abcdrl.dqn.Model) == inspect.getsource(abcdrl_utils.example_all_wrappers.Model)
+    assert inspect.getsource(abcdrl.dqn.Trainer) == inspect.getsource(abcdrl_copy_from.dqn_all_wrappers.Trainer)
+    assert inspect.getsource(abcdrl.dqn.Agent) == inspect.getsource(abcdrl_copy_from.dqn_all_wrappers.Agent)
+    assert inspect.getsource(abcdrl.dqn.Algorithm) == inspect.getsource(abcdrl_copy_from.dqn_all_wrappers.Algorithm)
+    assert inspect.getsource(abcdrl.dqn.Model) == inspect.getsource(abcdrl_copy_from.dqn_all_wrappers.Model)
     assert inspect.getsource(abcdrl.dqn.ReplayBuffer) == inspect.getsource(
-        abcdrl_utils.example_all_wrappers.ReplayBuffer
+        abcdrl_copy_from.dqn_all_wrappers.ReplayBuffer
     )
     assert inspect.getsource(abcdrl.dqn.get_space_shape) == inspect.getsource(
-        abcdrl_utils.example_all_wrappers.get_space_shape
+        abcdrl_copy_from.dqn_all_wrappers.get_space_shape
     )
 
 

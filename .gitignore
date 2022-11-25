@@ -142,7 +142,7 @@ runs/
 wandb/
 videos/
 
-# save models
+# Save Models
 models/
 
 # vscode

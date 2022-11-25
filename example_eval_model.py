@@ -26,7 +26,7 @@ class Evaluater:
         if self.kwargs["device"] == "auto":
             self.kwargs["device"] = "cuda" if torch.cuda.is_available() else "cpu"
 
-        self.eval_env = gym.vector.SyncVectorEnv([self._make_env(0)])
+        self.eval_env = gym.vector.SyncVectorEnv([self._make_env(0)])  # type: ignore[arg-type]
         self.eval_obs, _ = self.eval_env.reset(seed=0)
 
         with open(self.kwargs["model_path"], "rb") as file:
