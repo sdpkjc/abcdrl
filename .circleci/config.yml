@@ -1,26 +1,86 @@
-# Use the latest 2.1 version of CircleCI pipeline process engine.
-# See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
 
-# Define a job to be invoked later in a workflow.
-# See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
-  say-hello:
-    # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
-    # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
+  pytest-py311:
     docker:
-      - image: cimg/base:stable
-    # Add steps to the job
-    # See: https://circleci.com/docs/2.0/configuration-reference/#steps
+      - image: cimg/python:3.11
     steps:
       - checkout
       - run:
-          name: "Say hello"
-          command: "echo Hello, World!"
+          name: "Install dependencies"
+          command: |
+            python -m pip install --upgrade pip
+            pip install -r requirements/requirements-dev.txt
+            sudo apt-get -y install wget unzip software-properties-common \
+              libgl1-mesa-dev \
+              libgl1-mesa-glx \
+              libglew-dev \
+              libosmesa6-dev patchelf swig
+      - run:
+          name: "Test with pytest"
+          command: pytest --doctest-modules --junitxml=junit/test-results-${{ matrix.python-version }}.xml
 
-# Invoke jobs via workflows
-# See: https://circleci.com/docs/2.0/configuration-reference/#workflows
+  pytest-py310:
+    docker:
+      - image: cimg/python:3.10
+    steps:
+      - checkout
+      - run:
+          name: "Install dependencies"
+          command: |
+            python -m pip install --upgrade pip
+            pip install -r requirements/requirements-dev.txt
+            sudo apt-get -y install wget unzip software-properties-common \
+              libgl1-mesa-dev \
+              libgl1-mesa-glx \
+              libglew-dev \
+              libosmesa6-dev patchelf swig
+      - run:
+          name: "Test with pytest"
+          command: pytest --doctest-modules --junitxml=junit/test-results-${{ matrix.python-version }}.xml
+
+  pytest-py39:
+    docker:
+      - image: cimg/python:3.9
+    steps:
+      - checkout
+      - run:
+          name: "Install dependencies"
+          command: |
+            python -m pip install --upgrade pip
+            pip install -r requirements/requirements-dev.txt
+            sudo apt-get -y install wget unzip software-properties-common \
+              libgl1-mesa-dev \
+              libgl1-mesa-glx \
+              libglew-dev \
+              libosmesa6-dev patchelf swig
+      - run:
+          name: "Test with pytest"
+          command: pytest --doctest-modules --junitxml=junit/test-results-${{ matrix.python-version }}.xml
+
+  pytest-py38:
+    docker:
+      - image: cimg/python:3.8
+    steps:
+      - checkout
+      - run:
+          name: "Install dependencies"
+          command: |
+            python -m pip install --upgrade pip
+            pip install -r requirements/requirements-dev.txt
+            sudo apt-get -y install wget unzip software-properties-common \
+              libgl1-mesa-dev \
+              libgl1-mesa-glx \
+              libglew-dev \
+              libosmesa6-dev patchelf swig
+      - run:
+          name: "Test with pytest"
+          command: pytest --doctest-modules --junitxml=junit/test-results-${{ matrix.python-version }}.xml
+
 workflows:
   say-hello-workflow:
     jobs:
-      - say-hello
+      - pytest-py311
+      - pytest-py310
+      - pytest-py39
+      - pytest-py38
