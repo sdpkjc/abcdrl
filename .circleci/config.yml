@@ -18,8 +18,17 @@ jobs:
               libglew-dev \
               libosmesa6-dev patchelf swig
       - run:
-          name: "Test with pytest"
-          command: pytest --doctest-modules --junitxml=junit/test-results-${{ matrix.python-version }}.xml
+          name: "test_codes_consistency"
+          command: pytest tests/test_codes_consistency.py
+      - run:
+          name: "test_classic_control"
+          command: pytest tests/test_classic_control.py
+      - run:
+          name: "test_mujoco"
+          command: pytest tests/test_mujoco.py
+      - run:
+          name: "test_utils"
+          command: pytest tests/test_utils.py
 
   pytest-py39:
     docker:
@@ -38,8 +47,18 @@ jobs:
               libglew-dev \
               libosmesa6-dev patchelf swig
       - run:
-          name: "Test with pytest"
-          command: pytest --doctest-modules --junitxml=junit/test-results-${{ matrix.python-version }}.xml
+          name: "test_codes_consistency"
+          command: pytest tests/test_codes_consistency.py
+      - run:
+          name: "test_classic_control"
+          command: pytest tests/test_classic_control.py
+      - run:
+          name: "test_mujoco"
+          command: pytest tests/test_mujoco.py
+      - run:
+          name: "test_utils"
+          command: pytest tests/test_utils.py
+
 
   pytest-py38:
     docker:
@@ -58,11 +77,21 @@ jobs:
               libglew-dev \
               libosmesa6-dev patchelf swig
       - run:
-          name: "Test with pytest"
-          command: pytest --doctest-modules --junitxml=junit/test-results-${{ matrix.python-version }}.xml
+          name: "test_codes_consistency"
+          command: pytest tests/test_codes_consistency.py
+      - run:
+          name: "test_classic_control"
+          command: pytest tests/test_classic_control.py
+      - run:
+          name: "test_mujoco"
+          command: pytest tests/test_mujoco.py
+      - run:
+          name: "test_utils"
+          command: pytest tests/test_utils.py
+
 
 workflows:
-  say-hello-workflow:
+  pytest-workflow:
     jobs:
       - pytest-py310
       - pytest-py39
