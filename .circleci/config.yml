@@ -77,17 +77,22 @@ jobs:
               libglew-dev \
               libosmesa6-dev patchelf swig
       - run:
+          name: "Make test-results folder"
+          command: mkdir test-results
+      - run:
           name: "test_codes_consistency"
-          command: pytest tests/test_codes_consistency.py
+          command: pytest tests/test_codes_consistency.py --junitxml=test-results/test_codes_consistency.xml
       - run:
           name: "test_classic_control"
-          command: pytest tests/test_classic_control.py
+          command: pytest tests/test_classic_control.py --junitxml=test-results/test_classic_control.xml
       - run:
           name: "test_mujoco"
-          command: pytest tests/test_mujoco.py
+          command: pytest tests/test_mujoco.py --junitxml=test-results/test_mujoco.xml
       - run:
           name: "test_utils"
-          command: pytest tests/test_utils.py
+          command: pytest tests/test_utils.py --junitxml=test-results/test_utils.xml
+      - store_test_results:
+        path: test-results
 
 
 workflows:
