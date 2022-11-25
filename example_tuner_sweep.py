@@ -48,7 +48,6 @@ def tune_agent() -> None:
 def main(
     sweep_id: str | None = None, run_count: int = 1, wandb_project_name: str = "abcdrl", wandb_entity: str | None = None
 ):
-    sweep_id = sweep_id
     if sweep_id is None:
         sweep_id = wandb.sweep(sweep=sweep_configuration, project=wandb_project_name)
     wandb.agent(sweep_id, function=tune_agent, count=run_count)
