@@ -67,7 +67,7 @@ def test_codes_wrapper() -> None:
     assert inspect.getsource(abcdrl_copy_from.wrapper_logger) == inspect.getsource(abcdrl.sac.wrapper_logger)
     assert inspect.getsource(abcdrl_copy_from.wrapper_logger) == inspect.getsource(abcdrl.ppo.wrapper_logger)
     assert inspect.getsource(abcdrl_copy_from.wrapper_logger) == inspect.getsource(
-        abcdrl_copy_from.example_all_wrappers.wrapper_logger
+        abcdrl_copy_from.dqn_all_wrappers.wrapper_logger
     )
 
     # wrapper_filter
@@ -93,30 +93,30 @@ def test_codes_wrapper() -> None:
         abcdrl.ppo.wrapper_print_filter
     )
     assert inspect.getsource(abcdrl_copy_from.wrapper_print_filter) == inspect.getsource(
-        abcdrl_copy_from.example_all_wrappers.wrapper_print_filter
+        abcdrl_copy_from.dqn_all_wrappers.wrapper_print_filter
     )
 
     # wrapper_eval_step
     assert inspect.getsource(abcdrl_copy_from.wrapper_eval_step) == inspect.getsource(
-        abcdrl_copy_from.example_all_wrappers.wrapper_eval_step
+        abcdrl_copy_from.dqn_all_wrappers.wrapper_eval_step
     )
 
     # wrapper_save_model
     assert inspect.getsource(abcdrl_copy_from.wrapper_save_model) == inspect.getsource(
-        abcdrl_copy_from.example_all_wrappers.wrapper_save_model
+        abcdrl_copy_from.dqn_all_wrappers.wrapper_save_model
     )
 
 
 def test_codes_example() -> None:
-    assert inspect.getsource(abcdrl.dqn.Trainer) == inspect.getsource(abcdrl_copy_from.example_all_wrappers.Trainer)
-    assert inspect.getsource(abcdrl.dqn.Agent) == inspect.getsource(abcdrl_copy_from.example_all_wrappers.Agent)
-    assert inspect.getsource(abcdrl.dqn.Algorithm) == inspect.getsource(abcdrl_copy_from.example_all_wrappers.Algorithm)
-    assert inspect.getsource(abcdrl.dqn.Model) == inspect.getsource(abcdrl_copy_from.example_all_wrappers.Model)
+    assert inspect.getsource(abcdrl.dqn.Trainer) == inspect.getsource(abcdrl_copy_from.dqn_all_wrappers.Trainer)
+    assert inspect.getsource(abcdrl.dqn.Agent) == inspect.getsource(abcdrl_copy_from.dqn_all_wrappers.Agent)
+    assert inspect.getsource(abcdrl.dqn.Algorithm) == inspect.getsource(abcdrl_copy_from.dqn_all_wrappers.Algorithm)
+    assert inspect.getsource(abcdrl.dqn.Model) == inspect.getsource(abcdrl_copy_from.dqn_all_wrappers.Model)
     assert inspect.getsource(abcdrl.dqn.ReplayBuffer) == inspect.getsource(
-        abcdrl_copy_from.example_all_wrappers.ReplayBuffer
+        abcdrl_copy_from.dqn_all_wrappers.ReplayBuffer
     )
     assert inspect.getsource(abcdrl.dqn.get_space_shape) == inspect.getsource(
-        abcdrl_copy_from.example_all_wrappers.get_space_shape
+        abcdrl_copy_from.dqn_all_wrappers.get_space_shape
     )
 
 
