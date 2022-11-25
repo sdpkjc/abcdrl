@@ -1,25 +1,6 @@
 version: 2.1
 
 jobs:
-  pytest-py311:
-    docker:
-      - image: cimg/python:3.11
-    steps:
-      - checkout
-      - run:
-          name: "Install dependencies"
-          command: |
-            python -m pip install --upgrade pip
-            pip install -r requirements/requirements-dev.txt
-            sudo apt-get -y install wget unzip software-properties-common \
-              libgl1-mesa-dev \
-              libgl1-mesa-glx \
-              libglew-dev \
-              libosmesa6-dev patchelf swig
-      - run:
-          name: "Test with pytest"
-          command: pytest --doctest-modules --junitxml=junit/test-results-${{ matrix.python-version }}.xml
-
   pytest-py310:
     docker:
       - image: cimg/python:3.10
@@ -30,6 +11,7 @@ jobs:
           command: |
             python -m pip install --upgrade pip
             pip install -r requirements/requirements-dev.txt
+            sudo apt-get update
             sudo apt-get -y install wget unzip software-properties-common \
               libgl1-mesa-dev \
               libgl1-mesa-glx \
@@ -49,6 +31,7 @@ jobs:
           command: |
             python -m pip install --upgrade pip
             pip install -r requirements/requirements-dev.txt
+            sudo apt-get update
             sudo apt-get -y install wget unzip software-properties-common \
               libgl1-mesa-dev \
               libgl1-mesa-glx \
@@ -68,6 +51,7 @@ jobs:
           command: |
             python -m pip install --upgrade pip
             pip install -r requirements/requirements-dev.txt
+            sudo apt-get update
             sudo apt-get -y install wget unzip software-properties-common \
               libgl1-mesa-dev \
               libgl1-mesa-glx \
@@ -80,7 +64,6 @@ jobs:
 workflows:
   say-hello-workflow:
     jobs:
-      - pytest-py311
       - pytest-py310
       - pytest-py39
       - pytest-py38
