@@ -99,7 +99,7 @@ def get_space_shape(env_space: gym.Space) -> tuple[int, ...]:
 
 
 class ReplayBuffer:
-    @dataclasses.dataclass
+    @dataclasses.dataclass(frozen=True)
     class Samples(Generic[SamplesItemType]):
         observations: SamplesItemType
         actions: SamplesItemType
@@ -388,7 +388,7 @@ class Trainer:
                 env = NoopResetEnv(env, noop_max=30)
             env = MaxAndSkipEnv(env, skip=4)
             env = EpisodicLifeEnv(env)
-            env = gym.wrappers.TransformReward(env, lambda r: np.sign(r))
+            env = gym.wrappers.TransformReward(env, np.sign)
             env = gym.wrappers.ResizeObservation(env, (84, 84))
             env = gym.wrappers.GrayScaleObservation(env)
             env = gym.wrappers.FrameStack(env, 4)
