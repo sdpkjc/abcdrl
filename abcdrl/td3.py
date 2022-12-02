@@ -29,7 +29,7 @@ def get_space_shape(env_space: gym.Space) -> tuple[int, ...]:
 
 
 class ReplayBuffer:
-    @dataclasses.dataclass
+    @dataclasses.dataclass(frozen=True)
     class Samples(Generic[SamplesItemType]):
         observations: SamplesItemType
         actions: SamplesItemType
@@ -395,6 +395,11 @@ def wrapper_logger(
         **kwargs,
     ) -> Generator[dict[str, Any], None, None]:
         if track:
+            import gym as gym_
+
+            gym_.wrappers.monitoring.video_recorder.ImageEncoder = (  # type: ignore[attr-defined]
+                gym_.wrappers.monitoring.video_recorder.VideoRecorder
+            )
             wandb.init(
                 project=wandb_project_name,
                 tags=wandb_tags,
