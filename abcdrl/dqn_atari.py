@@ -415,7 +415,7 @@ def wrapper_logger(
         if track:
             import gym as gym_
 
-            gym_.wrapperpres.monitoring.video_recorder.ImageEncoder = (  # type: ignore[attr-defined]
+            gym_.wrappers.monitoring.video_recorder.ImageEncoder = (  # type: ignore[attr-defined]
                 gym_.wrappers.monitoring.video_recorder.VideoRecorder
             )
             wandb.init(
