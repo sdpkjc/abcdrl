@@ -171,7 +171,10 @@ class Agent:
             with torch.no_grad():
                 _, act_ts = self.alg.predict(obs_ts).max(dim=1)
             act_np = act_ts.cpu().numpy()
+
         self.sample_step += self.kwargs["num_envs"]
+        if self.sample_step % self.kwargs["target_network_frequency"] == 0:
+            self.alg.sync_target()
         return act_np
 
     def learn(self, data: ReplayBuffer.Samples[np.ndarray]) -> dict[str, Any]:
@@ -186,8 +189,6 @@ class Agent:
         )
 
         log_data = self.alg.learn(data_ts)
-        if self.sample_step % self.kwargs["target_network_frequency"] == 0:
-            self.alg.sync_target()
         self.learn_step += 1
         log_data["epsilon"] = self._get_epsilon()
         return log_data
