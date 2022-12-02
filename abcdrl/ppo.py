@@ -298,14 +298,14 @@ class Agent:
         self.learn_step = 0
 
     def predict(self, obs: np.ndarray) -> np.ndarray:
-        obs_ts = torch.as_tensor(obs, device=next(self.alg.model.parameters()).device)
+        obs_ts = torch.as_tensor(obs, device=self.kwargs["device"])
         with torch.no_grad():
             act_ts, _, _ = self.alg.predict(obs_ts)
         act_np = act_ts.cpu().numpy()
         return act_np
 
     def sample(self, obs: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-        obs_ts = torch.as_tensor(obs, device=next(self.alg.model.parameters()).device)
+        obs_ts = torch.as_tensor(obs, device=self.kwargs["device"])
         with torch.no_grad():
             act_ts, log_prob_ts, val_ts = self.alg.predict(obs_ts)
         act_np, log_prob_np, val_np = act_ts.cpu().numpy(), log_prob_ts.cpu().numpy(), val_ts.cpu().numpy()

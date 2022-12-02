@@ -258,7 +258,7 @@ class Agent:
         self.learn_step = 0
 
     def predict(self, obs: np.ndarray) -> np.ndarray:
-        obs_ts = torch.as_tensor(obs, device=next(self.alg.model.parameters()).device)
+        obs_ts = torch.as_tensor(obs, device=self.kwargs["device"])
         with torch.no_grad():
             act_ts = self.alg.predict(obs_ts)
         act_np = act_ts.cpu().numpy()
@@ -268,7 +268,7 @@ class Agent:
         if self.sample_step < self.kwargs["learning_starts"]:
             act_np = np.array([self.kwargs["act_space"].sample() for _ in range(self.kwargs["num_envs"])])
         else:
-            obs_ts = torch.as_tensor(obs, device=next(self.alg.model.parameters()).device)
+            obs_ts = torch.as_tensor(obs, device=self.kwargs["device"])
             with torch.no_grad():
                 act_ts = self.alg.predict(obs_ts)
             act_np = act_ts.cpu().numpy()
