@@ -395,6 +395,11 @@ def wrapper_logger(
         **kwargs,
     ) -> Generator[dict[str, Any], None, None]:
         if track:
+            import gym as gym_
+
+            gym_.wrappers.monitoring.video_recorder.ImageEncoder = (  # type: ignore[attr-defined]
+                gym_.wrappers.monitoring.video_recorder.VideoRecorder
+            )
             wandb.init(
                 project=wandb_project_name,
                 tags=wandb_tags,
