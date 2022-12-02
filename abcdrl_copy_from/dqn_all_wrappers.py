@@ -346,6 +346,18 @@ def wrapper_eval_step(
 def wrapper_logger(
     wrapped: Callable[..., Generator[dict[str, Any], None, None]]
 ) -> Callable[..., Generator[dict[str, Any], None, None]]:
+    def setup_video_monitor() -> None:
+        vcr = gym.wrappers.monitoring.video_recorder.VideoRecorder
+        vcr.close_ = vcr.close
+
+        def close(self):
+            vcr.close_(self)
+            if self.path:
+                wandb.log({"videos": wandb.Video(self.path)})
+                self.path = None
+
+        vcr.close = close
+
     def _wrapper(
         instance,
         *args,
@@ -356,11 +368,6 @@ def wrapper_logger(
         **kwargs,
     ) -> Generator[dict[str, Any], None, None]:
         if track:
-            import gym as gym_
-
-            gym_.wrappers.monitoring.video_recorder.ImageEncoder = (  # type: ignore[attr-defined]
-                gym_.wrappers.monitoring.video_recorder.VideoRecorder
-            )
             wandb.init(
                 project=wandb_project_name,
                 tags=wandb_tags,
@@ -368,9 +375,10 @@ def wrapper_logger(
                 sync_tensorboard=True,
                 config=instance.kwargs,
                 name=instance.kwargs["exp_name"],
-                monitor_gym=True,
                 save_code=True,
             )
+            setup_video_monitor()
+
         writer = SummaryWriter(f"runs/{instance.kwargs['exp_name']}")
         writer.add_text(
             "hyperparameters",
