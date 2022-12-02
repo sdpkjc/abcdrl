@@ -21,14 +21,14 @@ SamplesItemType = TypeVar("SamplesItemType", torch.Tensor, np.ndarray)
 
 
 class NoopResetEnv(gym.Wrapper):
-    def __init__(self, env: gym.Env, noop_max: int = 30):
+    def __init__(self, env: gym.Env, noop_max: int = 30) -> None:
         gym.Wrapper.__init__(self, env)
         self.noop_max = noop_max
         self.override_num_noops = None
         self.noop_action = 0
-        assert env.unwrapped.get_action_meanings()[0] == "NOOP"
+        assert env.unwrapped.get_action_meanings()[0] == "NOOP"  # type: ignore[attr-defined]
 
-    def reset(self, **kwargs) -> np.ndarray:
+    def reset(self, **kwargs) -> tuple[np.ndarray, dict[str, Any]]:
         self.env.reset(**kwargs)
         if self.override_num_noops is not None:
             noops = self.override_num_noops
@@ -44,26 +44,26 @@ class NoopResetEnv(gym.Wrapper):
 
 
 class EpisodicLifeEnv(gym.Wrapper):
-    def __init__(self, env: gym.Env):
+    def __init__(self, env: gym.Env) -> None:
         gym.Wrapper.__init__(self, env)
         self.lives = 0
         self.was_real_done = True
 
-    def step(self, action: int):
+    def step(self, action: int) -> tuple[np.ndarray, float, bool, bool, dict[str, Any]]:
         obs, reward, terminated, truncated, info = self.env.step(action)
         self.was_real_done = terminated or truncated
-        lives = self.env.unwrapped.ale.lives()
+        lives = self.env.unwrapped.ale.lives()  # type: ignore[attr-defined]
         if 0 < lives < self.lives:
             terminated = True
         self.lives = lives
         return obs, reward, terminated, truncated, info
 
-    def reset(self, **kwargs) -> np.ndarray:
+    def reset(self, **kwargs) -> tuple[np.ndarray, dict[str, Any]]:
         if self.was_real_done:
             obs, info = self.env.reset(**kwargs)
         else:
             obs, _, _, _, info = self.env.step(0)
-        self.lives = self.env.unwrapped.ale.lives()
+        self.lives = self.env.unwrapped.ale.lives()  # type: ignore[attr-defined]
         return obs, info
 
 
@@ -384,7 +384,7 @@ class Trainer:
             if self.kwargs["capture_video"]:
                 if idx == 0:
                     env = gym.wrappers.RecordVideo(env, f"videos/{self.kwargs['exp_name']}")
-            if "NOOP" in env.unwrapped.get_action_meanings():
+            if "NOOP" in env.unwrapped.get_action_meanings():  # type: ignore[attr-defined]
                 env = NoopResetEnv(env, noop_max=30)
             env = MaxAndSkipEnv(env, skip=4)
             env = EpisodicLifeEnv(env)
@@ -413,6 +413,11 @@ def wrapper_logger(
         **kwargs,
     ) -> Generator[dict[str, Any], None, None]:
         if track:
+            import gym as gym_
+
+            gym_.wrapperpres.monitoring.video_recorder.ImageEncoder = (  # type: ignore[attr-defined]
+                gym_.wrappers.monitoring.video_recorder.VideoRecorder
+            )
             wandb.init(
                 project=wandb_project_name,
                 tags=wandb_tags,
@@ -420,7 +425,7 @@ def wrapper_logger(
                 sync_tensorboard=True,
                 config=instance.kwargs,
                 name=instance.kwargs["exp_name"],
-                # monitor_gym=True,
+                monitor_gym=True,
                 save_code=True,
             )
         writer = SummaryWriter(f"runs/{instance.kwargs['exp_name']}")
