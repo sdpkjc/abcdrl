@@ -32,6 +32,22 @@ def test_dqn_wrappers() -> None:
         pass
 
 
+def test_dqn_atari_wrappers() -> None:
+    Trainer = abcdrl.dqn_atari.Trainer
+    Trainer.__call__ = set_all_wrappers(Trainer.__call__)  # type: ignore[assignment]
+    trainer = Trainer(
+        env_id="BreakoutNoFrameskip-v4",
+        device="auto",
+        num_envs=2,
+        learning_starts=8,
+        total_timesteps=32,
+        buffer_size=10,
+        batch_size=4,
+    )
+    for _ in trainer(eval_frequency=5, num_steps_eval=1, save_frequency=16):  # type: ignore[call-arg]
+        pass
+
+
 def test_ddqn_wrappers() -> None:
     Trainer = abcdrl.ddqn.Trainer
     Trainer.__call__ = set_all_wrappers(Trainer.__call__)  # type: ignore[assignment]
