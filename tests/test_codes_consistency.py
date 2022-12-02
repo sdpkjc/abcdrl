@@ -45,7 +45,6 @@ def test_codes_trainer() -> None:
     assert inspect.getsource(abcdrl.dqn.Trainer._run_collect) == inspect.getsource(abcdrl.ddpg.Trainer._run_collect)
     assert inspect.getsource(abcdrl.dqn.Trainer._run_collect) == inspect.getsource(abcdrl.td3.Trainer._run_collect)
     assert inspect.getsource(abcdrl.dqn.Trainer._run_collect) == inspect.getsource(abcdrl.sac.Trainer._run_collect)
-    # assert inspect.getsource(abcdrl.dqn.Trainer._run_collect) == inspect.getsource(abcdrl.dqn_atari.Trainer._run_collect)
 
     assert inspect.getsource(abcdrl.dqn.Trainer._run_train) == inspect.getsource(abcdrl.ddqn.Trainer._run_train)
     assert inspect.getsource(abcdrl.dqn.Trainer._run_train) == inspect.getsource(abcdrl.ddpg.Trainer._run_train)
