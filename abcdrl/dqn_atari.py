@@ -356,8 +356,10 @@ class Trainer:
 
         self.buffer.add(self.obs, real_next_obs, act, reward, done, infos)
         self.obs = next_obs
+
         if "final_info" in infos.keys():
             final_info = next(item for item in infos["final_info"] if item is not None)
+            # EpisodicLifeEnv
             if "episode" in final_info:
                 return {
                     "log_type": "collect",
