@@ -298,7 +298,6 @@ class Agent:
         self.learn_step = 0
 
     def predict(self, obs: np.ndarray) -> np.ndarray:
-        # 评估
         obs_ts = torch.as_tensor(obs, device=next(self.alg.model.parameters()).device)
         with torch.no_grad():
             act_ts, _, _ = self.alg.predict(obs_ts)
@@ -306,7 +305,6 @@ class Agent:
         return act_np
 
     def sample(self, obs: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-        # 训练
         obs_ts = torch.as_tensor(obs, device=next(self.alg.model.parameters()).device)
         with torch.no_grad():
             act_ts, log_prob_ts, val_ts = self.alg.predict(obs_ts)
@@ -317,7 +315,6 @@ class Agent:
     def learn(
         self, data_generator_list: list[Generator[RolloutBuffer.Samples[np.ndarray], None, None]]
     ) -> list[dict[str, Any]]:
-        # 数据预处理
         self._update_lr()
         log_data_list = []
         for data_generator_np in data_generator_list:

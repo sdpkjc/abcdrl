@@ -229,7 +229,6 @@ class Agent:
         self.action_bias = torch.FloatTensor((self.kwargs["act_space"].high + self.kwargs["act_space"].low) / 2.0)
 
     def predict(self, obs: np.ndarray) -> np.ndarray:
-        # 评估
         obs_ts = torch.as_tensor(obs, device=next(self.alg.model.parameters()).device)
         with torch.no_grad():
             act_ts = self.alg.predict(obs_ts)
@@ -237,17 +236,12 @@ class Agent:
         return act_np
 
     def sample(self, obs: np.ndarray) -> np.ndarray:
-        # 训练
         if self.sample_step < self.kwargs["learning_starts"]:
             act_np = np.array([self.kwargs["act_space"].sample() for _ in range(self.kwargs["num_envs"])])
         else:
             obs_ts = torch.as_tensor(obs, device=next(self.alg.model.parameters()).device)
             with torch.no_grad():
                 act_ts = self.alg.predict(obs_ts)
-            # 可能有三种噪声设置
-            # noise = torch.normal(self.action_bias, self.action_scale * self.kwargs["exploration_noise"]).to(
-            #     next(self.alg.model.parameters()).device
-            # )
             noise = torch.normal(0, self.action_scale * self.kwargs["exploration_noise"]).to(
                 next(self.alg.model.parameters()).device
             )
@@ -260,7 +254,6 @@ class Agent:
         return act_np
 
     def learn(self, data: ReplayBuffer.Samples[np.ndarray]) -> dict[str, Any]:
-        # 数据预处理 & 目标网络同步
         data_ts = ReplayBuffer.Samples[torch.Tensor](
             **{
                 item[0]: torch.as_tensor(item[1], device=self.kwargs["device"])
