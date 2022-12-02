@@ -302,7 +302,7 @@ class Trainer:
         batch_size: int = 32,
         learning_rate: float = 1e-4,
         # Train
-        learning_starts: int = 80_000,
+        learning_starts: int = 50_000,
         target_network_frequency: int = 1000,
         train_frequency: int = 4,
     ) -> None:

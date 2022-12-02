@@ -27,7 +27,7 @@ BreakoutNoFrameskip-v4 = """
         --exploration-fraction 0.1 \
         --batch-size 32 \
         --learning-rate 1e-4 \
-        --learning-starts 80000 \
+        --learning-starts 50000 \
         --target-network-frequency 1000 \
         --train-frequency 4 \
 """
