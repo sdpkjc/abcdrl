@@ -203,7 +203,7 @@ class Agent:
         self.action_bias = torch.FloatTensor((self.kwargs["act_space"].high + self.kwargs["act_space"].low) / 2.0)
 
     def predict(self, obs: np.ndarray) -> np.ndarray:
-        obs_ts = torch.as_tensor(obs, device=next(self.alg.model.parameters()).device)
+        obs_ts = torch.as_tensor(obs, device=self.kwargs["device"])
         with torch.no_grad():
             act_ts = self.alg.predict(obs_ts)
         act_np = act_ts.cpu().numpy()
@@ -213,12 +213,10 @@ class Agent:
         if self.sample_step < self.kwargs["learning_starts"]:
             act_np = np.array([self.kwargs["act_space"].sample() for _ in range(self.kwargs["num_envs"])])
         else:
-            obs_ts = torch.as_tensor(obs, device=next(self.alg.model.parameters()).device)
+            obs_ts = torch.as_tensor(obs, device=self.kwargs["device"])
             with torch.no_grad():
                 act_ts = self.alg.predict(obs_ts)
-            noise = torch.normal(0, self.action_scale * self.kwargs["exploration_noise"]).to(
-                next(self.alg.model.parameters()).device
-            )
+            noise = torch.normal(0, self.action_scale * self.kwargs["exploration_noise"]).to(self.kwargs["device"])
             act_ts += noise
             act_np = act_ts.cpu().numpy().clip(self.kwargs["act_space"].low, self.kwargs["act_space"].high)
 
