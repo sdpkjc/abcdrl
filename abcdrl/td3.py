@@ -253,7 +253,10 @@ class Agent:
             )
             act_ts += noise
             act_np = act_ts.cpu().numpy().clip(self.kwargs["act_space"].low, self.kwargs["act_space"].high)
+
         self.sample_step += self.kwargs["num_envs"]
+        if self.sample_step % self.kwargs["policy_frequency"] == 0:
+            self.alg.sync_target()
         return act_np
 
     def learn(self, data: ReplayBuffer.Samples[np.ndarray]) -> dict[str, Any]:
@@ -268,8 +271,6 @@ class Agent:
         )
 
         log_data = self.alg.learn(data_ts, self.sample_step % self.kwargs["policy_frequency"] == 0)
-        if self.sample_step % self.kwargs["policy_frequency"] == 0:
-            self.alg.sync_target()
         self.learn_step += 1
         return log_data
 
