@@ -30,7 +30,7 @@ def get_space_shape(env_space: gym.Space) -> tuple[int, ...]:
 
 
 class PrioritizedReplayBuffer:
-    @dataclasses.dataclass
+    @dataclasses.dataclass(frozen=True)
     class Samples(Generic[SamplesItemType]):
         observations: SamplesItemType
         actions: SamplesItemType
