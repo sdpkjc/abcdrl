@@ -172,8 +172,10 @@ class ReplayBuffer:
             if self.size != self.buffer_size:
                 idxs = np.random.choice(self.size, size=batch_size, replace=False)
             else:
-                idxs = ((np.random.choice(self.size - 1, size=batch_size, replace=False) + 1) + self.ptr) % self.size
-            next_observations = self.obs_buf[(idxs + 1) % self.size]
+                idxs = (
+                    (np.random.choice(self.size - 1, size=batch_size, replace=False) + 1) + self.ptr
+                ) % self.buffer_size
+            next_observations = self.obs_buf[(idxs + 1) % self.buffer_size]
 
         return ReplayBuffer.Samples[np.ndarray](
             observations=self.obs_buf[idxs],
