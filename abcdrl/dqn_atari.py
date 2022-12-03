@@ -154,10 +154,10 @@ class ReplayBuffer:
     ) -> None:
         for obs_i, next_obs_i, act_i, rew_i, done_i in zip(obs, next_obs, act, rew, done):  # type: ignore[call-overload]
             self.obs_buf[self.ptr] = np.array(obs_i).copy()
-            if self.optimize_memory_usage:
-                self.obs_buf[(self.ptr + 1) % self.buffer_size] = np.array(next_obs_i).copy()
-            else:
+            if not self.optimize_memory_usage:
                 self.next_obs_buf[self.ptr] = np.array(next_obs_i).copy()
+            else:
+                self.obs_buf[(self.ptr + 1) % self.buffer_size] = np.array(next_obs_i).copy()
             self.acts_buf[self.ptr] = np.array(act_i).copy()
             self.rews_buf[self.ptr] = np.array(rew_i).copy()
             self.dones_buf[self.ptr] = np.array(done_i).copy()
@@ -165,11 +165,16 @@ class ReplayBuffer:
             self.size = min(self.size + 1, self.buffer_size)
 
     def sample(self, batch_size: int = 1) -> Samples[np.ndarray]:
-        idxs = np.random.choice(self.size, size=batch_size, replace=False)
-        if self.optimize_memory_usage:
-            next_observations = self.obs_buf[(idxs + 1) % self.buffer_size]
-        else:
+        if not self.optimize_memory_usage:
+            idxs = np.random.choice(self.size, size=batch_size, replace=False)
             next_observations = self.next_obs_buf[idxs]
+        else:
+            if self.size != self.buffer_size:
+                idxs = np.random.choice(self.size, size=batch_size, replace=False)
+            else:
+                idxs = ((np.random.choice(self.size - 1, size=batch_size, replace=False) + 1) + self.ptr) % self.size
+            next_observations = self.obs_buf[(idxs + 1) % self.size]
+
         return ReplayBuffer.Samples[np.ndarray](
             observations=self.obs_buf[idxs],
             next_observations=next_observations,
