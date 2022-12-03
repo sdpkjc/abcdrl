@@ -43,6 +43,23 @@ class NoopResetEnv(gym.Wrapper):
         return obs, info
 
 
+class FireResetEnv(gym.Wrapper):
+    def __init__(self, env: gym.Env) -> None:
+        gym.Wrapper.__init__(self, env)
+        assert env.unwrapped.get_action_meanings()[1] == "FIRE"
+        assert len(env.unwrapped.get_action_meanings()) >= 3
+
+    def reset(self, **kwargs) -> tuple[np.ndarray, dict[str, Any]]:
+        self.env.reset(**kwargs)
+        obs, _, terminated, truncated, info = self.env.step(1)
+        if terminated or truncated:
+            self.env.reset(**kwargs)
+        obs, _, terminated, truncated, info = self.env.step(2)
+        if terminated or truncated:
+            self.env.reset(**kwargs)
+        return obs, info
+
+
 class EpisodicLifeEnv(gym.Wrapper):
     def __init__(self, env: gym.Env) -> None:
         gym.Wrapper.__init__(self, env)
@@ -390,6 +407,8 @@ class Trainer:
             if "NOOP" in env.unwrapped.get_action_meanings():  # type: ignore[attr-defined]
                 env = NoopResetEnv(env, noop_max=30)
             env = MaxAndSkipEnv(env, skip=4)
+            if "FIRE" in env.unwrapped.get_action_meanings():
+                env = FireResetEnv(env)
             env = EpisodicLifeEnv(env)
             env = gym.wrappers.TransformReward(env, np.sign)
             env = gym.wrappers.ResizeObservation(env, (84, 84))
