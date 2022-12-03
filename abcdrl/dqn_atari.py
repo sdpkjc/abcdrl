@@ -44,12 +44,12 @@ class NoopResetEnv(gym.Wrapper):
 
 
 class FireResetEnv(gym.Wrapper):
-    def __init__(self, env: gym.Env):
+    def __init__(self, env: gym.Env) -> None:
         gym.Wrapper.__init__(self, env)
         assert env.unwrapped.get_action_meanings()[1] == "FIRE"
         assert len(env.unwrapped.get_action_meanings()) >= 3
 
-    def reset(self, **kwargs) -> np.ndarray:
+    def reset(self, **kwargs) -> tuple[np.ndarray, dict[str, Any]]:
         self.env.reset(**kwargs)
         obs, _, terminated, truncated, info = self.env.step(1)
         if terminated or truncated:
