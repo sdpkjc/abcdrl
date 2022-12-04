@@ -166,14 +166,14 @@ class ReplayBuffer:
 
     def sample(self, batch_size: int = 1) -> Samples[np.ndarray]:
         if not self.optimize_memory_usage:
-            idxs = np.random.choice(self.size, size=batch_size, replace=False)
+            idxs = np.random.choice(self.size, size=batch_size, replace=True)
             next_observations = self.next_obs_buf[idxs]
         else:
             if self.size != self.buffer_size:
-                idxs = np.random.choice(self.size, size=batch_size, replace=False)
+                idxs = np.random.choice(self.size, size=batch_size, replace=True)
             else:
                 idxs = (
-                    (np.random.choice(self.size - 1, size=batch_size, replace=False) + 1) + self.ptr
+                    (np.random.choice(self.size - 1, size=batch_size, replace=True) + 1) + self.ptr
                 ) % self.buffer_size
             next_observations = self.obs_buf[(idxs + 1) % self.buffer_size]
 
