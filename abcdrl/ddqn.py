@@ -72,7 +72,7 @@ class ReplayBuffer:
             self.size = min(self.size + 1, self.buffer_size)
 
     def sample(self, batch_size: int = 1) -> Samples[np.ndarray]:
-        idxs = np.random.choice(self.size, size=batch_size, replace=False)
+        idxs = np.random.choice(self.size, size=batch_size, replace=True)
         return ReplayBuffer.Samples[np.ndarray](
             observations=self.obs_buf[idxs],
             next_observations=self.next_obs_buf[idxs],
