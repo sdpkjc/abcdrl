@@ -400,7 +400,7 @@ Hopper-v4 = """
         --num-steps 2048 \
         --learning-rate 3e-4 \
         --anneal-lr True \
-        --update-epochs 10
+        --update-epochs 10 \
         --norm-adv True \
         --clip-coef 0.2 \
         --clip-vloss True \
@@ -420,7 +420,7 @@ Walker2d-v4 = """
         --num-steps 2048 \
         --learning-rate 3e-4 \
         --anneal-lr True \
-        --update-epochs 10
+        --update-epochs 10 \
         --norm-adv True \
         --clip-coef 0.2 \
         --clip-vloss True \
@@ -440,7 +440,7 @@ HalfCheetah-v4 = """
         --num-steps 2048 \
         --learning-rate 3e-4 \
         --anneal-lr True \
-        --update-epochs 10
+        --update-epochs 10 \
         --norm-adv True \
         --clip-coef 0.2 \
         --clip-vloss True \
