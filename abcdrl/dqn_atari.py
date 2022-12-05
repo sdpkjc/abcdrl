@@ -409,9 +409,9 @@ class Trainer:
             if "NOOP" in env.unwrapped.get_action_meanings():  # type: ignore[attr-defined]
                 env = NoopResetEnv(env, noop_max=30)
             env = MaxAndSkipEnv(env, skip=4)
+            env = EpisodicLifeEnv(env)
             if "FIRE" in env.unwrapped.get_action_meanings():
                 env = FireResetEnv(env)
-            env = EpisodicLifeEnv(env)
             env = gym.wrappers.TransformReward(env, np.sign)
             env = gym.wrappers.ResizeObservation(env, (84, 84))
             env = gym.wrappers.GrayScaleObservation(env)
