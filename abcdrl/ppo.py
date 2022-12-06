@@ -414,17 +414,22 @@ class Trainer:
         act, log_prob, val = self.agent.sample(self.obs)
         next_obs, reward, next_terminated, next_truncated, infos = self.envs.step(act)
 
-        self.real_next_obs = next_obs.copy()
+        real_next_obs = next_obs.copy()
         if "final_observation" in infos.keys():
             for idx, final_obs in enumerate(infos["final_observation"]):
                 if final_obs is not None:
-                    self.real_next_obs[idx] = final_obs
-                    _, _, terminal_value = self.agent.sample(np.expand_dims(self.real_next_obs[idx], axis=0))
+                    real_next_obs[idx] = final_obs
+                    _, _, terminal_value = self.agent.sample(np.expand_dims(real_next_obs[idx], axis=0))
                     reward[idx] += self.kwargs["gamma"] * terminal_value
 
         self.buffer.add(self.obs, act, reward, self.terminated, val, log_prob)
+        if self.buffer.full:
+            _, _, next_val = self.agent.sample(real_next_obs)
+            self.buffer.compute_returns_and_advantage(next_val, next_terminated)
+
         self.obs = next_obs
         self.terminated = next_terminated
+
         if "final_info" in infos.keys():
             final_info = next(item for item in infos["final_info"] if item is not None)
             return {
@@ -438,9 +443,6 @@ class Trainer:
         return {"log_type": "collect", "sample_step": self.agent.sample_step}
 
     def _run_train(self) -> dict[str, Any]:
-        _, _, next_val = self.agent.sample(self.real_next_obs)
-        self.buffer.compute_returns_and_advantage(next_val, self.terminated)
-
         data_generator_list = [
             self.buffer.get(batch_size=self.kwargs["minibatch_size"]) for _ in range(self.kwargs["update_epochs"])
         ]
