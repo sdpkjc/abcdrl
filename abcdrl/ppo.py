@@ -417,7 +417,10 @@ class Trainer:
         self.real_next_obs = next_obs.copy()
         if "final_observation" in infos.keys():
             for idx, final_obs in enumerate(infos["final_observation"]):
-                self.real_next_obs[idx] = self.real_next_obs[idx] if final_obs is None else final_obs
+                if final_obs is not None:
+                    self.real_next_obs[idx] = final_obs
+                    _, _, terminal_value = self.agent.sample(final_obs.unsqueeze(0))
+                    reward[idx] += self.kwargs["gamma"] * terminal_value
 
         self.buffer.add(self.obs, act, reward, self.terminated, val, log_prob)
         self.obs = next_obs
@@ -435,8 +438,7 @@ class Trainer:
         return {"log_type": "collect", "sample_step": self.agent.sample_step}
 
     def _run_train(self) -> dict[str, Any]:
-        _, _, next_val = self.agent.sample(self.obs)
-        self.agent.sample_step -= self.kwargs["num_envs"]
+        _, _, next_val = self.agent.sample(self.real_next_obs)
         self.buffer.compute_returns_and_advantage(next_val, self.terminated)
 
         data_generator_list = [
