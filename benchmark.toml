@@ -26,12 +26,12 @@ Acrobot-v1 = """
         --buffer-size 10000 \
         --start-epsilon 1.0 \
         --end-epsilon 0.05 \
-        --exploration-fraction 0.2 \
+        --exploration-fraction 0.5 \
         --batch-size 128 \
         --learning-rate 2.5e-4 \
         --learning-starts 1000 \
         --target-network-frequency 500 \
-        --train-frequency 4 \
+        --train-frequency 10 \
 """
 
 MountainCar-v0 = """
@@ -42,13 +42,13 @@ MountainCar-v0 = """
         --gamma 0.98 \
         --buffer-size 10000 \
         --start-epsilon 1.0 \
-        --end-epsilon 0.05 \
-        --exploration-fraction 0.5 \
+        --end-epsilon 0.02 \
+        --exploration-fraction 0.2 \
         --batch-size 128 \
         --learning-rate 2e-3 \
         --learning-starts 10000 \
-        --target-network-frequency 800 \
-        --train-frequency 4 \
+        --target-network-frequency 500 \
+        --train-frequency 10 \
 """
 
 
@@ -148,13 +148,13 @@ MountainCar-v0 = """
         --gamma 0.98 \
         --buffer-size 10000 \
         --start-epsilon 1.0 \
-        --end-epsilon 0.05 \
-        --exploration-fraction 0.5 \
+        --end-epsilon 0.02 \
+        --exploration-fraction 0.2 \
         --batch-size 128 \
         --learning-rate 2e-3 \
         --learning-starts 10000 \
-        --target-network-frequency 800 \
-        --train-frequency 4 \
+        --target-network-frequency 500 \
+        --train-frequency 10 \
 """
 
 
@@ -208,13 +208,13 @@ MountainCar-v0 = """
         --beta 0.6 \
         --buffer-size 10000 \
         --start-epsilon 1.0 \
-        --end-epsilon 0.05 \
-        --exploration-fraction 0.5 \
+        --end-epsilon 0.02 \
+        --exploration-fraction 0.2 \
         --batch-size 128 \
         --learning-rate 2e-3 \
         --learning-starts 10000 \
-        --target-network-frequency 800 \
-        --train-frequency 4 \
+        --target-network-frequency 500 \
+        --train-frequency 10 \
 """
 
 
