@@ -260,14 +260,13 @@ class Trainer:
     def _run_collect(self) -> dict[str, Any]:
         act = self.agent.sample(self.obs)
         next_obs, reward, terminated, truncated, infos = self.envs.step(act)
-        done = terminated | truncated
 
         real_next_obs = next_obs.copy()
         if "final_observation" in infos.keys():
             for idx, final_obs in enumerate(infos["final_observation"]):
                 real_next_obs[idx] = real_next_obs[idx] if final_obs is None else final_obs
 
-        self.buffer.add(self.obs, real_next_obs, act, reward, done, infos)
+        self.buffer.add(self.obs, real_next_obs, act, reward, terminated, infos)
         self.obs = next_obs
 
         if "final_info" in infos.keys():
