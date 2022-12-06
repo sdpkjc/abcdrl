@@ -419,7 +419,7 @@ class Trainer:
             for idx, final_obs in enumerate(infos["final_observation"]):
                 if final_obs is not None:
                     self.real_next_obs[idx] = final_obs
-                    _, _, terminal_value = self.agent.sample(final_obs.unsqueeze(0))
+                    _, _, terminal_value = self.agent.sample(np.expand_dims(final_obs, axis=0))
                     reward[idx] += self.kwargs["gamma"] * terminal_value
 
         self.buffer.add(self.obs, act, reward, self.terminated, val, log_prob)
