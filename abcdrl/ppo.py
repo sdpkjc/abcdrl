@@ -420,7 +420,7 @@ class Trainer:
                 self.real_next_obs[idx] = self.real_next_obs[idx] if final_obs is None else final_obs
 
         self.buffer.add(self.obs, act, reward, self.terminated, val, log_prob)
-        self.obs = next_obs
+        self.obs = self.real_next_obs
         self.terminated = next_terminated
         if "final_info" in infos.keys():
             final_info = next(item for item in infos["final_info"] if item is not None)
