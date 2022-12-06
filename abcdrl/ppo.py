@@ -398,6 +398,8 @@ class Trainer:
         )
 
         self.obs, _ = self.envs.reset(seed=[seed for seed in range(self.kwargs["num_envs"])])
+        self.terminated = np.zeros((self.kwargs["num_envs"],), dtype=np.float32)
+
         self.agent = Agent(**self.kwargs)
 
     def __call__(self) -> Generator[dict, None, None]:
@@ -410,16 +412,16 @@ class Trainer:
 
     def _run_collect(self) -> dict[str, Any]:
         act, log_prob, val = self.agent.sample(self.obs)
-        next_obs, reward, terminated, truncated, infos = self.envs.step(act)
+        next_obs, reward, next_terminated, next_truncated, infos = self.envs.step(act)
 
         self.real_next_obs = next_obs.copy()
         if "final_observation" in infos.keys():
             for idx, final_obs in enumerate(infos["final_observation"]):
                 self.real_next_obs[idx] = self.real_next_obs[idx] if final_obs is None else final_obs
 
-        self.buffer.add(self.obs, act, reward, terminated, val, log_prob)
+        self.buffer.add(self.obs, act, reward, self.terminated, val, log_prob)
         self.obs = next_obs
-
+        self.terminated = next_terminated
         if "final_info" in infos.keys():
             final_info = next(item for item in infos["final_info"] if item is not None)
             return {
@@ -433,11 +435,9 @@ class Trainer:
         return {"log_type": "collect", "sample_step": self.agent.sample_step}
 
     def _run_train(self) -> dict[str, Any]:
-        act, _, next_val = self.agent.sample(self.real_next_obs)
+        _, _, next_val = self.agent.sample(self.real_next_obs)
         self.agent.sample_step -= self.kwargs["num_envs"]
-        _, _, next_terminated, next_truncated, _ = self.envs.step(act)
-        next_done = next_terminated | next_truncated
-        self.buffer.compute_returns_and_advantage(next_val, next_done)
+        self.buffer.compute_returns_and_advantage(next_val, self.terminated)
 
         data_generator_list = [
             self.buffer.get(batch_size=self.kwargs["minibatch_size"]) for _ in range(self.kwargs["update_epochs"])
