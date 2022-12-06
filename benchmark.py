@@ -17,7 +17,9 @@ def train_process(alg: str, env_id: str, kwargs: dict[str, Any]) -> None:
             cmd += f' --{param[0]} "{param[1]}"'
         else:
             cmd += f" --{param[0]} {param[1]}"
-    subprocess.run(cmd, shell=True, check=True)
+
+    pros = subprocess.Popen([cmd], shell=True)
+    assert pros.wait() == 0
 
 
 def main(
