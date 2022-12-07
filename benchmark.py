@@ -24,7 +24,7 @@ def main(
     algs: str | list[str] = ["dqn"],
     env_ids: str | list[str] = ["CartPole-v1"],
     seeds: int | list[int] = [1],
-    device: str = "auto",
+    devices: str | list[str] = ["auto"],
     workers: int = 3,
     track: bool = False,
     wandb_project_name: str = "abcdrl",
@@ -38,6 +38,8 @@ def main(
         env_ids = [env_ids]
     if not isinstance(seeds, list):
         seeds = [seeds]
+    if not isinstance(devices, list):
+        devices = [devices]
     if not isinstance(wandb_tags, list):
         wandb_tags = [wandb_tags]
 
@@ -45,8 +47,7 @@ def main(
     wandb_tags.append(git_commit_sha)
 
     with ThreadPoolExecutor(max_workers=workers) as executor:
-        for element in itertools.product(algs, env_ids, seeds):
-            alg, env_id, seed = element
+        for (alg, env_id, seed), device in zip(itertools.product(algs, env_ids, seeds), itertools.cycle(devices)):
             kwargs = {
                 "device": device,
                 "track": track,
