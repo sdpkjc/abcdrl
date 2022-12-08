@@ -306,7 +306,6 @@ class Trainer:
         gamma: float = 0.99,
         # Collect
         buffer_size: int = 1_000_000,
-        exploration_noise: float = 0.1,
         # Learn
         batch_size: int = 256,
         q_lr: float = 1e-3,
