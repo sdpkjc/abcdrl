@@ -228,7 +228,6 @@ Hopper-v4 = """
         --total-timesteps 1000000 \
         --gamma 0.99 \
         --buffer-size 1000000 \
-        --exploration-noise 0.1 \
         --batch-size 256 \
         --q-lr 1e-3 \
         --policy-lr 3e-4 \
@@ -248,7 +247,6 @@ Walker2d-v4 = """
         --total-timesteps 1000000 \
         --gamma 0.99 \
         --buffer-size 1000000 \
-        --exploration-noise 0.1 \
         --batch-size 256 \
         --q-lr 1e-3 \
         --policy-lr 3e-4 \
@@ -268,7 +266,6 @@ HalfCheetah-v4 = """
         --total-timesteps 1000000 \
         --gamma 0.99 \
         --buffer-size 1000000 \
-        --exploration-noise 0.1 \
         --batch-size 256 \
         --q-lr 1e-3 \
         --policy-lr 3e-4 \
