@@ -332,10 +332,7 @@ class Trainer:
         self.kwargs.pop("self")
 
         if self.kwargs["exp_name"] is None:
-            self.kwargs["exp_name"] = (
-                f"{self.kwargs['env_id']}__{os.path.basename(__file__).rstrip('.py')}__"
-                + f"{self.kwargs['seed']}__{int(time.time())}"
-            )
+            self.kwargs["exp_name"] = f"{self.kwargs['env_id']}__{os.path.basename(__file__).rstrip('.py')}"
         self.kwargs["target_network_frequency"] = max(
             self.kwargs["target_network_frequency"] // self.kwargs["num_envs"] * self.kwargs["num_envs"], 1
         )
@@ -355,7 +352,7 @@ class Trainer:
             optimize_memory_usage=True,
         )
 
-        self.obs, _ = self.envs.reset(seed=[seed for seed in range(self.kwargs["num_envs"])])
+        self.obs, _ = self.envs.reset(seed=self.kwargs["seed"])
         self.agent = Agent(**self.kwargs)
 
     def __call__(self) -> Generator[dict[str, Any], None, None]:
@@ -415,9 +412,8 @@ class Trainer:
             env = gym.wrappers.ResizeObservation(env, (84, 84))
             env = gym.wrappers.GrayScaleObservation(env)
             env = gym.wrappers.FrameStack(env, 4)
-
-            env.action_space.seed(self.kwargs["seed"])
-            env.observation_space.seed(self.kwargs["seed"])
+            env.action_space.seed(self.kwargs["seed"] + idx)
+            env.observation_space.seed(self.kwargs["seed"] + idx)
             return env
 
         return thunk
@@ -447,6 +443,7 @@ def wrapper_logger(
         wandb_entity: str | None = None,
         **kwargs,
     ) -> Generator[dict[str, Any], None, None]:
+        exp_name_ = f"{instance.kwargs['exp_name']}__{instance.kwargs['seed']}__{int(time.time())}"
         if track:
             wandb.init(
                 project=wandb_project_name,
@@ -454,12 +451,12 @@ def wrapper_logger(
                 entity=wandb_entity,
                 sync_tensorboard=True,
                 config=instance.kwargs,
-                name=instance.kwargs["exp_name"],
+                name=exp_name_,
                 save_code=True,
             )
             setup_video_monitor()
 
-        writer = SummaryWriter(f"runs/{instance.kwargs['exp_name']}")
+        writer = SummaryWriter(f"runs/{exp_name_}")
         writer.add_text(
             "hyperparameters",
             "|param|value|\n|-|-|\n" + "\n".join([f"|{key}|{value}|" for key, value in instance.kwargs.items()]),
