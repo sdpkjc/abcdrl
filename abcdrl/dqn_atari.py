@@ -352,7 +352,7 @@ class Trainer:
             optimize_memory_usage=True,
         )
 
-        self.obs, _ = self.envs.reset(seed=[seed for seed in range(self.kwargs["num_envs"])])
+        self.obs, _ = self.envs.reset(seed=[self.kwargs["seed"] + idx for idx in range(self.kwargs["num_envs"])])
         self.agent = Agent(**self.kwargs)
 
     def __call__(self) -> Generator[dict[str, Any], None, None]:
@@ -412,9 +412,6 @@ class Trainer:
             env = gym.wrappers.ResizeObservation(env, (84, 84))
             env = gym.wrappers.GrayScaleObservation(env)
             env = gym.wrappers.FrameStack(env, 4)
-
-            env.action_space.seed(self.kwargs["seed"])
-            env.observation_space.seed(self.kwargs["seed"])
             return env
 
         return thunk

@@ -357,7 +357,7 @@ class Trainer:
             alpha=self.kwargs["alpha"],
         )
 
-        self.obs, _ = self.envs.reset(seed=[seed for seed in range(self.kwargs["num_envs"])])
+        self.obs, _ = self.envs.reset(seed=[self.kwargs["seed"] + idx for idx in range(self.kwargs["num_envs"])])
         self.agent = Agent(**self.kwargs)
 
     def __call__(self) -> Generator[dict[str, Any], None, None]:
@@ -409,8 +409,6 @@ class Trainer:
             if self.kwargs["capture_video"]:
                 if idx == 0:
                     env = gym.wrappers.RecordVideo(env, f"videos/{self.kwargs['exp_name']}")
-            env.action_space.seed(self.kwargs["seed"])
-            env.observation_space.seed(self.kwargs["seed"])
             return env
 
         return thunk
