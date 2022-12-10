@@ -17,40 +17,6 @@ CartPole-v1 = """
         --train-frequency 10 \
 """
 
-Acrobot-v1 = """
-    python abcdrl/dqn.py \
-        --env-id Acrobot-v1 \
-        --num-envs 1 \
-        --total-timesteps 500000 \
-        --gamma 0.99 \
-        --buffer-size 10000 \
-        --start-epsilon 1.0 \
-        --end-epsilon 0.05 \
-        --exploration-fraction 0.5 \
-        --batch-size 128 \
-        --learning-rate 2.5e-4 \
-        --learning-starts 1000 \
-        --target-network-frequency 500 \
-        --train-frequency 10 \
-"""
-
-MountainCar-v0 = """
-    python abcdrl/dqn.py \
-        --env-id MountainCar-v0 \
-        --num-envs 1 \
-        --total-timesteps 500000 \
-        --gamma 0.98 \
-        --buffer-size 10000 \
-        --start-epsilon 1.0 \
-        --end-epsilon 0.02 \
-        --exploration-fraction 0.2 \
-        --batch-size 128 \
-        --learning-rate 2e-3 \
-        --learning-starts 10000 \
-        --target-network-frequency 500 \
-        --train-frequency 10 \
-"""
-
 BreakoutNoFrameskip-v4 = """
     python abcdrl/dqn_atari.py \
         --env-id BreakoutNoFrameskip-v4 \
@@ -122,40 +88,6 @@ CartPole-v1 = """
         --train-frequency 10 \
 """
 
-Acrobot-v1 = """
-    python abcdrl/ddqn.py \
-        --env-id Acrobot-v1 \
-        --num-envs 1 \
-        --total-timesteps 500000 \
-        --gamma 0.99 \
-        --buffer-size 10000 \
-        --start-epsilon 1.0 \
-        --end-epsilon 0.05 \
-        --exploration-fraction 0.5 \
-        --batch-size 128 \
-        --learning-rate 2.5e-4 \
-        --learning-starts 1000 \
-        --target-network-frequency 500 \
-        --train-frequency 10 \
-"""
-
-MountainCar-v0 = """
-    python abcdrl/ddqn.py \
-        --env-id MountainCar-v0 \
-        --num-envs 1 \
-        --total-timesteps 500000 \
-        --gamma 0.98 \
-        --buffer-size 10000 \
-        --start-epsilon 1.0 \
-        --end-epsilon 0.02 \
-        --exploration-fraction 0.2 \
-        --batch-size 128 \
-        --learning-rate 2e-3 \
-        --learning-starts 10000 \
-        --target-network-frequency 500 \
-        --train-frequency 10 \
-"""
-
 
 [pdqn]
 
@@ -178,44 +110,6 @@ CartPole-v1 = """
         --train-frequency 10 \
 """
 
-Acrobot-v1 = """
-    python abcdrl/pdqn.py \
-        --env-id Acrobot-v1 \
-        --num-envs 1 \
-        --total-timesteps 500000 \
-        --gamma 0.99 \
-        --alpha 0.2 \
-        --beta 0.6 \
-        --buffer-size 10000 \
-        --start-epsilon 1.0 \
-        --end-epsilon 0.05 \
-        --exploration-fraction 0.5 \
-        --batch-size 128 \
-        --learning-rate 2.5e-4 \
-        --learning-starts 1000 \
-        --target-network-frequency 500 \
-        --train-frequency 10 \
-"""
-
-MountainCar-v0 = """
-    python abcdrl/pdqn.py \
-        --env-id MountainCar-v0 \
-        --num-envs 1 \
-        --total-timesteps 500000 \
-        --gamma 0.98 \
-        --alpha 0.2 \
-        --beta 0.6 \
-        --buffer-size 10000 \
-        --start-epsilon 1.0 \
-        --end-epsilon 0.02 \
-        --exploration-fraction 0.2 \
-        --batch-size 128 \
-        --learning-rate 2e-3 \
-        --learning-starts 10000 \
-        --target-network-frequency 500 \
-        --train-frequency 10 \
-"""
-
 
 [ddpg]
 
@@ -232,22 +126,6 @@ Pendulum-v1 = """
         --tau 0.005 \
         --learning-starts 1000 \
         --train-frequency 4 \
-        --policy-frequency 2 \
-"""
-
-MountainCarContinuous-v0 = """
-    python abcdrl/ddpg.py \
-        --env-id MountainCarContinuous-v0 \
-        --num-envs 1 \
-        --total-timesteps 500000 \
-        --gamma 0.99 \
-        --buffer-size 500000 \
-        --exploration-noise 0.5 \
-        --batch-size 128 \
-        --learning-rate 7e-5 \
-        --tau 0.005 \
-        --learning-starts 25000 \
-        --train-frequency 1 \
         --policy-frequency 2 \
 """
 
@@ -299,6 +177,7 @@ HalfCheetah-v4 = """
         --policy-frequency 2 \
 """
 
+
 [td3]
 
 Pendulum-v1 = """
@@ -316,24 +195,6 @@ Pendulum-v1 = """
         --policy-noise 0.2 \
         --learning-starts 1000 \
         --train-frequency 4 \
-        --policy-frequency 2 \
-"""
-
-MountainCarContinuous-v0 = """
-    python abcdrl/td3.py \
-        --env-id MountainCarContinuous-v0 \
-        --num-envs 1 \
-        --total-timesteps 500000 \
-        --gamma 0.99 \
-        --buffer-size 500000 \
-        --exploration-noise 0.5 \
-        --noise-clip 0.5 \
-        --batch-size 256 \
-        --learning-rate 7e-5 \
-        --tau 0.005 \
-        --policy-noise 0.2 \
-        --learning-starts 25000 \
-        --train-frequency 1 \
         --policy-frequency 2 \
 """
 
@@ -401,25 +262,6 @@ Pendulum-v1 = """
         --total-timesteps 50000 \
         --gamma 0.98 \
         --buffer-size 50000 \
-        --batch-size 256 \
-        --q-lr 1e-3 \
-        --policy-lr 3e-4 \
-        --tau 0.005 \
-        --alpha 0.2 \
-        --autotune True \
-        --learning-starts 25000 \
-        --train-frequency 1 \
-        --policy-frequency 2 \
-        --target-network-frequency 1 \
-"""
-
-MountainCarContinuous-v0 = """
-    python abcdrl/sac.py \
-        --env-id MountainCarContinuous-v0 \
-        --num-envs 1 \
-        --total-timesteps 500000 \
-        --gamma 0.99 \
-        --buffer-size 500000 \
         --batch-size 256 \
         --q-lr 1e-3 \
         --policy-lr 3e-4 \
@@ -510,26 +352,6 @@ Pendulum-v1 = """
         --max-grad-norm 0.5 \
         --num-minibatches 32 \
         --gae-lambda 0.95 \
-"""
-
-MountainCarContinuous-v0 = """
-    python abcdrl/ppo.py \
-        --env-id MountainCarContinuous-v0 \
-        --num-envs 1 \
-        --total-timesteps 500000 \
-        --gamma 0.99 \
-        --num-steps 2048 \
-        --learning-rate 7e-5 \
-        --anneal-lr True \
-        --update-epochs 10 \
-        --norm-adv True \
-        --clip-coef 0.1 \
-        --clip-vloss True \
-        --ent-coef 0.00429 \
-        --vf-coef 0.19 \
-        --max-grad-norm 0.5 \
-        --num-minibatches 8 \
-        --gae-lambda 0.9 \
 """
 
 Hopper-v4 = """
