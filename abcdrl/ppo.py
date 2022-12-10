@@ -394,7 +394,7 @@ class Trainer:
             gamma=self.kwargs["gamma"],
         )
 
-        self.obs, _ = self.envs.reset(seed=[self.kwargs["seed"] + idx for idx in range(self.kwargs["num_envs"])])
+        self.obs, _ = self.envs.reset()
         self.terminated = np.zeros((self.kwargs["num_envs"],), dtype=np.float32)
 
         self.agent = Agent(**self.kwargs)
@@ -461,6 +461,11 @@ class Trainer:
             env = gym.wrappers.TransformObservation(env, lambda obs: np.clip(obs, -10, 10))
             env = gym.wrappers.NormalizeReward(env, gamma=self.kwargs["gamma"])
             env = gym.wrappers.TransformReward(env, lambda reward: np.clip(reward, -10, 10))
+
+            env.reset_ = env.reset
+            env.reset = lambda **kwargs: env.reset_(
+                **kwargs if "seed" in kwargs.keys() else {**kwargs, "seed": self.kwargs["seed"] + idx}
+            )
             return env
 
         return thunk
