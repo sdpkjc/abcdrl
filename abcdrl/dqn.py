@@ -291,6 +291,8 @@ class Trainer:
             if self.kwargs["capture_video"]:
                 if idx == 0:
                     env = gym.wrappers.RecordVideo(env, f"videos/{self.kwargs['exp_name']}")
+            env.action_space.seed(self.kwargs["seed"] + idx)
+            env.observation_space.seed(self.kwargs["seed"] + idx)
 
             env.reset_ = env.reset
             env.reset = lambda **kwargs: env.reset_(

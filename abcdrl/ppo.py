@@ -461,6 +461,8 @@ class Trainer:
             env = gym.wrappers.TransformObservation(env, lambda obs: np.clip(obs, -10, 10))
             env = gym.wrappers.NormalizeReward(env, gamma=self.kwargs["gamma"])
             env = gym.wrappers.TransformReward(env, lambda reward: np.clip(reward, -10, 10))
+            env.action_space.seed(self.kwargs["seed"] + idx)
+            env.observation_space.seed(self.kwargs["seed"] + idx)
 
             env.reset_ = env.reset
             env.reset = lambda **kwargs: env.reset_(
