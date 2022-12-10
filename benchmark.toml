@@ -401,7 +401,6 @@ Pendulum-v1 = """
         --total-timesteps 50000 \
         --gamma 0.98 \
         --buffer-size 50000 \
-        --exploration-noise 0.1 \
         --batch-size 256 \
         --q-lr 1e-3 \
         --policy-lr 3e-4 \
