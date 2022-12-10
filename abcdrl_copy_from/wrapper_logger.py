@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import time
 from typing import Any, Callable, Generator
 
 import gymnasium as gym
@@ -38,7 +39,7 @@ def wrapper_logger(
                 entity=wandb_entity,
                 sync_tensorboard=True,
                 config=instance.kwargs,
-                name=instance.kwargs["exp_name"],
+                name=instance.kwargs["exp_name"] + f"__{instance.kwargs['seed']}__{int(time.time())}",
                 save_code=True,
             )
             setup_video_monitor()

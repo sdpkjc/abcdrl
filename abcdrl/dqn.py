@@ -224,10 +224,7 @@ class Trainer:
         self.kwargs.pop("self")
 
         if self.kwargs["exp_name"] is None:
-            self.kwargs["exp_name"] = (
-                f"{self.kwargs['env_id']}__{os.path.basename(__file__).rstrip('.py')}__"
-                + f"{self.kwargs['seed']}__{int(time.time())}"
-            )
+            self.kwargs["exp_name"] = f"{self.kwargs['env_id']}__{os.path.basename(__file__).rstrip('.py')}"
         self.kwargs["target_network_frequency"] = max(
             self.kwargs["target_network_frequency"] // self.kwargs["num_envs"] * self.kwargs["num_envs"], 1
         )
@@ -332,7 +329,7 @@ def wrapper_logger(
                 entity=wandb_entity,
                 sync_tensorboard=True,
                 config=instance.kwargs,
-                name=instance.kwargs["exp_name"],
+                name=instance.kwargs["exp_name"] + f"__{instance.kwargs['seed']}__{int(time.time())}",
                 save_code=True,
             )
             setup_video_monitor()
