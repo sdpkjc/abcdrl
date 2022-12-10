@@ -394,7 +394,7 @@ class Trainer:
             gamma=self.kwargs["gamma"],
         )
 
-        self.obs, _ = self.envs.reset(seed=[self.kwargs["num_envs"] + idx for idx in range(self.kwargs["num_envs"])])
+        self.obs, _ = self.envs.reset(seed=self.kwargs["seed"])
         self.terminated = np.zeros((self.kwargs["num_envs"],), dtype=np.float32)
 
         self.agent = Agent(**self.kwargs)

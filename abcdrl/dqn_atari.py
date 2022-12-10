@@ -352,7 +352,7 @@ class Trainer:
             optimize_memory_usage=True,
         )
 
-        self.obs, _ = self.envs.reset(seed=[self.kwargs["num_envs"] + idx for idx in range(self.kwargs["num_envs"])])
+        self.obs, _ = self.envs.reset(seed=self.kwargs["seed"])
         self.agent = Agent(**self.kwargs)
 
     def __call__(self) -> Generator[dict[str, Any], None, None]:
