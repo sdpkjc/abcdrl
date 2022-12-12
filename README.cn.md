@@ -2,12 +2,16 @@
 
 [English](./README.md) | 简体中文
 
-[<img src="https://img.shields.io/badge/license-MIT-green">](https://github.com/sdpkjc/abcdrl)
+[![license](https://img.shields.io/badge/license-MIT-green)](https://github.com/sdpkjc/abcdrl)
+[![pytest](https://github.com/sdpkjc/abcdrl/actions/workflows/test.yml/badge.svg)](https://github.com/sdpkjc/abcdrl/actions/workflows/test.yml)
+[![pre-commit](https://github.com/sdpkjc/abcdrl/actions/workflows/pre-commit.yml/badge.svg)](https://github.com/sdpkjc/abcdrl/actions/workflows/pre-commit.yml)
+[![docs](https://img.shields.io/github/deployments/sdpkjc/abcdrl/Production?label=docs&logo=vercel)](https://docs.abcdrl.xyz/)
+[![benchmark](https://img.shields.io/badge/Weights%20&%20Biases-benchmark-FFBE00?logo=weightsandbiases)](https://report.abcdrl.xyz/)
+[![mirror repo](https://img.shields.io/badge/Gitee-mirror%20repo-black?style=flat&labelColor=C71D23&logo=gitee)](https://gitee.com/sdpkjc/abcdrl/)
 [![Checked with mypy](https://img.shields.io/badge/mypy-checked-blue)](http://mypy-lang.org/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
-[![Documentation Status](https://img.shields.io/badge/docs-latest-brightgreen.svg?style=flat)](https://docs.abcdrl.xyz)
-[![Documentation Status](https://img.shields.io/badge/中文文档-最新-brightgreen.svg)](https://docs.abcdrl.xyz/zh)
+[![python versions](https://img.shields.io/badge/python-3.8+-blue)](https://www.python.org/)
 
 abcdRL 是一个**模块化单文件强化学习代码库🗄**，提供“有但不严格🚥”的模块化设计🏗，和清晰的单文件算法实现📜。
 
@@ -38,6 +42,8 @@ abcdRL 是一个**模块化单文件强化学习代码库🗄**，提供“有�
 - 要“一致的逻辑🤖”，~~不要“一致的接口🔌”~~
 
 ## ✅ 已实现算法
+
+***Weights & Biases 性能报告 ➡️ [report.abcdrl.xyz](https://report.abcdrl.xyz)***
 
 - [Deep Q Network (DQN)](https://doi.org/10.1038/nature14236)
 - [Deep Deterministic Policy Gradient (DDPG)](http://arxiv.org/abs/1509.02971)

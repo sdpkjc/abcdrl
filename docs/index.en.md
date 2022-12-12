@@ -21,6 +21,8 @@ abcdRL is a **Modular Single-file RL Algorithms Library🗄** that provides modu
 
 ## ✅ Implemented Algorithms
 
+***Weights & Biases Benchmark Report ➡️ [report.abcdrl.xyz](https://report.abcdrl.xyz)***
+
 - [Deep Q Network (DQN)](https://doi.org/10.1038/nature14236)
 - [Deep Deterministic Policy Gradient (DDPG)](http://arxiv.org/abs/1509.02971)
 - [Twin Delayed Deep Deterministic Policy Gradient (TD3)](http://arxiv.org/abs/1802.09477)

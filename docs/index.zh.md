@@ -21,6 +21,8 @@ abcdRL 是一个**模块化单文件强化学习代码库🗄**，提供“有�
 
 ## ✅ 已实现算法
 
+***Weights & Biases 性能报告 ➡️ [report.abcdrl.xyz](https://report.abcdrl.xyz)***
+
 - [Deep Q Network (DQN)](https://doi.org/10.1038/nature14236)
 - [Deep Deterministic Policy Gradient (DDPG)](http://arxiv.org/abs/1509.02971)
 - [Twin Delayed Deep Deterministic Policy Gradient (TD3)](http://arxiv.org/abs/1802.09477)
