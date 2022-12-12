@@ -28,7 +28,7 @@ def get_space_shape(env_space: gym.Space) -> tuple[int, ...]:
 
 
 class RolloutBuffer:
-    @dataclasses.dataclass
+    @dataclasses.dataclass(frozen=True)
     class Samples(Generic[SamplesItemType]):
         observations: SamplesItemType
         actions: SamplesItemType
@@ -298,16 +298,14 @@ class Agent:
         self.learn_step = 0
 
     def predict(self, obs: np.ndarray) -> np.ndarray:
-        # 评估
-        obs_ts = torch.as_tensor(obs, device=next(self.alg.model.parameters()).device)
+        obs_ts = torch.as_tensor(obs, device=self.kwargs["device"])
         with torch.no_grad():
             act_ts, _, _ = self.alg.predict(obs_ts)
         act_np = act_ts.cpu().numpy()
         return act_np
 
     def sample(self, obs: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-        # 训练
-        obs_ts = torch.as_tensor(obs, device=next(self.alg.model.parameters()).device)
+        obs_ts = torch.as_tensor(obs, device=self.kwargs["device"])
         with torch.no_grad():
             act_ts, log_prob_ts, val_ts = self.alg.predict(obs_ts)
         act_np, log_prob_np, val_np = act_ts.cpu().numpy(), log_prob_ts.cpu().numpy(), val_ts.cpu().numpy()
@@ -317,7 +315,6 @@ class Agent:
     def learn(
         self, data_generator_list: list[Generator[RolloutBuffer.Samples[np.ndarray], None, None]]
     ) -> list[dict[str, Any]]:
-        # 数据预处理
         self._update_lr()
         log_data_list = []
         for data_generator_np in data_generator_list:
@@ -376,10 +373,7 @@ class Trainer:
         self.kwargs.pop("self")
 
         if self.kwargs["exp_name"] is None:
-            self.kwargs["exp_name"] = (
-                f"{self.kwargs['env_id']}__{os.path.basename(__file__).rstrip('.py')}__"
-                + f"{self.kwargs['seed']}__{int(time.time())}"
-            )
+            self.kwargs["exp_name"] = f"{self.kwargs['env_id']}__{os.path.basename(__file__).rstrip('.py')}"
         self.kwargs["batch_size"] = self.kwargs["num_envs"] * self.kwargs["num_steps"]
         self.kwargs["minibatch_size"] = self.kwargs["batch_size"] // self.kwargs["num_minibatches"]
         if self.kwargs["device"] == "auto":
@@ -400,7 +394,9 @@ class Trainer:
             gamma=self.kwargs["gamma"],
         )
 
-        self.obs, _ = self.envs.reset(seed=[seed for seed in range(self.kwargs["num_envs"])])
+        self.obs, _ = self.envs.reset(seed=self.kwargs["seed"])
+        self.terminated = np.zeros((self.kwargs["num_envs"],), dtype=np.float32)
+
         self.agent = Agent(**self.kwargs)
 
     def __call__(self) -> Generator[dict, None, None]:
@@ -413,16 +409,23 @@ class Trainer:
 
     def _run_collect(self) -> dict[str, Any]:
         act, log_prob, val = self.agent.sample(self.obs)
-        next_obs, reward, terminated, truncated, infos = self.envs.step(act)
-        done = terminated | truncated
+        next_obs, reward, next_terminated, next_truncated, infos = self.envs.step(act)
 
-        self.real_next_obs = next_obs.copy()
+        real_next_obs = next_obs.copy()
         if "final_observation" in infos.keys():
             for idx, final_obs in enumerate(infos["final_observation"]):
-                self.real_next_obs[idx] = self.real_next_obs[idx] if final_obs is None else final_obs
+                if final_obs is not None:
+                    real_next_obs[idx] = final_obs
+                    _, _, terminal_value = self.agent.sample(np.expand_dims(real_next_obs[idx], axis=0))
+                    reward[idx] += self.kwargs["gamma"] * (1 - next_terminated[idx]) * terminal_value
 
-        self.buffer.add(self.obs, act, reward, done, val, log_prob)
+        self.buffer.add(self.obs, act, reward, self.terminated, val, log_prob)
+        if self.buffer.full:
+            _, _, next_val = self.agent.sample(real_next_obs)
+            self.buffer.compute_returns_and_advantage(next_val, next_terminated)
+
         self.obs = next_obs
+        self.terminated = next_terminated
 
         if "final_info" in infos.keys():
             final_info = next(item for item in infos["final_info"] if item is not None)
@@ -437,12 +440,6 @@ class Trainer:
         return {"log_type": "collect", "sample_step": self.agent.sample_step}
 
     def _run_train(self) -> dict[str, Any]:
-        act, _, next_val = self.agent.sample(self.real_next_obs)
-        self.agent.sample_step -= self.kwargs["num_envs"]
-        _, _, next_terminated, next_truncated, _ = self.envs.step(act)
-        next_done = next_terminated | next_truncated
-        self.buffer.compute_returns_and_advantage(next_val, next_done)
-
         data_generator_list = [
             self.buffer.get(batch_size=self.kwargs["minibatch_size"]) for _ in range(self.kwargs["update_epochs"])
         ]
@@ -464,8 +461,8 @@ class Trainer:
             env = gym.wrappers.TransformObservation(env, lambda obs: np.clip(obs, -10, 10))
             env = gym.wrappers.NormalizeReward(env, gamma=self.kwargs["gamma"])
             env = gym.wrappers.TransformReward(env, lambda reward: np.clip(reward, -10, 10))
-            env.action_space.seed(self.kwargs["seed"])
-            env.observation_space.seed(self.kwargs["seed"])
+            env.action_space.seed(self.kwargs["seed"] + idx)
+            env.observation_space.seed(self.kwargs["seed"] + idx)
             return env
 
         return thunk
@@ -474,6 +471,18 @@ class Trainer:
 def wrapper_logger(
     wrapped: Callable[..., Generator[dict[str, Any], None, None]]
 ) -> Callable[..., Generator[dict[str, Any], None, None]]:
+    def setup_video_monitor() -> None:
+        vcr = gym.wrappers.monitoring.video_recorder.VideoRecorder
+        vcr.close_ = vcr.close
+
+        def close(self):
+            vcr.close_(self)
+            if self.path:
+                wandb.log({"videos": wandb.Video(self.path)})
+                self.path = None
+
+        vcr.close = close
+
     def _wrapper(
         instance,
         *args,
@@ -483,6 +492,7 @@ def wrapper_logger(
         wandb_entity: str | None = None,
         **kwargs,
     ) -> Generator[dict[str, Any], None, None]:
+        exp_name_ = f"{instance.kwargs['exp_name']}__{instance.kwargs['seed']}__{int(time.time())}"
         if track:
             wandb.init(
                 project=wandb_project_name,
@@ -490,11 +500,12 @@ def wrapper_logger(
                 entity=wandb_entity,
                 sync_tensorboard=True,
                 config=instance.kwargs,
-                name=instance.kwargs["exp_name"],
-                monitor_gym=True,
+                name=exp_name_,
                 save_code=True,
             )
-        writer = SummaryWriter(f"runs/{instance.kwargs['exp_name']}")
+            setup_video_monitor()
+
+        writer = SummaryWriter(f"runs/{exp_name_}")
         writer.add_text(
             "hyperparameters",
             "|param|value|\n|-|-|\n" + "\n".join([f"|{key}|{value}|" for key, value in instance.kwargs.items()]),

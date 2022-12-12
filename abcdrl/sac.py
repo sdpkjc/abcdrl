@@ -29,7 +29,7 @@ def get_space_shape(env_space: gym.Space) -> tuple[int, ...]:
 
 
 class ReplayBuffer:
-    @dataclasses.dataclass
+    @dataclasses.dataclass(frozen=True)
     class Samples(Generic[SamplesItemType]):
         observations: SamplesItemType
         actions: SamplesItemType
@@ -72,7 +72,7 @@ class ReplayBuffer:
             self.size = min(self.size + 1, self.buffer_size)
 
     def sample(self, batch_size: int = 1) -> Samples[np.ndarray]:
-        idxs = np.random.choice(self.size, size=batch_size, replace=False)
+        idxs = np.random.choice(self.size, size=batch_size, replace=True)
         return ReplayBuffer.Samples[np.ndarray](
             observations=self.obs_buf[idxs],
             next_observations=self.next_obs_buf[idxs],
@@ -258,27 +258,27 @@ class Agent:
         self.learn_step = 0
 
     def predict(self, obs: np.ndarray) -> np.ndarray:
-        # 评估
-        obs_ts = torch.as_tensor(obs, device=next(self.alg.model.parameters()).device)
+        obs_ts = torch.as_tensor(obs, device=self.kwargs["device"])
         with torch.no_grad():
             act_ts = self.alg.predict(obs_ts)
         act_np = act_ts.cpu().numpy()
         return act_np
 
     def sample(self, obs: np.ndarray) -> np.ndarray:
-        # 训练
         if self.sample_step < self.kwargs["learning_starts"]:
             act_np = np.array([self.kwargs["act_space"].sample() for _ in range(self.kwargs["num_envs"])])
         else:
-            obs_ts = torch.as_tensor(obs, device=next(self.alg.model.parameters()).device)
+            obs_ts = torch.as_tensor(obs, device=self.kwargs["device"])
             with torch.no_grad():
                 act_ts = self.alg.predict(obs_ts)
             act_np = act_ts.cpu().numpy()
+
         self.sample_step += self.kwargs["num_envs"]
+        if self.sample_step % self.kwargs["target_network_frequency"] == 0:
+            self.alg.sync_target()
         return act_np
 
     def learn(self, data: ReplayBuffer.Samples[np.ndarray]) -> dict[str, Any]:
-        # 数据预处理 & 目标网络同步
         data_ts = ReplayBuffer.Samples[torch.Tensor](
             **{
                 item[0]: torch.as_tensor(item[1], device=self.kwargs["device"])
@@ -289,8 +289,6 @@ class Agent:
         )
 
         log_data = self.alg.learn(data_ts, self.sample_step % self.kwargs["policy_frequency"] == 0)
-        if self.sample_step % self.kwargs["target_network_frequency"] == 0:
-            self.alg.sync_target()
         self.learn_step += 1
         return log_data
 
@@ -308,7 +306,6 @@ class Trainer:
         gamma: float = 0.99,
         # Collect
         buffer_size: int = 1_000_000,
-        exploration_noise: float = 0.1,
         # Learn
         batch_size: int = 256,
         q_lr: float = 1e-3,
@@ -326,10 +323,7 @@ class Trainer:
         self.kwargs.pop("self")
 
         if self.kwargs["exp_name"] is None:
-            self.kwargs["exp_name"] = (
-                f"{self.kwargs['env_id']}__{os.path.basename(__file__).rstrip('.py')}__"
-                + f"{self.kwargs['seed']}__{int(time.time())}"
-            )
+            self.kwargs["exp_name"] = f"{self.kwargs['env_id']}__{os.path.basename(__file__).rstrip('.py')}"
         self.kwargs["policy_frequency"] = max(
             self.kwargs["policy_frequency"] // self.kwargs["num_envs"] * self.kwargs["num_envs"], 1
         )
@@ -351,7 +345,7 @@ class Trainer:
             buffer_size=self.kwargs["buffer_size"],
         )
 
-        self.obs, _ = self.envs.reset(seed=[seed for seed in range(self.kwargs["num_envs"])])
+        self.obs, _ = self.envs.reset(seed=self.kwargs["seed"])
         self.agent = Agent(**self.kwargs)
 
     def __call__(self) -> Generator[dict[str, Any], None, None]:
@@ -365,14 +359,13 @@ class Trainer:
     def _run_collect(self) -> dict[str, Any]:
         act = self.agent.sample(self.obs)
         next_obs, reward, terminated, truncated, infos = self.envs.step(act)
-        done = terminated | truncated
 
         real_next_obs = next_obs.copy()
         if "final_observation" in infos.keys():
             for idx, final_obs in enumerate(infos["final_observation"]):
                 real_next_obs[idx] = real_next_obs[idx] if final_obs is None else final_obs
 
-        self.buffer.add(self.obs, real_next_obs, act, reward, done, infos)
+        self.buffer.add(self.obs, real_next_obs, act, reward, terminated, infos)
         self.obs = next_obs
 
         if "final_info" in infos.keys():
@@ -401,8 +394,8 @@ class Trainer:
             if self.kwargs["capture_video"]:
                 if idx == 0:
                     env = gym.wrappers.RecordVideo(env, f"videos/{self.kwargs['exp_name']}")
-            env.action_space.seed(self.kwargs["seed"])
-            env.observation_space.seed(self.kwargs["seed"])
+            env.action_space.seed(self.kwargs["seed"] + idx)
+            env.observation_space.seed(self.kwargs["seed"] + idx)
             return env
 
         return thunk
@@ -411,6 +404,18 @@ class Trainer:
 def wrapper_logger(
     wrapped: Callable[..., Generator[dict[str, Any], None, None]]
 ) -> Callable[..., Generator[dict[str, Any], None, None]]:
+    def setup_video_monitor() -> None:
+        vcr = gym.wrappers.monitoring.video_recorder.VideoRecorder
+        vcr.close_ = vcr.close
+
+        def close(self):
+            vcr.close_(self)
+            if self.path:
+                wandb.log({"videos": wandb.Video(self.path)})
+                self.path = None
+
+        vcr.close = close
+
     def _wrapper(
         instance,
         *args,
@@ -420,6 +425,7 @@ def wrapper_logger(
         wandb_entity: str | None = None,
         **kwargs,
     ) -> Generator[dict[str, Any], None, None]:
+        exp_name_ = f"{instance.kwargs['exp_name']}__{instance.kwargs['seed']}__{int(time.time())}"
         if track:
             wandb.init(
                 project=wandb_project_name,
@@ -427,11 +433,12 @@ def wrapper_logger(
                 entity=wandb_entity,
                 sync_tensorboard=True,
                 config=instance.kwargs,
-                name=instance.kwargs["exp_name"],
-                monitor_gym=True,
+                name=exp_name_,
                 save_code=True,
             )
-        writer = SummaryWriter(f"runs/{instance.kwargs['exp_name']}")
+            setup_video_monitor()
+
+        writer = SummaryWriter(f"runs/{exp_name_}")
         writer.add_text(
             "hyperparameters",
             "|param|value|\n|-|-|\n" + "\n".join([f"|{key}|{value}|" for key, value in instance.kwargs.items()]),

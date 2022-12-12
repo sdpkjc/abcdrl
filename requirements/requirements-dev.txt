@@ -5,6 +5,8 @@ torchvision==0.14.0
 tensorboard==2.11.0
 gym==0.26.2
 gymnasium[all]==0.26.3
+gymnasium[accept-rom-license]==0.26.3
+shimmy[atari]==0.1.0
 free-mujoco-py==2.1.6
 wandb==0.13.5
 fire==0.4.0
