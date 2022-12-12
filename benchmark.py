@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import itertools
 import subprocess
-import time
 from concurrent.futures import ThreadPoolExecutor
 from typing import Any
 
@@ -59,7 +58,6 @@ def main(
                 "seed": seed,
             }
             executor.submit(train_process, alg, env_id, kwargs)
-            time.sleep(0.1)
 
 
 if __name__ == "__main__":
