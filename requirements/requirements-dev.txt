@@ -15,6 +15,6 @@ dill==0.3.6
 pre-commit==2.20.0
 pytest==7.0.1
 pytest-html==3.2.0
-mkdocs-material==8.5.10
+mkdocs-material==8.5.11
 mkdocs-glightbox==0.3.1
 mkdocs-static-i18n==0.50
