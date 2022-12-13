@@ -3,4 +3,4 @@ services:
     build: .
     environment:
       - SOURCE_BRANCH
-    command: " [ '$SOURCE_BRANCH' == 'main' ] && pytest || echo '$SOURCE_BRANCH branch skip test.' "
+    command: " [ \"$SOURCE_BRANCH\" == 'main' ] && pytest || echo \"$SOURCE_BRANCH branch skip test.\" "
