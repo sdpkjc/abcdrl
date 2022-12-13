@@ -1,5 +1,0 @@
-#!/bin/bash
-
-curl -LSs 'https://github.com/balena-io/qemu/releases/download/v7.0.0%2Bbalena1/qemu-7.0.0.balena1-arm.tar.gz' | tar -xzv --strip-components=1 --wildcards '*/qemu-*'
-
-docker run --rm --privileged multiarch/qemu-user-static:register --reset
