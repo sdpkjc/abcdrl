@@ -8,6 +8,7 @@ RUN apt-get update && apt-get -y install \
     libgl1-mesa-glx \
     libglew-dev \
     libosmesa6-dev patchelf swig
+RUN ln -s /usr/bin/python3 /usr/bin/python
 
 RUN pip install torch==1.13.0 torchvision torchaudio
 
