@@ -1,4 +1,11 @@
 services:
   sut:
     build: .
-    command: pytest
+    environment:
+      - SOURCE_BRANCH
+    command: |+
+      if [[ "$SOURCE_BRANCH" =~ "main" ]] ; then
+          pytest
+      else
+          echo "$SOURCE_BRANCH branch skip test."
+      fi
