@@ -1,4 +1,6 @@
 FROM gitpod/workspace-python:2022-11-07-20-39-06
+USER gitpod
+RUN if ! grep -q "export PIP_USER=no" "$HOME/.bashrc"; then printf '%s\n' "export PIP_USER=no" >> "$HOME/.bashrc"; fi
 
 RUN apt-get update && apt-get -y install \
     python3-pip wget unzip \
