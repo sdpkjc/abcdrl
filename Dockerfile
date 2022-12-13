@@ -8,10 +8,10 @@ RUN \
     apt-get update
 RUN \
     --mount=type=cache,target=/var/cache/apt \
-    apt-get -y --no-install-recommends install python3-pip
+    apt-get -y install python3-pip
 RUN \
     --mount=type=cache,target=/var/cache/apt \
-    apt-get -y --no-install-recommends install wget unzip git software-properties-common \
+    apt-get -y install wget unzip git software-properties-common \
     libgl1-mesa-dev \
     libgl1-mesa-glx \
     libglew-dev \
