@@ -1,4 +1,4 @@
 services:
   sut:
     build: .
-    command: pytest || echo 0
+    command: pytest
