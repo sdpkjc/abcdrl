@@ -1,0 +1,1 @@
+docker build --cache-from $IMAGE_NAME -f $DOCKERFILE_PATH -t $IMAGE_NAME .
