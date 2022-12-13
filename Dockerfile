@@ -3,15 +3,9 @@ LABEL maintainer="pazyx728@gmail.com" \
       version="v0.1"
 
 ENV DEBIAN_FRONTEND=noninteractive
-RUN \
-    --mount=type=cache,target=/var/cache/apt \
-    apt-get update
-RUN \
-    --mount=type=cache,target=/var/cache/apt \
-    apt-get -y install python3-pip
-RUN \
-    --mount=type=cache,target=/var/cache/apt \
-    apt-get -y install wget unzip git software-properties-common \
+RUN apt-get update
+RUN apt-get -y install python3-pip
+RUN apt-get -y install wget unzip git software-properties-common \
     libgl1-mesa-dev \
     libgl1-mesa-glx \
     libglew-dev \
