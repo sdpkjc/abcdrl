@@ -3,5 +3,6 @@ services:
     build:
       context: /
       dockerfile: $DOCKERFILE_PATH
+    command: pytest
     environment:
       - DOCKERFILE_PATH

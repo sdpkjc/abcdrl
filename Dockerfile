@@ -11,13 +11,10 @@ RUN apt-get update && apt-get -y install \
 RUN ln -s /usr/bin/python3 /usr/bin/python
 
 RUN pip install torch==1.13.0 torchvision torchaudio
-
 ARG REQ_DIR=requirements/requirements-dev.txt
 ADD $REQ_DIR requirements.txt
-
-RUN pip install -r requirements.txt &&\
+RUN pip install -r requirements.txt && \
     rm -rf $HOME/.cache/pip
 
 ADD ./ abcdrl
-
 WORKDIR abcdrl
