@@ -18,3 +18,6 @@ RUN pip install -r requirements.txt && \
 
 ADD ./ abcdrl
 WORKDIR abcdrl
+
+RUN echo -e "Welcome to abcdrl!\n\t Branch: $SOURCE_BRANCH\n\t Commit: $SOURCE_COMMIT\n\t Image: $IMAGE_NAME" > HELLO
+CMD cat HELLO
