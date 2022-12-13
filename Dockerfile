@@ -1,6 +1,5 @@
 FROM nvidia/cuda:11.7.0-runtime-ubuntu22.04
-LABEL maintainer="pazyx728@gmail.com" \
-      version="v0.1"
+LABEL maintainer="pazyx728@gmail.com"
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update
