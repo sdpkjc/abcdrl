@@ -1,7 +1,7 @@
 services:
   sut:
     build:
-      context: /
+      context: .
       dockerfile: $DOCKERFILE_PATH
     command: pytest
     environment:
