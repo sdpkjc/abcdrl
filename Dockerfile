@@ -22,3 +22,5 @@ RUN pip install -r requirements.txt &&\
 ADD ./ abcdrl
 
 WORKDIR abcdrl
+
+RUN echo $SOURCE_BRANCH
