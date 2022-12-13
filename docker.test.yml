@@ -3,9 +3,4 @@ services:
     build: .
     environment:
       - SOURCE_BRANCH
-    command: |+
-      if [[ "$SOURCE_BRANCH" =~ "main" ]] ; then
-          pytest
-      else
-          echo "$SOURCE_BRANCH branch skip test."
-      fi
+    command: " [ '$SOURCE_BRANCH' == 'main' ] && pytest || echo '$SOURCE_BRANCH branch skip test.' "
