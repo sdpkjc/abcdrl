@@ -5,7 +5,7 @@ LABEL maintainer="pazyx728@gmail.com" \
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update
 RUN apt-get -y install python3-pip
-RUN apt-get -y install wget unzip software-properties-common \
+RUN apt-get -y install wget unzip git software-properties-common \
     libgl1-mesa-dev \
     libgl1-mesa-glx \
     libglew-dev \
