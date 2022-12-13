@@ -1,0 +1,4 @@
+services:
+  sut:
+    build: .
+    command: docker/run_test.sh
