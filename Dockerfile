@@ -7,7 +7,8 @@ RUN apt-get update && apt-get -y install \
     libgl1-mesa-dev \
     libgl1-mesa-glx \
     libglew-dev \
-    libosmesa6-dev patchelf swig
+    libosmesa6-dev patchelf swig && \
+    apt-get autoclean && rm -rf /var/lib/apt/lists/*
 RUN ln -s /usr/bin/python3 /usr/bin/python
 
 RUN pip install torch==1.13.0 torchvision torchaudio
@@ -18,5 +19,3 @@ RUN pip install -r requirements.txt && \
 
 ADD ./ abcdrl
 WORKDIR abcdrl
-
-RUN echo "GitBranch: $SOURCE_BRANCH \nGitCommit: $SOURCE_COMMIT \nDockerImage: $IMAGE_NAME " > DOCKER_IMAGE_INFO
