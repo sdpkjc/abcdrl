@@ -13,7 +13,6 @@ RUN ln -s /usr/bin/python3 /usr/bin/python
 RUN pip install torch==1.13.0 torchvision torchaudio
 
 ARG REQ_DIR=requirements/requirements-dev.txt
-RUN echo REQ_DIR=$REQ_DIR
 ADD $REQ_DIR requirements.txt
 
 RUN pip install -r requirements.txt &&\
@@ -22,5 +21,3 @@ RUN pip install -r requirements.txt &&\
 ADD ./ abcdrl
 
 WORKDIR abcdrl
-
-RUN echo $SOURCE_BRANCH

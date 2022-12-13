@@ -1,4 +1,7 @@
 services:
   sut:
-    build: .
-    command: pytest
+    build:
+      context: /
+      dockerfile: $DOCKERFILE_PATH
+    environment:
+      - DOCKERFILE_PATH
