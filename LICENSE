@@ -49,7 +49,7 @@ SOFTWARE.
 
 --------------------------------------------------------------------------------
 
-Code in `abcdrl/{ddpg, td3}.py` are adapted from [sfujim/TD3](https://github.com/sfujim/TD3) and [vwxyzjn/cleanrl](https://github.com/vwxyzjn/cleanrl)
+Code in `abcdrl/{ddpg, td3}.py` adapted from [sfujim/TD3](https://github.com/sfujim/TD3) and [vwxyzjn/cleanrl](https://github.com/vwxyzjn/cleanrl)
 
 
 MIT License
@@ -126,7 +126,7 @@ SOFTWARE.
 
 --------------------------------------------------------------------------------
 
-The `.github/PULL_REQUEST_TEMPLATE.md` and `.github/ISSUE_TEMPLATE/*` is adopted from https://github.com/vwxyzjn/cleanrl/blob/master/.github/pull_request_template.md , https://github.com/DLR-RM/stable-baselines3/tree/master/.github/ISSUE_TEMPLATE and https://github.com/wandb/wandb/tree/main/.github/ISSUE_TEMPLATE
+The `.github/PULL_REQUEST_TEMPLATE.md` and `.github/ISSUE_TEMPLATE/*` adopted from https://github.com/vwxyzjn/cleanrl/blob/master/.github/pull_request_template.md , https://github.com/DLR-RM/stable-baselines3/tree/master/.github/ISSUE_TEMPLATE and https://github.com/wandb/wandb/tree/main/.github/ISSUE_TEMPLATE
 
 
 MIT License
@@ -636,7 +636,7 @@ SOFTWARE.
 
 --------------------------------------------------------------------------------
 
-Code in `abcdrl/dqn_atari.py` adapted from [vwxyzjn/cleanrl](https://github.com/vwxyzjn/cleanrl) and [DLR-RM/stable-baselines3](https://github.com/DLR-RM/stable-baselines3)
+Code in `abcdrl/dqn_atari.py` is adapted from [vwxyzjn/cleanrl](https://github.com/vwxyzjn/cleanrl) and [DLR-RM/stable-baselines3](https://github.com/DLR-RM/stable-baselines3)
 
 
 MIT License
@@ -683,3 +683,28 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+
+--------------------------------------------------------------------------------
+
+The `Dockerfile` and `cu113.Dockerfile` adopted from https://github.com/gitpod-io/workspace-images/blob/main/chunks/lang-python/Dockerfile
+
+MIT License
+
+Copyright 2018 TypeFox GmbH
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
