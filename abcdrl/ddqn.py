@@ -255,6 +255,7 @@ class Trainer:
             for _ in range(self.kwargs["train_frequency"]):
                 yield self._run_collect()
             yield self._run_train()
+        self.envs.close_extras()
 
     def _run_collect(self) -> dict[str, Any]:
         act = self.agent.sample(self.obs)
