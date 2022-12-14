@@ -4,7 +4,7 @@ torchaudio
 torchvision
 tensorboard
 gym==0.26.2
-gymnasium[all]==0.26.3
+gymnasium[all]==0.27.0
 gymnasium[accept-rom-license]==0.26.3
 shimmy[atari]==0.1.0
 free-mujoco-py==2.1.6
