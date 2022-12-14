@@ -7,7 +7,7 @@ ENV PIPENV_VENV_IN_PROJECT=true
 ENV PYENV_ROOT="$HOME/.pyenv"
 
 RUN apt-get update && apt-get -y install \
-    python3-pip wget unzip \
+    python3-pip wget unzip curl \
     git software-properties-common \
     libgl1-mesa-dev \
     libgl1-mesa-glx \
