@@ -27,11 +27,11 @@ abcdRL is a **Modular Single-file RL Algorithms Library🗄** that provides modu
 
 ## 🚀 Quickstart
 
-Open the project in Gitpod and start coding immediately.
+Open the project in Gitpod🌐 and start coding immediately.
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/sdpkjc/abcdrl)
 
-Using Docker:
+Using Docker📦:
 
 ```bash
 # 0. Prerequisites: Docker & Nvidia Drive & NVIDIA Container Toolkit
