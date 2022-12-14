@@ -8,6 +8,7 @@ on:
       - 'mkdocs.yml'
       - '.gitignore'
       - '.pre-commit-config.yaml'
+      - 'CITATION.cff'
 jobs:
   build:
     runs-on: ubuntu-22.04
