@@ -3,19 +3,18 @@ LABEL maintainer="pazyx728@gmail.com"
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PATH="$HOME/.pyenv/bin:$HOME/.pyenv/shims:$PATH"
-ENV PIPENV_VENV_IN_PROJECT=true
 ENV PYENV_ROOT="$HOME/.pyenv"
 
 ARG PYTHON_VERSION=3.9
 RUN apt-get update && apt-get -y install \
     python3-pip git unzip \
     software-properties-common \
-    make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev \
-    wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev \
     libgl1-mesa-dev \
     libgl1-mesa-glx \
     libglew-dev \
-    libosmesa6-dev patchelf swig && \
+    libosmesa6-dev patchelf swig \
+    make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev \
+    wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev && \
     apt-get autoclean && rm -rf /var/lib/apt/lists/* && \
     curl -fsSL https://pyenv.run | bash && \
 	pyenv update && \
