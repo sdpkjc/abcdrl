@@ -30,6 +30,7 @@ def test_example_all_wrapper() -> None:
         + " --save-frequency 16",
         shell=True,
         check=True,
+        timeout=10,
     )
 
 
@@ -47,6 +48,7 @@ def test_example_eval_model() -> None:
         + " --save-frequency 16",
         shell=True,
         check=True,
+        timeout=10,
     )
 
     subprocess.run(
@@ -69,5 +71,5 @@ def test_capture_video() -> None:
         + " --capture-video True",
         shell=True,
         check=True,
-        timeout=100,
+        timeout=10,
     )

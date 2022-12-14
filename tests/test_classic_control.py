@@ -15,6 +15,7 @@ def test_dqn() -> None:
         + " --batch-size 4",
         shell=True,
         check=True,
+        timeout=10,
     )
 
 
@@ -30,6 +31,7 @@ def test_ddqn() -> None:
         + " --batch-size 4",
         shell=True,
         check=True,
+        timeout=10,
     )
 
 
@@ -45,4 +47,5 @@ def test_pdqn() -> None:
         + " --batch-size 4",
         shell=True,
         check=True,
+        timeout=10,
     )
