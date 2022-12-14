@@ -76,7 +76,7 @@ def test_wandb_track() -> None:
             + " --capture-video True",
             shell=True,
             check=True,
-            timeout=100,
+            timeout=10,
         )
     finally:
         if online_flag:
