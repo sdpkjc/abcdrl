@@ -8,8 +8,10 @@ ENV PYENV_ROOT="$HOME/.pyenv"
 
 ARG PYTHON_VERSION=3.9
 RUN apt-get update && apt-get -y install \
-    python3-pip wget unzip curl \
-    git software-properties-common \
+    python3-pip git unzip \
+    software-properties-common \
+    make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev \
+    wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev \
     libgl1-mesa-dev \
     libgl1-mesa-glx \
     libglew-dev \
