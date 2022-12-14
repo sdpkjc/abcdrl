@@ -1,6 +1,6 @@
 # 安装 🛠
 
-在 Gitpod 中打开项目，并立即开始编码：
+在 Gitpod 中打开项目，并立即开始编码。
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/sdpkjc/abcdrl)
 
