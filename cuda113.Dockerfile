@@ -22,7 +22,7 @@ RUN apt-get update && apt-get -y install \
 	pyenv install ${PYTHON_VERSION} && \
 	pyenv global ${PYTHON_VERSION} && \
 	for exec in global; do printf '%s\n' 'source "$HOME/.gp_pyenv.d/userbase.bash"' >> "$PYENV_ROOT/libexec/pyenv-$exec"; done && \
-	python3 -m pip install --no-cache-dir --upgrade pip && \
+	python3 -m pip install --no-cache-dir --upgrade pip
 
 RUN pip install torch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 --extra-index-url https://download.pytorch.org/whl/cu113
 ARG REQ_DIR=requirements/requirements-dev.txt
