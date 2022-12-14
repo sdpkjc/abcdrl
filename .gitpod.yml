@@ -1,2 +1,12 @@
 image:
   file: .gitpod.Dockerfile
+github:
+  prebuilds:
+    main: true
+    branches: true
+    pullRequests: true
+    pullRequestsFromForks: false
+    addCheck: true
+    addComment: true
+    addBadge: true
+    addLabel: prebuilt-in-gitpod

@@ -5,13 +5,15 @@
 [![license](https://img.shields.io/badge/license-MIT-green)](https://github.com/sdpkjc/abcdrl)
 [![pytest](https://github.com/sdpkjc/abcdrl/actions/workflows/test.yml/badge.svg)](https://github.com/sdpkjc/abcdrl/actions/workflows/test.yml)
 [![pre-commit](https://github.com/sdpkjc/abcdrl/actions/workflows/pre-commit.yml/badge.svg)](https://github.com/sdpkjc/abcdrl/actions/workflows/pre-commit.yml)
+[![docker autobuild](https://img.shields.io/docker/cloud/build/sdpkjc/abcdrl)](https://hub.docker.com/r/sdpkjc/abcdrl/)
 [![docs](https://img.shields.io/github/deployments/sdpkjc/abcdrl/Production?label=docs&logo=vercel)](https://docs.abcdrl.xyz/)
+[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-908a85?logo=gitpod)](https://gitpod.io/#https://github.com/sdpkjc/abcdrl)
 [![benchmark](https://img.shields.io/badge/Weights%20&%20Biases-benchmark-FFBE00?logo=weightsandbiases)](https://report.abcdrl.xyz/)
 [![mirror repo](https://img.shields.io/badge/Gitee-mirror%20repo-black?style=flat&labelColor=C71D23&logo=gitee)](https://gitee.com/sdpkjc/abcdrl/)
 [![Checked with mypy](https://img.shields.io/badge/mypy-checked-blue)](http://mypy-lang.org/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
-[![python versions](https://img.shields.io/badge/python-3.8+-blue)](https://www.python.org/)
+[![python versions](https://img.shields.io/badge/python-3.8|3.9|3.10-blue)](https://www.python.org/)
 
 abcdRL 是一个**模块化单文件强化学习代码库🗄**，提供“有但不严格🚥”的模块化设计🏗，和清晰的单文件算法实现📜。
 
@@ -21,9 +23,23 @@ abcdRL 是一个**模块化单文件强化学习代码库🗄**，提供“有�
 
 > abcdRL 主要参考了 [vwxyzjn/cleanRL](https://github.com/vwxyzjn/cleanrl/) 的单文件设计哲学和 [PaddlePaddle/PARL](https://github.com/PaddlePaddle/PARL/) 的模块设计。
 
-***使用文档 ➡️ [docs.abcdrl.xyz](https://docs.abcdrl.xyz)***
+***使用文档 ➡️ [docs.abcdrl.xyz](https://docs.abcdrl.xyz/zh/)***
+
+## 🚀 快速开始
+
+在 Gitpod🌐 中打开项目，并立即开始编码。
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/sdpkjc/abcdrl)
+
+使用 Docker📦：
+
+```bash
+# 0. 安装 Docker & Nvidia Drive & NVIDIA Container Toolkit
+# 1. 运行 DQN 算法
+docker run --rm --gpus all sdpkjc/abcdrl python abcdrl/dqn.py
+```
+
+***[详细安装说明 👀](https://docs.abcdrl.xyz/zh/install/)***
 
 ## 🐼 特点
 
@@ -55,3 +71,15 @@ abcdRL 是一个**模块化单文件强化学习代码库🗄**，提供“有�
 
 - [Double Deep Q Network (DDQN)](http://arxiv.org/abs/1509.06461)
 - [Prioritized Deep Q Network (PDQN)](http://arxiv.org/abs/1511.05952)
+
+## 引用 abcdRL
+
+```bibtex
+@misc{Zhao_abcdRL_Modular_Single-file_2022,
+    author = {Zhao, Adam},
+    month = {12},
+    title = {{abcdRL: Modular Single-file Reinforcement Learning Algorithms Library}},
+    url = {https://github.com/sdpkjc/abcdrl},
+    year = {2022}
+}
+```

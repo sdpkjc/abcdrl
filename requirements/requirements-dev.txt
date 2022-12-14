@@ -1,8 +1,8 @@
-numpy==1.23.5
-torch==1.13.0
-torchaudio==0.13.0
-torchvision==0.14.0
-tensorboard==2.11.0
+torch
+numpy
+torchaudio
+torchvision
+tensorboard
 gym==0.26.2
 gymnasium[all]==0.26.3
 gymnasium[accept-rom-license]==0.26.3

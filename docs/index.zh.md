@@ -1,5 +1,11 @@
 # **abcdRL:adam:** (简单四步实现一个强化学习算法)
 
+[![docs](https://img.shields.io/github/deployments/sdpkjc/abcdrl/Production?label=docs&logo=vercel)](https://docs.abcdrl.xyz/)
+[![docker autobuild](https://img.shields.io/docker/cloud/build/sdpkjc/abcdrl)](https://hub.docker.com/r/sdpkjc/abcdrl/)
+[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-908a85?logo=gitpod)](https://gitpod.io/#https://github.com/sdpkjc/abcdrl)
+[![benchmark](https://img.shields.io/badge/Weights%20&%20Biases-benchmark-FFBE00?logo=weightsandbiases)](https://report.abcdrl.xyz/)
+[![mirror repo](https://img.shields.io/badge/Gitee-mirror%20repo-black?style=flat&labelColor=C71D23&logo=gitee)](https://gitee.com/sdpkjc/abcdrl/)
+
 abcdRL 是一个**模块化单文件强化学习代码库🗄**，提供“有但不严格🚥”的模块化🏗设计，和清晰的单文件📜算法实现。
 
 <figure markdown>
@@ -33,3 +39,15 @@ abcdRL 是一个**模块化单文件强化学习代码库🗄**，提供“有�
 
 - [Double Deep Q Network (DDQN)](http://arxiv.org/abs/1509.06461)
 - [Prioritized Deep Q Network (PDQN)](http://arxiv.org/abs/1511.05952)
+
+## 引用 abcdRL
+
+```bibtex
+@misc{Zhao_abcdRL_Modular_Single-file_2022,
+    author = {Zhao, Adam},
+    month = {12},
+    title = {{abcdRL: Modular Single-file Reinforcement Learning Algorithms Library}},
+    url = {https://github.com/sdpkjc/abcdrl},
+    year = {2022}
+}
+```

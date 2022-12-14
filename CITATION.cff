@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use this library, please cite it as below."
+authors:
+- family-names: "Zhao"
+  given-names: "Adam"
+  orcid: "https://orcid.org/0000-0001-9842-4706"
+title: "abcdRL: Modular Single-file Reinforcement Learning Algorithms Library"
+date-released: 2022-12-13
+url: "https://github.com/sdpkjc/abcdrl"
+preferred-citation:
+  type: generic
+  authors:
+  - family-names: "Zhao"
+    given-names: "Adam"
+    orcid: "https://orcid.org/0000-0001-9842-4706"
+  title: "abcdRL: Modular Single-file Reinforcement Learning Algorithms Library"
+  year: 2022
+  month: 12
+  url: "https://github.com/sdpkjc/abcdrl"

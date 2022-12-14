@@ -5,13 +5,15 @@ English | [简体中文](./README.cn.md)
 [![license](https://img.shields.io/badge/license-MIT-green)](https://github.com/sdpkjc/abcdrl)
 [![pytest](https://github.com/sdpkjc/abcdrl/actions/workflows/test.yml/badge.svg)](https://github.com/sdpkjc/abcdrl/actions/workflows/test.yml)
 [![pre-commit](https://github.com/sdpkjc/abcdrl/actions/workflows/pre-commit.yml/badge.svg)](https://github.com/sdpkjc/abcdrl/actions/workflows/pre-commit.yml)
+[![docker autobuild](https://img.shields.io/docker/cloud/build/sdpkjc/abcdrl)](https://hub.docker.com/r/sdpkjc/abcdrl/)
 [![docs](https://img.shields.io/github/deployments/sdpkjc/abcdrl/Production?label=docs&logo=vercel)](https://docs.abcdrl.xyz/)
+[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-908a85?logo=gitpod)](https://gitpod.io/#https://github.com/sdpkjc/abcdrl)
 [![benchmark](https://img.shields.io/badge/Weights%20&%20Biases-benchmark-FFBE00?logo=weightsandbiases)](https://report.abcdrl.xyz/)
 [![mirror repo](https://img.shields.io/badge/Gitee-mirror%20repo-black?style=flat&labelColor=C71D23&logo=gitee)](https://gitee.com/sdpkjc/abcdrl/)
 [![Checked with mypy](https://img.shields.io/badge/mypy-checked-blue)](http://mypy-lang.org/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
-[![python versions](https://img.shields.io/badge/python-3.8+-blue)](https://www.python.org/)
+[![python versions](https://img.shields.io/badge/python-3.8|3.9|3.10-blue)](https://www.python.org/)
 
 abcdRL is a **Modular Single-file RL Algorithms Library🗄** that provides modular🏗 design without strict🚥 and clean single-file📜 implementation.
 
@@ -23,7 +25,21 @@ abcdRL is a **Modular Single-file RL Algorithms Library🗄** that provides modu
 
 ***Documentation ➡️ [docs.abcdrl.xyz](https://abcdrl.xyz)***
 
+## 🚀 Quickstart
+
+Open the project in Gitpod🌐 and start coding immediately.
+
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/sdpkjc/abcdrl)
+
+Using Docker📦:
+
+```bash
+# 0. Prerequisites: Docker & Nvidia Drive & NVIDIA Container Toolkit
+# 1. Run DQN algorithm
+docker run --rm --gpus all sdpkjc/abcdrl python abcdrl/dqn.py
+```
+
+***[For detailed installation instructions 👀](https://docs.abcdrl.xyz/install/)***
 
 ## 🐼 Features
 
@@ -55,3 +71,15 @@ abcdRL is a **Modular Single-file RL Algorithms Library🗄** that provides modu
 
 - [Double Deep Q Network (DDQN)](http://arxiv.org/abs/1509.06461)
 - [Prioritized Deep Q Network (PDQN)](http://arxiv.org/abs/1511.05952)
+
+## Citing abcdRL
+
+```bibtex
+@misc{Zhao_abcdRL_Modular_Single-file_2022,
+    author = {Zhao, Adam},
+    month = {12},
+    title = {{abcdRL: Modular Single-file Reinforcement Learning Algorithms Library}},
+    url = {https://github.com/sdpkjc/abcdrl},
+    year = {2022}
+}
+```
