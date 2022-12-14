@@ -31,7 +31,7 @@ abcdRL 是一个**模块化单文件强化学习代码库🗄**，提供“有�
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/sdpkjc/abcdrl)
 
-使用 Docker 快速体验：
+使用 Docker：
 
 ```bash
 # 0. 安装 Docker & Nvidia Drive & NVIDIA Container Toolkit
@@ -39,7 +39,7 @@ abcdRL 是一个**模块化单文件强化学习代码库🗄**，提供“有�
 docker run --rm --gpus all sdpkjc/abcdrl python abcdrl/dqn.py
 ```
 
-***[详细安装说明](https://docs.abcdrl.xyz/zh/install/)***
+***[详细安装说明 👀](https://docs.abcdrl.xyz/zh/install/)***
 
 ## 🐼 特点
 
