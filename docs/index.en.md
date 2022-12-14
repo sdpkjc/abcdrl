@@ -39,3 +39,15 @@ abcdRL is a **Modular Single-file RL Algorithms Library🗄** that provides modu
 
 - [Double Deep Q Network (DDQN)](http://arxiv.org/abs/1509.06461)
 - [Prioritized Deep Q Network (PDQN)](http://arxiv.org/abs/1511.05952)
+
+## Citing abcdRL
+
+```bibtex
+@misc{Zhao_abcdRL_Modular_Single-file_2022,
+    author = {Zhao, Adam},
+    month = {12},
+    title = {{abcdRL: Modular Single-file Reinforcement Learning Algorithms Library}},
+    url = {https://github.com/sdpkjc/abcdrl},
+    year = {2022}
+}
+```

@@ -39,3 +39,15 @@ abcdRL 是一个**模块化单文件强化学习代码库🗄**，提供“有�
 
 - [Double Deep Q Network (DDQN)](http://arxiv.org/abs/1509.06461)
 - [Prioritized Deep Q Network (PDQN)](http://arxiv.org/abs/1511.05952)
+
+## 引用 abcdRL
+
+```bibtex
+@misc{Zhao_abcdRL_Modular_Single-file_2022,
+    author = {Zhao, Adam},
+    month = {12},
+    title = {{abcdRL: Modular Single-file Reinforcement Learning Algorithms Library}},
+    url = {https://github.com/sdpkjc/abcdrl},
+    year = {2022}
+}
+```
