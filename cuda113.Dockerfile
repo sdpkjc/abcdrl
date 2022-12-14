@@ -6,6 +6,7 @@ ENV PATH="$HOME/.pyenv/bin:$HOME/.pyenv/shims:$PATH"
 ENV PIPENV_VENV_IN_PROJECT=true
 ENV PYENV_ROOT="$HOME/.pyenv"
 
+ARG PYTHON_VERSION=3.9
 RUN apt-get update && apt-get -y install \
     python3-pip wget unzip curl \
     git software-properties-common \
