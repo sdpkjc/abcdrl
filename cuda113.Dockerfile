@@ -14,7 +14,6 @@ RUN apt-get update && \
         libglew-dev \
         libosmesa6-dev patchelf swig && \
     apt-get autoclean && rm -rf /var/lib/apt/lists/*
-# RUN ln -s /usr/bin/python3 /usr/bin/python
 
 RUN pip install torch==1.12.1+cu113 torchvision==0.13.1+cu113 torchaudio==0.12.1 --extra-index-url https://download.pytorch.org/whl/cu113
 ARG REQ_DIR=requirements/requirements-dev.txt
