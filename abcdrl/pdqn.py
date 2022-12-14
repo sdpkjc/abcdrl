@@ -469,18 +469,6 @@ def wrapper_logger(
     return _wrapper
 
 
-def wrapper_print_filter(
-    wrapped: Callable[..., Generator[dict[str, Any], None, None]]
-) -> Callable[..., Generator[dict[str, Any], None, None]]:
-    def _wrapper(instance, *args, **kwargs) -> Generator[dict[str, Any], None, None]:
-        gen = wrapped(instance, *args, **kwargs)
-        for log_data in gen:
-            if "logs" in log_data and log_data["log_type"] != "train":
-                yield log_data
-
-    return _wrapper
-
-
 if __name__ == "__main__":
     torch.manual_seed(1234)
     torch.cuda.manual_seed(1234)
@@ -491,5 +479,7 @@ if __name__ == "__main__":
     torch.cuda.manual_seed_all(1234)
 
     Trainer.__call__ = wrapper_logger(Trainer.__call__)  # type: ignore[assignment]
-    Trainer.__call__ = wrapper_print_filter(Trainer.__call__)  # type: ignore[assignment]
-    fire.Fire(Trainer)
+    fire.Fire(
+        Trainer,
+        serialize=lambda gen: (log_data for log_data in gen if "logs" in log_data and log_data["log_type"] != "train"),
+    )

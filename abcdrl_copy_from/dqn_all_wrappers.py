@@ -433,4 +433,7 @@ if __name__ == "__main__":
     Trainer.__call__ = wrapper_logger(Trainer.__call__)  # type: ignore[assignment]
     Trainer.__call__ = wrapper_save_model(Trainer.__call__)  # type: ignore[assignment]
     Trainer.__call__ = wrapper_print_filter(Trainer.__call__)  # type: ignore[assignment]
-    fire.Fire(Trainer)
+    fire.Fire(
+        Trainer,
+        serialize=lambda gen: (log_data for log_data in gen if "logs" in log_data and log_data["log_type"] != "train"),
+    )

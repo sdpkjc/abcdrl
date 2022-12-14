@@ -76,30 +76,6 @@ def test_codes_wrapper() -> None:
 
     # wrapper_filter
     assert inspect.getsource(abcdrl_copy_from.wrapper_print_filter) == inspect.getsource(
-        abcdrl.dqn.wrapper_print_filter
-    )
-    assert inspect.getsource(abcdrl_copy_from.wrapper_print_filter) == inspect.getsource(
-        abcdrl.ddqn.wrapper_print_filter
-    )
-    assert inspect.getsource(abcdrl_copy_from.wrapper_print_filter) == inspect.getsource(
-        abcdrl.pdqn.wrapper_print_filter
-    )
-    assert inspect.getsource(abcdrl_copy_from.wrapper_print_filter) == inspect.getsource(
-        abcdrl.ddpg.wrapper_print_filter
-    )
-    assert inspect.getsource(abcdrl_copy_from.wrapper_print_filter) == inspect.getsource(
-        abcdrl.td3.wrapper_print_filter
-    )
-    assert inspect.getsource(abcdrl_copy_from.wrapper_print_filter) == inspect.getsource(
-        abcdrl.sac.wrapper_print_filter
-    )
-    assert inspect.getsource(abcdrl_copy_from.wrapper_print_filter) == inspect.getsource(
-        abcdrl.ppo.wrapper_print_filter
-    )
-    assert inspect.getsource(abcdrl_copy_from.wrapper_print_filter) == inspect.getsource(
-        abcdrl.dqn_atari.wrapper_print_filter
-    )
-    assert inspect.getsource(abcdrl_copy_from.wrapper_print_filter) == inspect.getsource(
         abcdrl_copy_from.dqn_all_wrappers.wrapper_print_filter
     )
 
