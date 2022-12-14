@@ -23,9 +23,23 @@ abcdRL 是一个**模块化单文件强化学习代码库🗄**，提供“有�
 
 > abcdRL 主要参考了 [vwxyzjn/cleanRL](https://github.com/vwxyzjn/cleanrl/) 的单文件设计哲学和 [PaddlePaddle/PARL](https://github.com/PaddlePaddle/PARL/) 的模块设计。
 
-***使用文档 ➡️ [docs.abcdrl.xyz](https://docs.abcdrl.xyz)***
+***使用文档 ➡️ [docs.abcdrl.xyz](https://docs.abcdrl.xyz/zh/)***
+
+## 🚀 快速开始
+
+在 Gitpod 中打开项目，并立即开始编码。
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/sdpkjc/abcdrl)
+
+使用 Docker 快速体验：
+
+```bash
+# 0. 安装 Docker & Nvidia Drive & NVIDIA Container Toolkit
+# 1. 运行 DQN 算法
+docker run --rm --gpus all sdpkjc/abcdrl python abcdrl/dqn.py
+```
+
+***[详细安装说明](https://docs.abcdrl.xyz/zh/install/)***
 
 ## 🐼 特点
 

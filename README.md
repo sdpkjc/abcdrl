@@ -25,7 +25,19 @@ abcdRL is a **Modular Single-file RL Algorithms Library🗄** that provides modu
 
 ***Documentation ➡️ [docs.abcdrl.xyz](https://abcdrl.xyz)***
 
+## 🚀 Quickstart
+
+Open the project in Gitpod and start coding immediately.
+
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/sdpkjc/abcdrl)
+
+```bash
+# 0. Prerequisites: Docker & Nvidia Drive & NVIDIA Container Toolkit
+# 1. Run DQN algorithm
+docker run --rm --gpus all sdpkjc/abcdrl python abcdrl/dqn.py
+```
+
+***[For detailed installation instructions](https://docs.abcdrl.xyz/install/)***
 
 ## 🐼 Features
 
