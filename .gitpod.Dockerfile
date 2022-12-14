@@ -8,8 +8,7 @@ RUN apt-get update && apt-get -y install \
     libgl1-mesa-dev \
     libgl1-mesa-glx \
     libglew-dev \
-    libosmesa6-dev patchelf swig && \
-    apt-get autoclean && rm -rf /var/lib/apt/lists/*
+    libosmesa6-dev patchelf swig
 RUN ln -s /usr/bin/python3 /usr/bin/python
 
 ARG REQ_DIR=requirements/requirements-dev.txt
