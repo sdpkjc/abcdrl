@@ -77,9 +77,9 @@ def test_capture_video() -> None:
 
 def test_wandb_track() -> None:
     online_flag = False
-    re = subprocess.run("wandb status", shell=True, check=True, capture_output=True)
+    re = subprocess.run("wandb status", shell=True, check=True, capture_output=True, timeout=10)
     if "disabled" not in str(re.stdout):
-        subprocess.run("wandb offline", shell=True, check=True)
+        subprocess.run("wandb offline", shell=True, check=True, timeout=10)
         online_flag = True
 
     try:
@@ -99,4 +99,4 @@ def test_wandb_track() -> None:
         )
     finally:
         if online_flag:
-            subprocess.run("wandb online", shell=True, check=True)
+            subprocess.run("wandb online", shell=True, check=True, timeout=10)
