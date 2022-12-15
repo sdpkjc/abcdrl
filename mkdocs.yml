@@ -48,8 +48,10 @@ plugins:
           Introduction: 简介 🎟
           Feature: 特点 🤖
           Abstractions: 模块设计 🏗
-          Getting Started: 教程 🧭
+          Tutorial: 教程 🧭
           Installation: 安装 🛠
+          Run: 运行 🏃
+          Modify: 修改 🖌
           Reference: 参考 📎
           Reference Material: 参考资料 💾
         en:
@@ -57,7 +59,9 @@ plugins:
           Introduction: Introduction 🎟
           Feature: Feature 🤖
           Abstractions: Abstractions 🏗
-          Getting Started: Getting Started 🧭
+          Tutorial: Tutorial 🧭
+          Run: Run 🏃
+          Modify: Modify 🖌
           Installation: Installation 🛠
           Reference: Reference 📎
           Reference Material: Reference Material 💾
@@ -68,8 +72,10 @@ nav:
     - Introduction: index.md
     - Feature: features.md
     - Abstractions: abstractions.md
-  - Getting Started:
+  - Tutorial:
     - Installation: install.md
+    - Run: run.md
+    - Modify: modify.md
   - Reference:
     - Reference Material: ref.md
 
