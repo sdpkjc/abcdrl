@@ -15,6 +15,7 @@ def test_ddpg() -> None:
         + " --batch-size 4",
         shell=True,
         check=True,
+        timeout=300,
     )
 
 
@@ -30,6 +31,7 @@ def test_td3() -> None:
         + " --batch-size 4",
         shell=True,
         check=True,
+        timeout=300,
     )
 
 
@@ -45,6 +47,7 @@ def test_sac() -> None:
         + " --batch-size 4",
         shell=True,
         check=True,
+        timeout=300,
     )
 
 
@@ -59,4 +62,5 @@ def test_ppo() -> None:
         + " --total-timesteps 256",
         shell=True,
         check=True,
+        timeout=300,
     )

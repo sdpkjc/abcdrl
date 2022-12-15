@@ -406,6 +406,7 @@ class Trainer:
             while not self.buffer.full:
                 yield self._run_collect()
             yield self._run_train()
+        self.envs.close_extras()
 
     def _run_collect(self) -> dict[str, Any]:
         act, log_prob, val = self.agent.sample(self.obs)

@@ -5,6 +5,6 @@ torchvision
 tensorboard
 gymnasium[classic-control,atari,accept-rom-license,mujoco-py,mujoco]==0.27.0
 free-mujoco-py==2.1.6
-wandb==0.13.5
+wandb==0.13.6
 fire==0.5.0
 dill==0.3.6
