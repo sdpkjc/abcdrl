@@ -15,6 +15,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import wandb
+from combine_signatures.combine_signatures import combine_signatures
 from torch.utils.tensorboard import SummaryWriter
 
 SamplesItemType = TypeVar("SamplesItemType", torch.Tensor, np.ndarray)
@@ -435,8 +436,8 @@ def wrapper_logger(
 
         vcr.close = close
 
+    @combine_signatures(wrapped)
     def _wrapper(
-        instance,
         *args,
         track: bool = False,
         wandb_project_name: str = "abcdrl",
@@ -444,6 +445,7 @@ def wrapper_logger(
         wandb_entity: str | None = None,
         **kwargs,
     ) -> Generator[dict[str, Any], None, None]:
+        instance = args[0]
         exp_name_ = f"{instance.kwargs['exp_name']}__{instance.kwargs['seed']}__{int(time.time())}"
         if track:
             wandb.init(
@@ -463,7 +465,7 @@ def wrapper_logger(
             "|param|value|\n|-|-|\n" + "\n".join([f"|{key}|{value}|" for key, value in instance.kwargs.items()]),
         )
 
-        gen = wrapped(instance, *args, **kwargs)
+        gen = wrapped(*args, **kwargs)
         for log_data in gen:
             if "logs" in log_data:
                 for log_item in log_data["logs"].items():
