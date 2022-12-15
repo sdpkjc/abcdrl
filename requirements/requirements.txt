@@ -1,7 +1,5 @@
 torch
 numpy
-torchaudio
-torchvision
 tensorboard
 gymnasium[classic-control,atari,accept-rom-license,mujoco-py,mujoco,other]==0.27.0
 free-mujoco-py==2.1.6
