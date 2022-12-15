@@ -3,7 +3,6 @@ numpy
 torchaudio
 torchvision
 tensorboard
-gym==0.26.2
 gymnasium[classic-control,atari,accept-rom-license,mujoco-py,mujoco]==0.27.0
 free-mujoco-py==2.1.6
 wandb==0.13.5
