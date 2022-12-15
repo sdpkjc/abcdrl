@@ -6,6 +6,7 @@ free-mujoco-py==2.1.6
 wandb==0.13.6
 fire==0.5.0
 dill==0.3.6
+terminedia==0.4.2
 
 pre-commit==2.20.0
 pytest==7.0.1
