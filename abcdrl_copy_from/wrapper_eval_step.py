@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Any, Callable, Generator
 
 import gymnasium as gym
-from terminedia.utils import combine_signatures
+from combine_signatures.combine_signatures import combine_signatures
 
 
 def wrapper_eval_step(

@@ -5,7 +5,7 @@ from typing import Any, Callable, Generator
 
 import gymnasium as gym
 import wandb
-from terminedia.utils import combine_signatures
+from combine_signatures.combine_signatures import combine_signatures
 from torch.utils.tensorboard import SummaryWriter
 
 

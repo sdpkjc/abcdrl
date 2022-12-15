@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any, Callable, Generator
 
-from terminedia.utils import combine_signatures
+from combine_signatures.combine_signatures import combine_signatures
 
 
 def wrapper_print_filter(

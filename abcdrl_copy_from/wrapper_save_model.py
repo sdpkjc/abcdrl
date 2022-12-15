@@ -4,7 +4,7 @@ import os
 from typing import Any, Callable, Generator
 
 import dill
-from terminedia.utils import combine_signatures
+from combine_signatures.combine_signatures import combine_signatures
 
 
 def wrapper_save_model(
