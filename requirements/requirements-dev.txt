@@ -3,7 +3,7 @@ numpy
 torchaudio
 torchvision
 tensorboard
-gymnasium[classic-control,atari,accept-rom-license,mujoco-py,mujoco]==0.27.0
+gymnasium[classic-control,atari,accept-rom-license,mujoco-py,mujoco,other]==0.27.0
 free-mujoco-py==2.1.6
 wandb==0.13.6
 fire==0.5.0
