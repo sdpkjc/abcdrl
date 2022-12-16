@@ -4,7 +4,6 @@ import time
 from typing import Any, Callable, Generator
 
 import gymnasium as gym
-import wandb
 from combine_signatures.combine_signatures import combine_signatures
 from torch.utils.tensorboard import SummaryWriter
 
@@ -12,6 +11,8 @@ from torch.utils.tensorboard import SummaryWriter
 def wrapper_logger(
     wrapped: Callable[..., Generator[dict[str, Any], None, None]]
 ) -> Callable[..., Generator[dict[str, Any], None, None]]:
+    import wandb
+
     def setup_video_monitor() -> None:
         vcr = gym.wrappers.monitoring.video_recorder.VideoRecorder
         vcr.close_ = vcr.close

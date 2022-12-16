@@ -14,7 +14,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-import wandb
 from combine_signatures.combine_signatures import combine_signatures
 from torch.utils.tensorboard import SummaryWriter
 
@@ -305,6 +304,8 @@ class Trainer:
 def wrapper_logger(
     wrapped: Callable[..., Generator[dict[str, Any], None, None]]
 ) -> Callable[..., Generator[dict[str, Any], None, None]]:
+    import wandb
+
     def setup_video_monitor() -> None:
         vcr = gym.wrappers.monitoring.video_recorder.VideoRecorder
         vcr.close_ = vcr.close

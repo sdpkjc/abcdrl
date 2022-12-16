@@ -7,7 +7,6 @@ import random
 import time
 from typing import Any, Callable, Generator, Generic, TypeVar
 
-import dill
 import fire
 import gymnasium as gym
 import numpy as np
@@ -15,7 +14,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-import wandb
 from combine_signatures.combine_signatures import combine_signatures
 from torch.utils.tensorboard import SummaryWriter
 
@@ -343,6 +341,8 @@ def wrapper_eval_step(
 def wrapper_logger(
     wrapped: Callable[..., Generator[dict[str, Any], None, None]]
 ) -> Callable[..., Generator[dict[str, Any], None, None]]:
+    import wandb
+
     def setup_video_monitor() -> None:
         vcr = gym.wrappers.monitoring.video_recorder.VideoRecorder
         vcr.close_ = vcr.close
@@ -397,6 +397,9 @@ def wrapper_logger(
 def wrapper_save_model(
     wrapped: Callable[..., Generator[dict[str, Any], None, None]]
 ) -> Callable[..., Generator[dict[str, Any], None, None]]:
+
+    import dill
+
     @combine_signatures(wrapped)
     def _wrapper(*args, save_frequency: int = 1_000_0, **kwargs) -> Generator[dict[str, Any], None, None]:
         instance = args[0]
