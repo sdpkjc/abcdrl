@@ -3,24 +3,26 @@ from __future__ import annotations
 from typing import Any, Callable, Generator
 
 import gymnasium as gym
+from combine_signatures.combine_signatures import combine_signatures
 
 
 def wrapper_eval_step(
     wrapped: Callable[..., Generator[dict[str, Any], None, None]]
 ) -> Callable[..., Generator[dict[str, Any], None, None]]:
+    @combine_signatures(wrapped)
     def _wrapper(
-        instance,
         *args,
         eval_frequency: int = 5_000,
         num_steps_eval: int = 500,
         eval_env_seed: int = 1,
         **kwargs,
     ) -> Generator[dict[str, Any], None, None]:
+        instance = args[0]
         eval_frequency = max(eval_frequency // instance.kwargs["num_envs"] * instance.kwargs["num_envs"], 1)
         eval_env = gym.vector.SyncVectorEnv([instance._make_env(eval_env_seed)])  # type: ignore[arg-type]
         eval_obs, _ = eval_env.reset(seed=1)
 
-        gen = wrapped(instance, *args, **kwargs)
+        gen = wrapped(*args, **kwargs)
         for log_data in gen:
             if not log_data["sample_step"] % eval_frequency and log_data["log_type"] == "collect":
                 el_list, er_list = [], []
