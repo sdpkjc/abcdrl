@@ -20,6 +20,21 @@ from torch.utils.tensorboard import SummaryWriter
 SamplesItemType = TypeVar("SamplesItemType", torch.Tensor, np.ndarray)
 
 
+def get_space_shape(env_space: gym.Space) -> tuple[int, ...]:
+    if isinstance(env_space, gym.spaces.Box):
+        return env_space.shape
+    elif isinstance(env_space, gym.spaces.Discrete):
+        return (1,)
+    elif isinstance(env_space, gym.spaces.MultiDiscrete):
+        return (int(len(env_space.nvec)),)
+    elif isinstance(env_space, gym.spaces.MultiBinary):
+        if type(env_space.n) in [tuple, list, np.ndarray]:
+            return tuple(env_space.n)
+        else:
+            return (int(env_space.n),)
+    raise NotImplementedError(f"{env_space} observation space is not supported")
+
+
 class NoopResetEnv(gym.Wrapper):
     def __init__(self, env: gym.Env, noop_max: int = 30) -> None:
         gym.Wrapper.__init__(self, env)
@@ -105,14 +120,6 @@ class MaxAndSkipEnv(gym.Wrapper):
         max_frame = self._obs_buffer.max(axis=0)
 
         return max_frame, total_reward, terminated, truncated, info
-
-
-def get_space_shape(env_space: gym.Space) -> tuple[int, ...]:
-    if isinstance(env_space, gym.spaces.Box):
-        return env_space.shape
-    elif isinstance(env_space, gym.spaces.Discrete):
-        return (1,)
-    raise NotImplementedError(f"{env_space} observation space is not supported")
 
 
 class ReplayBuffer:

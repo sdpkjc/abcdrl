@@ -25,6 +25,13 @@ def get_space_shape(env_space: gym.Space) -> tuple[int, ...]:
         return env_space.shape
     elif isinstance(env_space, gym.spaces.Discrete):
         return (1,)
+    elif isinstance(env_space, gym.spaces.MultiDiscrete):
+        return (int(len(env_space.nvec)),)
+    elif isinstance(env_space, gym.spaces.MultiBinary):
+        if type(env_space.n) in [tuple, list, np.ndarray]:
+            return tuple(env_space.n)
+        else:
+            return (int(env_space.n),)
     raise NotImplementedError(f"{env_space} observation space is not supported")
 
 
