@@ -14,7 +14,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-import wandb
 from combine_signatures.combine_signatures import combine_signatures
 from torch.utils.tensorboard import SummaryWriter
 
@@ -26,6 +25,13 @@ def get_space_shape(env_space: gym.Space) -> tuple[int, ...]:
         return env_space.shape
     elif isinstance(env_space, gym.spaces.Discrete):
         return (1,)
+    elif isinstance(env_space, gym.spaces.MultiDiscrete):
+        return (int(len(env_space.nvec)),)
+    elif isinstance(env_space, gym.spaces.MultiBinary):
+        if type(env_space.n) in [tuple, list, np.ndarray]:
+            return tuple(env_space.n)
+        else:
+            return (int(env_space.n),)
     raise NotImplementedError(f"{env_space} observation space is not supported")
 
 
@@ -323,8 +329,11 @@ class Trainer:
             yield self._run_collect()
         while self.agent.sample_step < self.kwargs["total_timesteps"]:
             for _ in range(self.kwargs["train_frequency"]):
+                if not self.agent.sample_step < self.kwargs["total_timesteps"]:
+                    break
                 yield self._run_collect()
             yield self._run_train()
+
         self.envs.close_extras()
 
     def _run_collect(self) -> dict[str, Any]:
@@ -375,9 +384,11 @@ class Trainer:
 def wrapper_logger(
     wrapped: Callable[..., Generator[dict[str, Any], None, None]]
 ) -> Callable[..., Generator[dict[str, Any], None, None]]:
+    import wandb
+
     def setup_video_monitor() -> None:
         vcr = gym.wrappers.monitoring.video_recorder.VideoRecorder
-        vcr.close_ = vcr.close
+        vcr.close_ = vcr.close  # type: ignore[attr-defined]
 
         def close(self):
             vcr.close_(self)
@@ -385,7 +396,7 @@ def wrapper_logger(
                 wandb.log({"videos": wandb.Video(self.path)})
                 self.path = None
 
-        vcr.close = close
+        vcr.close = close  # type: ignore[assignment]
 
     @combine_signatures(wrapped)
     def _wrapper(

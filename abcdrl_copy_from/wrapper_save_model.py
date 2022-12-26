@@ -3,13 +3,15 @@ from __future__ import annotations
 import os
 from typing import Any, Callable, Generator
 
-import dill
 from combine_signatures.combine_signatures import combine_signatures
 
 
 def wrapper_save_model(
     wrapped: Callable[..., Generator[dict[str, Any], None, None]]
 ) -> Callable[..., Generator[dict[str, Any], None, None]]:
+
+    import dill
+
     @combine_signatures(wrapped)
     def _wrapper(*args, save_frequency: int = 1_000_0, **kwargs) -> Generator[dict[str, Any], None, None]:
         instance = args[0]
