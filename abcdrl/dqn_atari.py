@@ -35,7 +35,7 @@ class NoopResetEnv(gym.Wrapper):
         else:
             noops = self.unwrapped.np_random.integers(1, self.noop_max + 1)
         assert noops > 0
-        obs = np.zeros(0)
+
         for _ in range(noops):
             obs, _, terminated, truncated, info = self.env.step(self.noop_action)
             if terminated or truncated:
@@ -46,8 +46,8 @@ class NoopResetEnv(gym.Wrapper):
 class FireResetEnv(gym.Wrapper):
     def __init__(self, env: gym.Env) -> None:
         gym.Wrapper.__init__(self, env)
-        assert env.unwrapped.get_action_meanings()[1] == "FIRE"
-        assert len(env.unwrapped.get_action_meanings()) >= 3
+        assert env.unwrapped.get_action_meanings()[1] == "FIRE"  # type: ignore[attr-defined]
+        assert len(env.unwrapped.get_action_meanings()) >= 3  # type: ignore[attr-defined]
 
     def reset(self, **kwargs) -> tuple[np.ndarray, dict[str, Any]]:
         self.env.reset(**kwargs)
@@ -85,12 +85,12 @@ class EpisodicLifeEnv(gym.Wrapper):
 
 
 class MaxAndSkipEnv(gym.Wrapper):
-    def __init__(self, env: gym.Env, skip: int = 4):
+    def __init__(self, env: gym.Env, skip: int = 4) -> None:
         gym.Wrapper.__init__(self, env)
         self._obs_buffer = np.zeros((2,) + env.observation_space.shape, dtype=env.observation_space.dtype)
         self._skip = skip
 
-    def step(self, action: int):
+    def step(self, action: int) -> tuple[np.ndarray, float, bool, bool, dict[str, Any]]:
         total_reward = 0.0
         terminated, truncated = None, None
         for i in range(self._skip):
@@ -410,7 +410,7 @@ class Trainer:
                 env = NoopResetEnv(env, noop_max=30)
             env = MaxAndSkipEnv(env, skip=4)
             env = EpisodicLifeEnv(env)
-            if "FIRE" in env.unwrapped.get_action_meanings():
+            if "FIRE" in env.unwrapped.get_action_meanings():  # type: ignore[attr-defined]
                 env = FireResetEnv(env)
             env = gym.wrappers.TransformReward(env, np.sign)
             env = gym.wrappers.ResizeObservation(env, (84, 84))
@@ -430,7 +430,7 @@ def wrapper_logger(
 
     def setup_video_monitor() -> None:
         vcr = gym.wrappers.monitoring.video_recorder.VideoRecorder
-        vcr.close_ = vcr.close
+        vcr.close_ = vcr.close  # type: ignore[attr-defined]
 
         def close(self):
             vcr.close_(self)
@@ -438,7 +438,7 @@ def wrapper_logger(
                 wandb.log({"videos": wandb.Video(self.path)})
                 self.path = None
 
-        vcr.close = close
+        vcr.close = close  # type: ignore[assignment]
 
     @combine_signatures(wrapped)
     def _wrapper(

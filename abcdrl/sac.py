@@ -412,7 +412,7 @@ def wrapper_logger(
 
     def setup_video_monitor() -> None:
         vcr = gym.wrappers.monitoring.video_recorder.VideoRecorder
-        vcr.close_ = vcr.close
+        vcr.close_ = vcr.close  # type: ignore[attr-defined]
 
         def close(self):
             vcr.close_(self)
@@ -420,7 +420,7 @@ def wrapper_logger(
                 wandb.log({"videos": wandb.Video(self.path)})
                 self.path = None
 
-        vcr.close = close
+        vcr.close = close  # type: ignore[assignment]
 
     @combine_signatures(wrapped)
     def _wrapper(
