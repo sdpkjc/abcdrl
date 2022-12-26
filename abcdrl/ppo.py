@@ -402,10 +402,13 @@ class Trainer:
     def __call__(self) -> Generator[dict, None, None]:
         while self.agent.sample_step < self.kwargs["total_timesteps"]:
             self.buffer.reset()
-
             while not self.buffer.full:
+                if not self.agent.sample_step < self.kwargs["total_timesteps"]:
+                    break
                 yield self._run_collect()
-            yield self._run_train()
+            else:
+                yield self._run_train()
+
         self.envs.close_extras()
 
     def _run_collect(self) -> dict[str, Any]:

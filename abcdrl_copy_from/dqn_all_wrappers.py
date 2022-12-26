@@ -251,8 +251,11 @@ class Trainer:
             yield self._run_collect()
         while self.agent.sample_step < self.kwargs["total_timesteps"]:
             for _ in range(self.kwargs["train_frequency"]):
+                if not self.agent.sample_step < self.kwargs["total_timesteps"]:
+                    break
                 yield self._run_collect()
             yield self._run_train()
+
         self.envs.close_extras()
 
     def _run_collect(self) -> dict[str, Any]:
