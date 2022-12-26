@@ -12,7 +12,6 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
-import wandb
 from combine_signatures.combine_signatures import combine_signatures
 from torch.distributions.normal import Normal
 from torch.utils.tensorboard import SummaryWriter
@@ -25,6 +24,13 @@ def get_space_shape(env_space: gym.Space) -> tuple[int, ...]:
         return env_space.shape
     elif isinstance(env_space, gym.spaces.Discrete):
         return (1,)
+    elif isinstance(env_space, gym.spaces.MultiDiscrete):
+        return (int(len(env_space.nvec)),)
+    elif isinstance(env_space, gym.spaces.MultiBinary):
+        if type(env_space.n) in [tuple, list, np.ndarray]:
+            return tuple(env_space.n)
+        else:
+            return (int(env_space.n),)
     raise NotImplementedError(f"{env_space} observation space is not supported")
 
 
@@ -403,10 +409,13 @@ class Trainer:
     def __call__(self) -> Generator[dict, None, None]:
         while self.agent.sample_step < self.kwargs["total_timesteps"]:
             self.buffer.reset()
-
             while not self.buffer.full:
+                if not self.agent.sample_step < self.kwargs["total_timesteps"]:
+                    break
                 yield self._run_collect()
-            yield self._run_train()
+            else:
+                yield self._run_train()
+
         self.envs.close_extras()
 
     def _run_collect(self) -> dict[str, Any]:
@@ -473,9 +482,11 @@ class Trainer:
 def wrapper_logger(
     wrapped: Callable[..., Generator[dict[str, Any], None, None]]
 ) -> Callable[..., Generator[dict[str, Any], None, None]]:
+    import wandb
+
     def setup_video_monitor() -> None:
         vcr = gym.wrappers.monitoring.video_recorder.VideoRecorder
-        vcr.close_ = vcr.close
+        vcr.close_ = vcr.close  # type: ignore[attr-defined]
 
         def close(self):
             vcr.close_(self)
@@ -483,7 +494,7 @@ def wrapper_logger(
                 wandb.log({"videos": wandb.Video(self.path)})
                 self.path = None
 
-        vcr.close = close
+        vcr.close = close  # type: ignore[assignment]
 
     @combine_signatures(wrapped)
     def _wrapper(
