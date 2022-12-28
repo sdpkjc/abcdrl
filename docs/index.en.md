@@ -43,8 +43,8 @@ abcdRL is a **Modular Single-file RL Algorithms Library🗄** that provides modu
 ## Citing abcdRL
 
 ```bibtex
-@misc{Zhao_abcdRL_Modular_Single-file_2022,
-    author = {Zhao, Adam},
+@misc{zhao_abcdrl_2022,
+    author = {Yanxiao, Zhao},
     month = {12},
     title = {{abcdRL: Modular Single-file Reinforcement Learning Algorithms Library}},
     url = {https://github.com/sdpkjc/abcdrl},
