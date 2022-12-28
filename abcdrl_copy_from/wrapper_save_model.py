@@ -13,7 +13,7 @@ def wrapper_save_model(
     import dill
 
     @combine_signatures(wrapped)
-    def _wrapper(*args, save_frequency: int = 1_000_0, **kwargs) -> Generator[dict[str, Any], None, None]:
+    def _wrapper(*args, save_frequency: int = 10_000, **kwargs) -> Generator[dict[str, Any], None, None]:
         instance = args[0]
         save_frequency = max(save_frequency // instance.kwargs["num_envs"] * instance.kwargs["num_envs"], 1)
 
