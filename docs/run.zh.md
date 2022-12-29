@@ -8,16 +8,17 @@ python abcdrl/dqn.py \
     --device "cuda:1" \ #(1)!
     --total_timesteps 500000 \ #(2)!
     --gamma 0.99 \
-    --learning-rate 2.5e-4 \
+    --learning-rate 2.5e-4 \ #(3)!
     --capture-video True \
-    --track \ #(3)!
+    --track \ #(4)!
     --wandb-project-name 'abcdrl' \
     --wandb-tags "['tag1', 'tag2']"
 ```
 
 1.  或 `--device cuda:1`
 2.  连接符可以使用 `_` 或 `-`
-3.  或 `--track True`
+3.  或 `0.00025`
+4.  或 `--track True`
 
 算法文件中的参数，由两部分组成。第一部分是算法主体 `Trainer` 的参数，第二部分是外部功能（`logger`）的参数。
 

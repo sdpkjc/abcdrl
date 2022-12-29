@@ -8,16 +8,17 @@ python abcdrl/dqn.py \
     --device "cuda:1" \ #(1)!
     --total_timesteps 500000 \ #(2)!
     --gamma 0.99 \
-    --learning-rate 2.5e-4 \
+    --learning-rate 2.5e-4 \ #(3)!
     --capture-video True \
-    --track \ #(3)!
+    --track \ #(4)!
     --wandb-project-name 'abcdrl' \
     --wandb-tags "['tag1', 'tag2']"
 ```
 
 1.  or `--device cuda:1`
 2.  The connector can use `_` or `-`
-3.  or `--track True`
+3.  or `0.00025`
+4.  or `--track True`
 
 Parameters in the algorithm file, consisting of two parts. The first part is the initialization parameters of `Trainer`, and the second part is the parameters of the external feature (`logger`).
 

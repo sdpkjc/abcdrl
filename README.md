@@ -15,15 +15,17 @@ English | [简体中文](./README.cn.md)
 [![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
 [![python versions](https://img.shields.io/badge/python-3.8|3.9|3.10-blue)](https://www.python.org/)
 
-abcdRL is a **Modular Single-file RL Algorithms Library🗄** that provides modular🏗 design without strict🚥 and clean single-file📜 implementation.
+abcdRL is a **Modular Single-file RL Algorithms Library** that provides modular design without strict and clean single-file implementation.
 
 <img src="https://abcdrl.xyz/logo/adam.svg" width="300"/>
 
-*When reading📖 the code, understand the full implementation details of the algorithm in the single file📜 quickly; When modifying🖌 the algorithm, benefiting from a lightweight🍃 modular design, only need to focus on a small number of modules.*
+*When reading the code, understand the full implementation details of the algorithm in the single file quickly; When modifying the algorithm, benefiting from a lightweight modular design, only need to focus on a small number of modules.*
 
 > abcdRL mainly references the single-file design philosophy of [vwxyzjn/cleanrl](https://github.com/vwxyzjn/cleanrl/) and the module design of [PaddlePaddle/PARL](https://github.com/PaddlePaddle/PARL/).
 
 ***Documentation ➡️ [docs.abcdrl.xyz](https://abcdrl.xyz)***
+
+***Roadmap🗺️ [#57](https://github.com/sdpkjc/abcdrl/issues/57)***
 
 ## 🚀 Quickstart
 

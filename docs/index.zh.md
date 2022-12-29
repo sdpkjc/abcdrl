@@ -6,17 +6,19 @@
 [![benchmark](https://img.shields.io/badge/Weights%20&%20Biases-benchmark-FFBE00?logo=weightsandbiases)](https://report.abcdrl.xyz/)
 [![mirror repo](https://img.shields.io/badge/Gitee-mirror%20repo-black?style=flat&labelColor=C71D23&logo=gitee)](https://gitee.com/sdpkjc/abcdrl/)
 
-abcdRL 是一个**模块化单文件强化学习代码库🗄**，提供“有但不严格🚥”的模块化🏗设计，和清晰的单文件📜算法实现。
+abcdRL 是一个**模块化单文件强化学习代码库**，提供“有但不严格”的模块化设计，和清晰的单文件算法实现。
 
 <figure markdown>
   ![Adam](imgs/adam.svg){ width="300" }
   <figcaption>Adam</figcaption>
 </figure>
 
-*阅读📖代码时，在单文件📜代码中，快速了解算法的完整实现细节；改进🖌算法时，得益于轻量🍃的模块化设计，只需专注于少量的模块。*
+*阅读代码时，在单文件代码中，快速了解算法的完整实现细节；改进算法时，得益于轻量的模块化设计，只需专注于少量的模块。*
 
 !!! note
     abcdRL 主要参考了 [vwxyzjn/cleanRL](https://github.com/vwxyzjn/cleanrl/) 的单文件设计哲学和 [PaddlePaddle/PARL](https://github.com/PaddlePaddle/PARL/) 的模块设计。
+
+***路线图🗺️ [#57](https://github.com/sdpkjc/abcdrl/issues/57)***
 
 ## 🗽 设计哲学
 
