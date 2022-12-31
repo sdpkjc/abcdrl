@@ -20,7 +20,7 @@ python abcdrl/dqn.py \
 3.  或 `0.00025`
 4.  或 `--track True`
 
-算法文件中的参数，由两部分组成。第一部分是算法主体 `Trainer` 的参数，第二部分是外部功能（`logger`）的参数。
+算法文件中的参数，由两部分组成。第一部分是算法主体 `Trainer` 的参数，第二部分是功能（`logger`, ...）的参数。
 
 === "算法参数"
 
@@ -51,7 +51,7 @@ python abcdrl/dqn.py \
         ) -> None:
     ```
 
-=== "外部功能参数"
+=== "功能参数"
 
     ```python title="dqn.py" linenums="312" hl_lines="21-24"
     def wrapper_logger(
@@ -83,4 +83,4 @@ python abcdrl/dqn.py \
     ```
 
 !!! note
-    可使用 `python abcdrl/dqn.py --help` 命令查看算法参数，使用 `python abcdrl/dqn.py __call__ --help` 命令查看外部功能参数。
+    可使用 `python abcdrl/dqn.py --help` 命令查看算法参数，使用 `python abcdrl/dqn.py __call__ --help` 命令查看功能参数。

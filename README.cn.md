@@ -13,7 +13,7 @@
 [![Checked with mypy](https://img.shields.io/badge/mypy-checked-blue)](http://mypy-lang.org/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
-[![python versions](https://img.shields.io/badge/python-3.8|3.9|3.10-blue)](https://www.python.org/)
+[![python versions](https://img.shields.io/badge/python-3.8%20|%203.9%20|%203.10-blue)](https://www.python.org/)
 
 abcdRL 是一个**模块化单文件强化学习代码库**，提供“有但不严格”的模块化设计，和清晰的单文件算法实现。
 

@@ -17,6 +17,7 @@ theme:
       repo: fontawesome/brands/github
       logo: logo
       adam: adam
+edit_uri: edit/main/docs/
 
 extra:
   analytics:
