@@ -1,7 +1,7 @@
 # Modify 🖌
 
 !!! note
-    It is recommended to read [the abstractions page](abstractions.zh.md) before making changes.
+    It is advised to read the abstractions page before making changes.
 
 ## Parameters & Loop
 
@@ -51,7 +51,7 @@ Our modular design does not prescribe a strict interface, and you are free to mo
 
 ### Writing Decorator
 
-Our generic feature is implemented as a decorator, you can refer to the following code and `abcdrl_copy_from/wrapper_*.py` file to implement the new feature you want and apply it to all algorithms.
+Our generic feature is implemented as a decorator, you can refer to the code below and `abcdrl_copy_from/wrapper_*.py` file to implement the new feature you want and apply it to all algorithms.
 
 ```python hl_lines="8-9 13 15"
 from combine_signatures.combine_signatures import combine_signatures
@@ -61,12 +61,12 @@ def wrapper_example(
     wrapped: Callable[..., Generator[dict[str, Any], None, None]]
 ) -> Callable[..., Generator[dict[str, Any], None, None]]:
     @combine_signatures(wrapped)
-    def _wrapper(*args, new_arg: int = 1, **kwargs) -> Generator[dict[str, Any], None, None]: # 添加额外的参数
+    def _wrapper(*args, new_arg: int = 1, **kwargs) -> Generator[dict[str, Any], None, None]: # Add additional parameters
         # After initializing the Trainer, before running the algorithm
         gen = wrapped(*args, **kwargs)
         for log_data in gen:
             if "logs" in log_data and log_data["log_type"] != "train":
-                # This is where log_data is processed and control flow is adjusted
+                # Here, control flow is modified and log data is handled
                 yield log_data # Each step of the algorithm
         # After running the algorithm
     return _wrapper
@@ -98,7 +98,7 @@ if __name__ == "__main__":
     torch.cuda.manual_seed_all(1234)
 
     Trainer.__call__ = wrapper_logger(Trainer.__call__)  # type: ignore[assignment]
-    # Step 2：Decorate the Trainer.call function
+    # Step 2：Decorate the Trainer.__call__ function
     Trainer.__call__ = wrapper_example(Trainer.__call__)  # type: ignore[assignment]
     fire.Fire(
         Trainer,
