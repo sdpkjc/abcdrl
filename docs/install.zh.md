@@ -1,8 +1,9 @@
 # 安装 🛠
 
-在 Gitpod 中打开项目，并立即开始编码。
+!!! example "快速开始"
+    在 Gitpod 中打开项目，并立即开始编码。
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/sdpkjc/abcdrl)
+    [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/sdpkjc/abcdrl)
 
 ## `Docker`
 

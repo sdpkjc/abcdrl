@@ -2,15 +2,23 @@ site_name: abcdRL
 theme:
   name: material
   palette:
-    scheme: default
-    primary: white
-    accent: red
+    - scheme: default
+      primary: white
+      accent: red
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: black
+      accent: red
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
   language: en
   features:
-    # - navigation.tabs
-    # - navigation.sections
+    - navigation.sections
     - content.code.annotate
-    - navigation.expand
+    - header.autohide
   custom_dir: docs/overrides
   favicon: imgs/logo.svg
   icon:
@@ -28,8 +36,12 @@ extra:
       link: mailto:pazyx728@gmail.com
     - icon: fontawesome/brands/github
       link: https://github.com/sdpkjc
+    - icon: simple/gitee
+      link: https://gitee.com/sdpkjc/abcdrl
     - icon: fontawesome/brands/docker
       link: https://hub.docker.com/r/sdpkjc/abcdrl
+    - icon: simple/weightsandbiases
+      link: https://report.abcdrl.xyz/
 
 repo_name: sdpkjc/abcdrl
 repo_url: https://github.com/sdpkjc/abcdrl
@@ -67,6 +79,9 @@ plugins:
           Reference: Reference 📎
           Reference Material: Reference Material 💾
   - glightbox
+  - git-revision-date-localized:
+      type: timeago
+      fallback_to_build_date: true
 
 nav:
   - Overview:

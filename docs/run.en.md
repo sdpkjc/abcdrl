@@ -20,7 +20,7 @@ python abcdrl/dqn.py \
 3.  or `0.00025`
 4.  or `--track True`
 
-Parameters in the algorithm file, consisting of two parts. The first part is the initialization parameters of `Trainer`, and the second part is the parameters of the feature (`logger`, ...).
+Parameters in the algorithm file, consisting of two parts. The first part is the initialization parameters of `Trainer🔁`, and the second part is the parameters of the feature (`logger`, ...).
 
 === "Algorithm Parameters"
 

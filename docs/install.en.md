@@ -1,8 +1,9 @@
 # Installation 🛠
 
-Open the project in Gitpod and start coding immediately.
+!!! example "Quickstart"
+    Open the project in Gitpod and start coding immediately.
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/sdpkjc/abcdrl)
+    [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/sdpkjc/abcdrl)
 
 ## `Docker`
 
