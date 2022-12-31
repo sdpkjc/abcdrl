@@ -53,8 +53,8 @@ plugins:
   - i18n:
       default_language: en
       languages:
-        en: English
-        zh: 简体中文
+        en: English 🇬🇧
+        zh: 简体中文 🇨🇳
       nav_translations:
         zh:
           Overview: 概览 🗺
