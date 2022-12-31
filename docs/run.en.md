@@ -24,7 +24,7 @@ Parameters in the algorithm file, consisting of two parts. The first part is the
 
 === "Algorithm Parameters"
 
-    ```python title="dqn.py" linenums="206" hl_lines="4-11 13-16 18-19 21-23"
+    ```python title="abcdrl/dqn.py" linenums="206" hl_lines="4-11 13-16 18-19 21-23"
     class Trainer:
         def __init__(
             self,
@@ -53,7 +53,7 @@ Parameters in the algorithm file, consisting of two parts. The first part is the
 
 === "Features Parameters"
 
-    ```python title="dqn.py" linenums="312" hl_lines="21-24"
+    ```python title="abcdrl/dqn.py" linenums="312" hl_lines="21-24"
     def wrapper_logger(
         wrapped: Callable[..., Generator[dict[str, Any], None, None]]
     ) -> Callable[..., Generator[dict[str, Any], None, None]]:

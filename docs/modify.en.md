@@ -1,7 +1,7 @@
 # Modify 🖌
 
-!!! note
-    It is advised to read the abstractions page before making changes.
+!!! info
+    It is advised to read [the abstractions page](abstractions.en.md) before making changes.
 
 ## Parameters & Loop
 
@@ -45,13 +45,13 @@ Our code uses [google/python-fire](https://github.com/google/python-fire) to man
 
 Our Algorithm is completely implemented in a single file, and we can directly modify four classes: `Model📦`, `Algorithm👣`, `Agent🤖`, `Trainer🔁`.
 
-Our modular design does not prescribe a strict interface, and you are free to modify these four classes as long as it works. To use the features we provided (e.g. logger, model saving, model evaluation) we need to keep the `Trainer🔁` interface unchanged.
+Our modular design does not prescribe a strict interface, and you are free to modify these four classes as long as it works. To use the features we provided (e.g. logger, model saving, model evaluation), you need to keep the `Trainer🔁` interface.
 
 ## Modify Feature
 
 ### Writing Decorator
 
-Our generic feature is implemented as a decorator, you can refer to the code below and `abcdrl_copy_from/wrapper_*.py` file to implement the new feature you want and apply it to all algorithms.
+The generic feature is implemented as a decorator, you can refer to the code below and `abcdrl_copy_from/wrapper_*.py` file to implement the new feature you want and apply it to all algorithms.
 
 ```python hl_lines="8-9 13 15"
 from combine_signatures.combine_signatures import combine_signatures
