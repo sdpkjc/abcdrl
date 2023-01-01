@@ -43,3 +43,18 @@ repos:
       args:
         - --no-strict-optional
         - --ignore-missing-imports
+- repo: https://github.com/python-poetry/poetry
+  rev: 1.3.1
+  hooks:
+    - id: poetry-export
+      name: poetry-export requirements.txt
+      args: ["--without-hashes", "-o", "requirements/requirements.txt", "-o", "requirements/requirements-torch.txt", "-E", "torch", "-E", "atari", "-E", "mujoco"]
+    - id: poetry-export
+      name: poetry-export requirements-dev.txt
+      args: ["--without-hashes", "-o", "requirements/requirements-dev.txt", "-o", "requirements/requirements-torch-dev.txt", "-E", "torch", "-E", "atari", "-E", "mujoco", "-E", "dev"]
+    - id: poetry-export
+      name: poetry-export requirements-torch-atari.txt
+      args: ["--without-hashes", "-o", "requirements/requirements-torch-atari.txt", "-E", "torch", "-E", "atari"]
+    - id: poetry-export
+      name: poetry-export requirements-torch-mujoco.txt
+      args: ["--without-hashes", "-o", "requirements/requirements-torch-mujoco.txt", "-E", "torch", "-E", "mujoco"]
