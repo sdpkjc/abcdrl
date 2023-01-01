@@ -1,7 +1,7 @@
 name: Python package
 on:
   release:
-    types: [released, prereleased]
+    types: [published]
 jobs:
   build:
     runs-on: ubuntu-latest

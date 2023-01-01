@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "abcdrl"
-version = "0.1.1.dev0"
+version = "0.2.0-alpha"
 description = "Modular Single-file Reinfocement Learning Algorithms Library"
 authors = ["Adam Zhao <pazyx728@gmail.com>"]
 include = ["abcdrl"]
