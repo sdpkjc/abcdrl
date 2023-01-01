@@ -48,13 +48,13 @@ repos:
   hooks:
     - id: poetry-export
       name: poetry-export requirements.txt
-      args: ["--without-hashes", "--without-urls", "-o", "requirements/requirements.txt", "-E", "torch", "-E", "atari", "-E", "mujoco"]
+      args: ["--without-hashes", "--without-urls", "-o", "requirements/requirements.txt", "-E", "all"]
+    - id: poetry-export
+      name: poetry-export requirements-dev.txt
+      args: ["--without-hashes", "--without-urls", "-o", "requirements/requirements-dev.txt", "-E", "all", "-E", "dev"]
     - id: poetry-export
       name: poetry-export requirements-torch.txt
       args: ["--without-hashes", "--without-urls", "-o", "requirements/requirements-torch.txt", "-E", "torch", "-E", "atari", "-E", "mujoco"]
-    - id: poetry-export
-      name: poetry-export requirements-dev.txt
-      args: ["--without-hashes", "--without-urls", "-o", "requirements/requirements-dev.txt", "-E", "torch", "-E", "atari", "-E", "mujoco", "-E", "dev"]
     - id: poetry-export
       name: poetry-export requirements-torch-dev.txt
       args: ["--without-hashes", "--without-urls", "-o", "requirements/requirements-torch-dev.txt", "-E", "torch", "-E", "atari", "-E", "mujoco", "-E", "dev"]

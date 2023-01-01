@@ -64,6 +64,7 @@ free-mujoco-py = { version = "2.1.6", optional = true }
 torch = ["torch"]
 atari = ["shimmy", "autorom"]
 mujoco = ["mujoco", "mujoco-py", "imageio", "free-mujoco-py"]
+all = ["torch", "shimmy", "autorom", "mujoco", "mujoco-py", "imageio", "free-mujoco-py"]
 dev = ["pre-commit", "pytest", "mkdocs-material", "mkdocs-glightbox", "mkdocs-static-i18n", "mkdocs-git-revision-date-localized-plugin"]
 
 [build-system]
