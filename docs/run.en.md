@@ -1,6 +1,6 @@
 # Run 🏃
 
-After the dependency is installed, you can run the algorithm file directly.
+After dependencies are installed, you can run the algorithm file directly.
 
 ```bash
 python abcdrl/dqn.py \

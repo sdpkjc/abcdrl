@@ -6,7 +6,7 @@
 [![benchmark](https://img.shields.io/badge/Weights%20&%20Biases-benchmark-FFBE00?logo=weightsandbiases)](https://report.abcdrl.xyz/)
 [![mirror repo](https://img.shields.io/badge/Gitee-mirror%20repo-black?style=flat&labelColor=C71D23&logo=gitee)](https://gitee.com/sdpkjc/abcdrl/)
 
-abcdRL is a **Modular Single-file RL Algorithms Library** that provides modular design without strict and clean single-file implementation.
+abcdRL is a **Modular Single-file Reinforcement Learning Algorithms Library** that provides modular design without strict and clean single-file implementation.
 
 <figure markdown>
   ![Adam](imgs/adam.svg){ width="300" }

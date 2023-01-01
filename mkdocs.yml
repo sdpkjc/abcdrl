@@ -32,6 +32,8 @@ extra:
     provider: google
     property: !ENV GOOGLE_ANALYTICS_KEY
   social:
+    - icon: fontawesome/solid/house-chimney
+      link: https://abcdrl.xyz
     - icon: fontawesome/solid/envelope
       link: mailto:pazyx728@gmail.com
     - icon: fontawesome/brands/github

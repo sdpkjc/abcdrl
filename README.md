@@ -15,7 +15,7 @@ English | [简体中文](./README.cn.md)
 [![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
 [![python versions](https://img.shields.io/badge/python-3.8%20|%203.9%20|%203.10-blue)](https://www.python.org/)
 
-abcdRL is a **Modular Single-file RL Algorithms Library** that provides modular design without strict and clean single-file implementation.
+abcdRL is a **Modular Single-file Reinforcement Learning Algorithms Library** that provides modular design without strict and clean single-file implementation.
 
 <img src="https://abcdrl.xyz/logo/adam.svg" width="300"/>
 
