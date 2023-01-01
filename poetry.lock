@@ -461,6 +461,23 @@ url = "https://pypi.tuna.tsinghua.edu.cn/simple"
 reference = "tsinghua"
 
 [[package]]
+name = "decorator"
+version = "4.4.2"
+description = "Decorators for Humans"
+category = "main"
+optional = false
+python-versions = ">=2.6, !=3.0.*, !=3.1.*"
+files = [
+    {file = "decorator-4.4.2-py2.py3-none-any.whl", hash = "sha256:41fa54c2a0cc4ba648be4fd43cff00aedf5b9465c9bf18d64325bc225f08f760"},
+    {file = "decorator-4.4.2.tar.gz", hash = "sha256:e3a62f0520172440ca0dcc823749319382e377f37f140a0b99ef45fecb84bfe7"},
+]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+reference = "tsinghua"
+
+[[package]]
 name = "dill"
 version = "0.3.6"
 description = "serialize all of python"
@@ -838,19 +855,12 @@ files = [
 ]
 
 [package.dependencies]
-autorom = {version = ">=0.4.2,<0.5.0", extras = ["accept-rom-license"], optional = true, markers = "extra == \"accept-rom-license\""}
 cloudpickle = ">=1.2.0"
 gymnasium-notices = ">=0.0.1"
-imageio = {version = ">=2.14.1", optional = true, markers = "extra == \"mujoco\""}
 importlib-metadata = {version = ">=4.8.0", markers = "python_version < \"3.10\""}
 jax-jumpy = ">=0.2.0"
-mujoco = {version = ">=2.3.1.post1", optional = true, markers = "extra == \"mujoco\""}
-mujoco-py = {version = ">=2.1,<2.2", optional = true, markers = "extra == \"mujoco-py\""}
 numpy = ">=1.21.0"
-shimmy = [
-    {version = ">=0.1.0,<1.0"},
-    {version = ">=0.1.0,<1.0", extras = ["atari"], optional = true, markers = "extra == \"atari\""},
-]
+shimmy = ">=0.1.0,<1.0"
 typing-extensions = ">=4.3.0"
 
 [package.extras]
@@ -930,7 +940,7 @@ name = "imageio"
 version = "2.23.0"
 description = "Library for reading and writing a wide range of image, video, scientific, and volumetric data formats."
 category = "main"
-optional = true
+optional = false
 python-versions = ">=3.7"
 files = [
     {file = "imageio-2.23.0-py3-none-any.whl", hash = "sha256:3f937396c2f341a7d7600a99cd14727cc90002f850fd136cf65fad79c2ff44a0"},
@@ -957,6 +967,27 @@ opencv = ["opencv-python"]
 pyav = ["av"]
 test = ["fsspec[github]", "invoke", "pytest", "pytest-cov"]
 tifffile = ["tifffile"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+reference = "tsinghua"
+
+[[package]]
+name = "imageio-ffmpeg"
+version = "0.4.7"
+description = "FFMPEG wrapper for Python"
+category = "main"
+optional = false
+python-versions = ">=3.5"
+files = [
+    {file = "imageio-ffmpeg-0.4.7.tar.gz", hash = "sha256:7a08838f97f363e37ca41821b864fd3fdc99ab1fe2421040c78eb5f56a9e723e"},
+    {file = "imageio_ffmpeg-0.4.7-py3-none-macosx_10_9_intel.macosx_10_9_x86_64.macosx_10_10_intel.macosx_10_10_x86_64.whl", hash = "sha256:6514f1380daf42815bc8c83aad63f33e0b8b47133421ddafe7b410cd8dfbbea5"},
+    {file = "imageio_ffmpeg-0.4.7-py3-none-manylinux2010_x86_64.whl", hash = "sha256:27b48c32becae1658aa81c3a6b922538e4099edf5fbcbdb4ff5dbc84b8ffd3d3"},
+    {file = "imageio_ffmpeg-0.4.7-py3-none-manylinux2014_aarch64.whl", hash = "sha256:fc60686ef03c2d0f842901b206223c30051a6a120384458761390104470846fd"},
+    {file = "imageio_ffmpeg-0.4.7-py3-none-win32.whl", hash = "sha256:6aba52ddf0a64442ffcb8d30ac6afb668186acec99ecbc7ae5bd171c4f500bbc"},
+    {file = "imageio_ffmpeg-0.4.7-py3-none-win_amd64.whl", hash = "sha256:8e724d12dfe83e2a6eb39619e820243ca96c81c47c2648e66e05f7ee24e14312"},
+]
 
 [package.source]
 type = "legacy"
@@ -1370,6 +1401,39 @@ url = "https://pypi.tuna.tsinghua.edu.cn/simple"
 reference = "tsinghua"
 
 [[package]]
+name = "moviepy"
+version = "1.0.3"
+description = "Video editing with Python"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "moviepy-1.0.3.tar.gz", hash = "sha256:2884e35d1788077db3ff89e763c5ba7bfddbd7ae9108c9bc809e7ba58fa433f5"},
+]
+
+[package.dependencies]
+decorator = ">=4.0.2,<5.0"
+imageio = {version = ">=2.5,<3.0", markers = "python_version >= \"3.4\""}
+imageio_ffmpeg = {version = ">=0.2.0", markers = "python_version >= \"3.4\""}
+numpy = [
+    {version = ">=1.17.3", markers = "python_version != \"2.7\""},
+    {version = "*", markers = "python_version >= \"2.7\""},
+]
+proglog = "<=1.0.0"
+requests = ">=2.8.1,<3.0"
+tqdm = ">=4.11.2,<5.0"
+
+[package.extras]
+doc = ["Sphinx (>=1.5.2,<2.0)", "numpydoc (>=0.6.0,<1.0)", "pygame (>=1.9.3,<2.0)", "sphinx_rtd_theme (>=0.1.10b0,<1.0)"]
+optional = ["matplotlib (>=2.0.0,<3.0)", "opencv-python (>=3.0,<4.0)", "scikit-image (>=0.13.0,<1.0)", "scikit-learn", "scipy (>=0.19.0,<1.5)", "youtube_dl"]
+test = ["coverage (<5.0)", "coveralls (>=1.1,<2.0)", "pytest (>=3.0.0,<4.0)", "pytest-cov (>=2.5.1,<3.0)", "requests (>=2.8.1,<3.0)"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+reference = "tsinghua"
+
+[[package]]
 name = "mujoco"
 version = "2.3.1.post1"
 description = "MuJoCo Physics Simulator"
@@ -1675,7 +1739,7 @@ name = "pillow"
 version = "9.3.0"
 description = "Python Imaging Library (Fork)"
 category = "main"
-optional = true
+optional = false
 python-versions = ">=3.7"
 files = [
     {file = "Pillow-9.3.0-1-cp37-cp37m-win32.whl", hash = "sha256:e6ea6b856a74d560d9326c0f5895ef8050126acfdc7ca08ad703eb0081e82b74"},
@@ -1810,6 +1874,26 @@ identify = ">=1.0.0"
 nodeenv = ">=0.11.1"
 pyyaml = ">=5.1"
 virtualenv = ">=20.10.0"
+
+[package.source]
+type = "legacy"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+reference = "tsinghua"
+
+[[package]]
+name = "proglog"
+version = "0.1.10"
+description = "Log and progress bar manager for console, notebooks, web..."
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "proglog-0.1.10-py3-none-any.whl", hash = "sha256:19d5da037e8c813da480b741e3fa71fb1ac0a5b02bf21c41577c7f327485ec50"},
+    {file = "proglog-0.1.10.tar.gz", hash = "sha256:658c28c9c82e4caeb2f25f488fff9ceace22f8d69b15d0c1c86d64275e4ddab4"},
+]
+
+[package.dependencies]
+tqdm = "*"
 
 [package.source]
 type = "legacy"
@@ -1954,6 +2038,87 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 files = [
     {file = "pycparser-2.21-py2.py3-none-any.whl", hash = "sha256:8ee45429555515e1f6b185e78100aea234072576aa43ab53aefcae078162fca9"},
     {file = "pycparser-2.21.tar.gz", hash = "sha256:e644fdec12f7872f86c58ff790da456218b10f863970249516d60a5eaca77206"},
+]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+reference = "tsinghua"
+
+[[package]]
+name = "pygame"
+version = "2.1.3.dev8"
+description = "Python Game Development"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "pygame-2.1.3.dev8-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:e39a6bb0c8354cde3e7a83eff165f555d554122b783fd2cd25f29e23dcb30a60"},
+    {file = "pygame-2.1.3.dev8-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:d17fbc146baea042d7be788790d5b1ca24dc63150076c84f7a6cd57b4f2fa8f2"},
+    {file = "pygame-2.1.3.dev8-cp310-cp310-manylinux_2_12_i686.manylinux2010_i686.whl", hash = "sha256:7fa10c184fa27abd1f0acbf36a7bc0ea3250f09ddcaa77b739fc9fdc92294af8"},
+    {file = "pygame-2.1.3.dev8-cp310-cp310-manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:ea8135b923ef31d339e7d38ea033eb35ce77bc511c5bf7772569eb8358aa0c8d"},
+    {file = "pygame-2.1.3.dev8-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:208d6fc9e9abd87f86ac04d5e118203a58f381cdd02d9fe23d0dbc3825791181"},
+    {file = "pygame-2.1.3.dev8-cp310-cp310-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:cbaf1933c7142ae5da08f74a3b7e721d067058b7da99823e8284e08563befddb"},
+    {file = "pygame-2.1.3.dev8-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:c4df48d75922d32209fe7da6e536e9303ff979cc63c497453b192ca56a0da13a"},
+    {file = "pygame-2.1.3.dev8-cp310-cp310-win32.whl", hash = "sha256:874b9401e509fe3760d077b21aa8adaa7e0abf088616a3303e52fc8908cc3d0f"},
+    {file = "pygame-2.1.3.dev8-cp310-cp310-win_amd64.whl", hash = "sha256:99668465fde865422018100b40c0e9b2a090df36f7af60a3eed442a2cf3751aa"},
+    {file = "pygame-2.1.3.dev8-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:2f0779a985d8408daea35db8f5406cab4369fed4fc20d64e40a28ab178c34c43"},
+    {file = "pygame-2.1.3.dev8-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:dfb92bf1b82873935019d735c2d628e8ab7d7564debfa1180075f0cd23d20277"},
+    {file = "pygame-2.1.3.dev8-cp311-cp311-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:2abe5295df933e14ef234dcc14486e8a4843b3fc784a6cce627177546a8afa73"},
+    {file = "pygame-2.1.3.dev8-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:c4136a391edf49c7ec4375c4eb1bf6f102e1fd8976d41f7e67f662a621dc5a93"},
+    {file = "pygame-2.1.3.dev8-cp311-cp311-win32.whl", hash = "sha256:4394ebb09d53bfae026568c132e6fd48c0141f1a0681bb5183b6e24ac0acf8b1"},
+    {file = "pygame-2.1.3.dev8-cp311-cp311-win_amd64.whl", hash = "sha256:51c65812a671f871a407a7d1c837db79e00289a0c81a42ffedeb758490164a7c"},
+    {file = "pygame-2.1.3.dev8-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:e1b6367bfc79ddea1407601dfa5bf760f83dff37fd8d2d5ff52b33c2bb3a9057"},
+    {file = "pygame-2.1.3.dev8-cp36-cp36m-manylinux_2_12_i686.manylinux2010_i686.whl", hash = "sha256:64fff3f68fa24aa12240973b115b1bdd19954ad111c09e78741470d32d735143"},
+    {file = "pygame-2.1.3.dev8-cp36-cp36m-manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:2195d9370f9126496c63fa2c84215f4a9d3d7085e0ee98067a694cafa2b5be4d"},
+    {file = "pygame-2.1.3.dev8-cp36-cp36m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:eea90cb2bc552becc667f69b0c263b96a698d2403288eac95c5b2555b82cfbf8"},
+    {file = "pygame-2.1.3.dev8-cp36-cp36m-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:9b1dbb68f470539c862b38918e3227b0393323a4cac966d8144eeb8209ceeba1"},
+    {file = "pygame-2.1.3.dev8-cp36-cp36m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:afaa7c48426a99cbb8c0316e032616c695c3fe802e42851d885179e023656013"},
+    {file = "pygame-2.1.3.dev8-cp36-cp36m-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:ec810d413e218a7c13c949aee43e72f6a3a3272ec55b609dedda658976f462ed"},
+    {file = "pygame-2.1.3.dev8-cp36-cp36m-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:c12e89a4267ddb8c32d70e57c6bcdcb834008227eeb18b6e74cafdb812553f59"},
+    {file = "pygame-2.1.3.dev8-cp36-cp36m-win32.whl", hash = "sha256:8b7799d2e9232fa53ab2f8a64302e48d0f3e3d011da58f175f57f27c9d26602a"},
+    {file = "pygame-2.1.3.dev8-cp36-cp36m-win_amd64.whl", hash = "sha256:fbf45549d6175a0669741bec3b6aba4ef991f805f95541cccc153a418f3f58bf"},
+    {file = "pygame-2.1.3.dev8-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:db2a3c96fcecf0b4fdff110d735d7741b651771b59afb8af3a252ca8714deea9"},
+    {file = "pygame-2.1.3.dev8-cp37-cp37m-manylinux_2_12_i686.manylinux2010_i686.whl", hash = "sha256:a16acba14182c0528b549d6ff2fbb25016d16dd0141198603816333f03fbfbca"},
+    {file = "pygame-2.1.3.dev8-cp37-cp37m-manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:9ef7a284351ddeedda8becc039b8264117205bd0938bb3ea31a6edbb026d5fba"},
+    {file = "pygame-2.1.3.dev8-cp37-cp37m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:fd25a3222f7df5e02d4a6c542008fd5db8784923e6133ab4f8d514eec4c260f1"},
+    {file = "pygame-2.1.3.dev8-cp37-cp37m-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:3d3a359f4945ed7801e172ae05d6692d8caf819cd2d55a496479b1be7388b78a"},
+    {file = "pygame-2.1.3.dev8-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:07c6c4f2e5d82001545ec789c7846b2209ebeb3079ea27e73bfc2d878fd7cce6"},
+    {file = "pygame-2.1.3.dev8-cp37-cp37m-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:8fef8e98224d18ce71ac253be9d9c691bdcde4324f5ccb116aad236088f376e1"},
+    {file = "pygame-2.1.3.dev8-cp37-cp37m-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:a5aa2eae4f405eb29cfabb70f6d31277ed27028a23acc33cb3b7a29eef66c5a6"},
+    {file = "pygame-2.1.3.dev8-cp37-cp37m-win32.whl", hash = "sha256:498f8a546f66fe909f2d24f0cac410af3e974bf0b67e2d7915344667ef460bf5"},
+    {file = "pygame-2.1.3.dev8-cp37-cp37m-win_amd64.whl", hash = "sha256:e2391fb7c0e5e355330a03d2cb21bb7bb1f124e613a480ca0c9eb1d83c922fa4"},
+    {file = "pygame-2.1.3.dev8-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:6f9ae55ca168793c518c110e210ceb69b35774583b27c95da75364be733d219d"},
+    {file = "pygame-2.1.3.dev8-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:5e3d0b95edb998468895d629477acac279068762aa39680aab89362e0cc92724"},
+    {file = "pygame-2.1.3.dev8-cp38-cp38-manylinux_2_12_i686.manylinux2010_i686.whl", hash = "sha256:288092e79a1e60f0758b073e055e739e5f14945d4a4384faf250be46260c61a1"},
+    {file = "pygame-2.1.3.dev8-cp38-cp38-manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:77d1feffbfa65469417755f38bf83921740de0c0bc5b99cc598e1e3b198339eb"},
+    {file = "pygame-2.1.3.dev8-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:b44c9e8a6705b9d4f817a7dcf0d44a7a6bf9d933fd3a915ec5ab49e8c3fff6b1"},
+    {file = "pygame-2.1.3.dev8-cp38-cp38-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:118f550b12f6174d3fcbd2220381c8a4b9f30b67893dbb37e62e4b73b759c329"},
+    {file = "pygame-2.1.3.dev8-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:fed249eef5dbfb6044a4cac3e0d658b032738f28939b44dbba63008f4e5647c1"},
+    {file = "pygame-2.1.3.dev8-cp38-cp38-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:bbebfa40273272091f788d42a79c68172be673a2110fe8de269a9069c84b4c92"},
+    {file = "pygame-2.1.3.dev8-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:0554e78a035f14ac81c364a820076c078cd723a00cd3253da0fa1a9000bf6cc3"},
+    {file = "pygame-2.1.3.dev8-cp38-cp38-win32.whl", hash = "sha256:f37ecfb4be8b4d88fac0ea475033c624a19c7e852bbfe7f1ebf7298a25d9514b"},
+    {file = "pygame-2.1.3.dev8-cp38-cp38-win_amd64.whl", hash = "sha256:386463dd493024bb7043b7881c31d0311985eef09b713d40ab6015782970f4be"},
+    {file = "pygame-2.1.3.dev8-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:1bfbccf44bf3787becc6460bdefc2117d233e635adb879d09e4ce22f2bf7c47f"},
+    {file = "pygame-2.1.3.dev8-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:2fbea89ad0ce79abff3d9d42349cf2726a971e22de90099f93a8de1eca9eaeea"},
+    {file = "pygame-2.1.3.dev8-cp39-cp39-manylinux_2_12_i686.manylinux2010_i686.whl", hash = "sha256:20cad1b05dd6658317a391094c9a8d02de691e130be834affe440cf73da6dae9"},
+    {file = "pygame-2.1.3.dev8-cp39-cp39-manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:bee952258627645c79d6f25bb0c9c7e2444276248f72d62a3d20e34d9a168fb5"},
+    {file = "pygame-2.1.3.dev8-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:ddb302876526c9fd7d8fd373c5b6800d38ccdedf6703a71bbc4ddf9bad25e205"},
+    {file = "pygame-2.1.3.dev8-cp39-cp39-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:4f0961189e8bbb1ebd278f14b7170ec324f57d25217b23562917dca590ded78a"},
+    {file = "pygame-2.1.3.dev8-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:59ba0b9a7760ac90369cfbc42484d3faf880c1f1b70078919f2f1b5b79fd47f9"},
+    {file = "pygame-2.1.3.dev8-cp39-cp39-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:c9dfca6c86bc2c21a59216e400da625cbd3cefc158c2961c2d85a479a0376ac7"},
+    {file = "pygame-2.1.3.dev8-cp39-cp39-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:d118a4a586fcc77f0e0a54e72d8c46d1300b8ee51d0b52a599f6183f69d67f9a"},
+    {file = "pygame-2.1.3.dev8-cp39-cp39-win32.whl", hash = "sha256:67ec337ecd6b066df7f98fc18d84f0a5f4071fcfb41f1d2213aed9696d50c576"},
+    {file = "pygame-2.1.3.dev8-cp39-cp39-win_amd64.whl", hash = "sha256:fef57938cb733d11495377bb35e29e8b26ba08299d7026ac7c271a4f37d0e478"},
+    {file = "pygame-2.1.3.dev8-pp36-pypy36_pp73-win32.whl", hash = "sha256:423f7befb7d9b0edf1aa4ad57c136a88edb1a23a42190c646e23d4657476b289"},
+    {file = "pygame-2.1.3.dev8-pp37-pypy37_pp73-macosx_10_9_x86_64.whl", hash = "sha256:92021bead9f23cf0b61075ed5f36bc3f026736358f157523bfa417578c0bbb2a"},
+    {file = "pygame-2.1.3.dev8-pp37-pypy37_pp73-manylinux_2_12_i686.manylinux2010_i686.whl", hash = "sha256:2c88cfa5c0adcb9755818fab8607d04af79a9f6aa596f89e08ad2fcd735d29e5"},
+    {file = "pygame-2.1.3.dev8-pp37-pypy37_pp73-manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:f3f6c16c92124b9b32479184a019aed05e9908d57f2718332d5cfb194e42739f"},
+    {file = "pygame-2.1.3.dev8-pp37-pypy37_pp73-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:8db064bf207cf4418346683bc8d415c9afee4fc9b2c57b7f81d7ce109250319b"},
+    {file = "pygame-2.1.3.dev8-pp37-pypy37_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:bceaa40f6f0b11427a9f555b93acac0ef992558855d64d9dd594f218c68456af"},
+    {file = "pygame-2.1.3.dev8-pp38-pypy38_pp73-macosx_10_9_x86_64.whl", hash = "sha256:08c45e05d83129a5b773ca1efe64b536d3ecbc26354faf4d41f0c6a3bab8800b"},
+    {file = "pygame-2.1.3.dev8-pp39-pypy39_pp73-macosx_10_9_x86_64.whl", hash = "sha256:5265af53e7aa409756ac0cde3affcb359338e1e5247e164f4d150db0a301db69"},
+    {file = "pygame-2.1.3.dev8.tar.gz", hash = "sha256:94d98328e73d56be35cc3ae8e31f9d95fbce4f3dca6a74f05c58f4c5ef18c33d"},
 ]
 
 [package.source]
@@ -2638,7 +2803,7 @@ name = "tqdm"
 version = "4.64.1"
 description = "Fast, Extensible Progress Meter"
 category = "main"
-optional = true
+optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,>=2.7"
 files = [
     {file = "tqdm-4.64.1-py2.py3-none-any.whl", hash = "sha256:6fee160d6ffcd1b1c68c65f14c829c22832bc401726335ce92c52d395944a6a1"},
@@ -2882,12 +3047,12 @@ url = "https://pypi.tuna.tsinghua.edu.cn/simple"
 reference = "tsinghua"
 
 [extras]
-atari-env = ["gymnasium", "gymnasium", "gymnasium"]
+atari = ["shimmy", "autorom"]
 dev = ["pre-commit", "pytest", "mkdocs-material", "mkdocs-glightbox", "mkdocs-static-i18n", "mkdocs-git-revision-date-localized-plugin"]
-mujoco-env = ["gymnasium", "gymnasium", "gymnasium", "free-mujoco-py"]
+mujoco = ["mujoco", "mujoco-py", "imageio", "free-mujoco-py"]
 torch = ["torch"]
 
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.11"
-content-hash = "10458b7510919f35b7db0d046fde8eb3612d89a32a7eca4c3c58f0f96125e910"
+content-hash = "ae9fcb51296ad7984ec82b90dba340a2e335715e34667cabc357f39b497a13f6"
