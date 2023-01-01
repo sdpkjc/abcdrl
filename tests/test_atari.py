@@ -15,5 +15,5 @@ def test_dqn_atari() -> None:
         + " --batch-size 4",
         shell=True,
         check=True,
-        timeout=10,
+        timeout=100,
     )

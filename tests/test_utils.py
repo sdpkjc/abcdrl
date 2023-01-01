@@ -30,7 +30,7 @@ def test_example_all_wrapper() -> None:
         + " --save-frequency 16",
         shell=True,
         check=True,
-        timeout=10,
+        timeout=100,
     )
 
 
@@ -48,13 +48,14 @@ def test_example_eval_model() -> None:
         + " --save-frequency 16",
         shell=True,
         check=True,
-        timeout=10,
+        timeout=100,
     )
 
     subprocess.run(
         "python example_eval_model.py" + " --model-path models/test_eval_dqn/s16.agent" + " --total_timesteps 100",
         shell=True,
         check=True,
+        timeout=100,
     )
 
 
@@ -71,7 +72,7 @@ def test_capture_video() -> None:
         + " --capture-video True",
         shell=True,
         check=True,
-        timeout=10,
+        timeout=100,
     )
 
 
@@ -95,7 +96,7 @@ def test_wandb_track() -> None:
             + " --capture-video True",
             shell=True,
             check=True,
-            timeout=10,
+            timeout=100,
         )
     finally:
         if online_flag:

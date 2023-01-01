@@ -1,0 +1,94 @@
+[tool.poetry]
+name = "abcdrl"
+version = "0.1.0"
+description = "Modular Single-file Reinfocement Learning Algorithms Library"
+authors = ["Adam Zhao <pazyx728@gmail.com>"]
+include = ["abcdrl"]
+license= "MIT"
+readme = "README.md"
+homepage = "https://abcdrl.xyz/"
+repository = "https://github.com/sdpkjc/abcdrl"
+documentation = "https://docs.abcdrl.xyz/"
+keywords = ["reinforcement", "machine", "learning"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Natural Language :: Chinese (Simplified)",
+    "Framework :: Pytest",
+    "Operating System :: MacOS",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
+
+[tool.poetry.dependencies]
+python = ">=3.8,<3.11"
+tensorboard = "^2.10.0"
+opencv-python = ">=3.0"
+# gymnasium = "^0.27.0"
+# gymnasium = {package = "gymnasium", version = "^0.27.0", extras = ["atari", "accept-rom-license"]}
+# gymnasium = { version = "^0.27.0", extras = ["classic-control", "other"]}
+gymnasium = [
+    {version = "^0.27.0"},
+    {version = "^0.27.0", extras = ["atari", "accept-rom-license"], optional = true},
+    {version = "^0.27.0", extras = ["mujoco-py", "mujoco"], optional = true},
+]
+wandb = "^0.13.7"
+combine_signatures = "^0.1.0"
+dill = "^0.3.6"
+fire = "^0.5.0"
+
+pre-commit = { version = "^2.20.0", optional = true }
+pytest = { version = "^7.0.1", optional = true }
+mkdocs-material = { version = "^8.5.11", optional = true }
+mkdocs-glightbox = { version = "^0.3.1", optional = true }
+mkdocs-static-i18n = { version = "^0.53", optional = true }
+mkdocs-git-revision-date-localized-plugin = { version = "^1.1.0", optional = true }
+
+torch = { version = "^1.12.1", optional = true }
+free-mujoco-py = { version = "2.1.6", optional = true }
+
+[tool.poetry.extras]
+torch = ["torch"]
+atari = ["gymnasium"]
+mujoco = ["gymnasium", "free-mujoco-py"]
+dev = ["pre-commit", "pytest", "mkdocs-material", "mkdocs-glightbox", "mkdocs-static-i18n", "mkdocs-git-revision-date-localized-plugin"]
+# [tool.poetry.group.dev]
+# optional = true
+# [tool.poetry.group.dev.dependencies]
+# pre-commit = "^2.20.0"
+# pytest = "^7.0.1"
+# mkdocs-material = "^8.5.11"
+# mkdocs-glightbox = "^0.3.1"
+# mkdocs-static-i18n = "^0.53"
+# mkdocs-git-revision-date-localized-plugin = "^1.1.0"
+
+# [tool.poetry.group.torch]
+# optional = true
+# [tool.poetry.group.torch.dependencies]
+# torch = "^1.12.1"
+
+# [tool.poetry.group.atari]
+# optional = true
+# [tool.poetry.group.atari.dependencies]
+# gymnasium = { version = "^0.27.0", extras = ["atari", "accept-rom-license"]}
+
+# [tool.poetry.group.mujoco]
+# optional = true
+# [tool.poetry.group.mujoco.dependencies]
+# gymnasium = { version = "^0.27.0", extras = ["mujoco-py", "mujoco"]}
+# free-mujoco-py = "2.1.6"
+
+[build-system]
+requires = ["poetry>=1.0.0"]
+build-backend = "poetry.masonry.api"
+
+[[tool.poetry.source]]
+name = "tsinghua"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple/"
