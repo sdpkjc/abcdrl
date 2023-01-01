@@ -13,17 +13,19 @@
 [![Checked with mypy](https://img.shields.io/badge/mypy-checked-blue)](http://mypy-lang.org/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
-[![python versions](https://img.shields.io/badge/python-3.8|3.9|3.10-blue)](https://www.python.org/)
+[![python versions](https://img.shields.io/badge/python-3.8%20|%203.9%20|%203.10-blue)](https://www.python.org/)
 
-abcdRL 是一个**模块化单文件强化学习代码库🗄**，提供“有但不严格🚥”的模块化设计🏗，和清晰的单文件算法实现📜。
+abcdRL 是一个**模块化单文件强化学习代码库**，提供“有但不严格”的模块化设计，和清晰的单文件算法实现。
 
-<img src="docs/imgs/adam.svg" width="300"/>
+<img src="https://abcdrl.xyz/logo/adam.svg" width="300"/>
 
-*📖阅读代码时，在📜单文件代码中，快速了解算法的完整实现细节；🖌改进算法时，得益于🍃轻量的模块化设计，只需专注于少量的模块。*
+*阅读代码时，在单文件代码中，快速了解算法的完整实现细节；改进算法时，得益于轻量的模块化设计，只需专注于少量的模块。*
 
 > abcdRL 主要参考了 [vwxyzjn/cleanRL](https://github.com/vwxyzjn/cleanrl/) 的单文件设计哲学和 [PaddlePaddle/PARL](https://github.com/PaddlePaddle/PARL/) 的模块设计。
 
 ***使用文档 ➡️ [docs.abcdrl.xyz](https://docs.abcdrl.xyz/zh/)***
+
+***路线图🗺️ [#57](https://github.com/sdpkjc/abcdrl/issues/57)***
 
 ## 🚀 快速开始
 

@@ -6,17 +6,19 @@
 [![benchmark](https://img.shields.io/badge/Weights%20&%20Biases-benchmark-FFBE00?logo=weightsandbiases)](https://report.abcdrl.xyz/)
 [![mirror repo](https://img.shields.io/badge/Gitee-mirror%20repo-black?style=flat&labelColor=C71D23&logo=gitee)](https://gitee.com/sdpkjc/abcdrl/)
 
-abcdRL is a **Modular Single-file RL Algorithms Library🗄** that provides modular🏗 design without strict🚥 and clean single-file📜 implementation.
+abcdRL is a **Modular Single-file Reinforcement Learning Algorithms Library** that provides modular design without strict and clean single-file implementation.
 
 <figure markdown>
   ![Adam](imgs/adam.svg){ width="300" }
   <figcaption>Adam</figcaption>
 </figure>
 
-*When reading📖 the code, understand the full implementation details of the algorithm in the single file📜 quickly; When modifying🖌 the algorithm, benefiting from a lightweight🍃 modular design, only need to focus on a small number of modules.*
+*When reading the code, understand the full implementation details of the algorithm in the single file quickly; When modifying the algorithm, benefiting from a lightweight modular design, only need to focus on a small number of modules.*
 
-!!! note
+!!! quote "Ref"
     abcdRL mainly references the single-file design philosophy of [vwxyzjn/cleanrl](https://github.com/vwxyzjn/cleanrl/) and the module design of [PaddlePaddle/PARL](https://github.com/PaddlePaddle/PARL/).
+
+***Roadmap🗺️ [#57](https://github.com/sdpkjc/abcdrl/issues/57)***
 
 ## 🗽 Design Philosophy
 
@@ -43,8 +45,8 @@ abcdRL is a **Modular Single-file RL Algorithms Library🗄** that provides modu
 ## Citing abcdRL
 
 ```bibtex
-@misc{Zhao_abcdRL_Modular_Single-file_2022,
-    author = {Zhao, Adam},
+@misc{zhao_abcdrl_2022,
+    author = {Yanxiao, Zhao},
     month = {12},
     title = {{abcdRL: Modular Single-file Reinforcement Learning Algorithms Library}},
     url = {https://github.com/sdpkjc/abcdrl},

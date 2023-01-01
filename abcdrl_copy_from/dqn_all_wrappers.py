@@ -212,10 +212,10 @@ class Trainer:
         capture_video: bool = False,
         env_id: str = "CartPole-v1",
         num_envs: int = 1,
-        total_timesteps: int = 5_000_00,
+        total_timesteps: int = 500_000,
         gamma: float = 0.99,
         # Collect
-        buffer_size: int = 1_000_0,
+        buffer_size: int = 10_000,
         start_epsilon: float = 1.0,
         end_epsilon: float = 0.05,
         exploration_fraction: float = 0.5,
@@ -223,7 +223,7 @@ class Trainer:
         batch_size: int = 128,
         learning_rate: float = 2.5e-4,
         # Train
-        learning_starts: int = 1_000_0,
+        learning_starts: int = 10_000,
         target_network_frequency: int = 500,
         train_frequency: int = 10,
     ) -> None:
@@ -411,7 +411,7 @@ def wrapper_save_model(
     import dill
 
     @combine_signatures(wrapped)
-    def _wrapper(*args, save_frequency: int = 1_000_0, **kwargs) -> Generator[dict[str, Any], None, None]:
+    def _wrapper(*args, save_frequency: int = 10_000, **kwargs) -> Generator[dict[str, Any], None, None]:
         instance = args[0]
         save_frequency = max(save_frequency // instance.kwargs["num_envs"] * instance.kwargs["num_envs"], 1)
 
