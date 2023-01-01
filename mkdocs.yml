@@ -40,6 +40,8 @@ extra:
       link: https://github.com/sdpkjc
     - icon: simple/gitee
       link: https://gitee.com/sdpkjc/abcdrl
+    - icon: simple/python
+      link: https://pypi.org/project/abcdrl
     - icon: fontawesome/brands/docker
       link: https://hub.docker.com/r/sdpkjc/abcdrl
     - icon: simple/weightsandbiases
