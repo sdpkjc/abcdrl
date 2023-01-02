@@ -39,14 +39,6 @@ combine_signatures = "^0.1.0"
 dill = "^0.3.6"
 fire = "^0.5.0"
 
-# dev
-pre-commit = { version = "^2.20.0", optional = true }
-pytest = { version = "^7.0.1", optional = true }
-mkdocs-material = { version = "^8.5.11", optional = true }
-mkdocs-glightbox = { version = "^0.3.1", optional = true }
-mkdocs-static-i18n = { version = "^0.53", optional = true }
-mkdocs-git-revision-date-localized-plugin = { version = "^1.1.0", optional = true }
-
 # torch
 torch = { version = "^1.12.1", optional = true }
 
@@ -65,7 +57,16 @@ torch = ["torch"]
 atari = ["shimmy", "autorom"]
 mujoco = ["mujoco", "mujoco-py", "imageio", "free-mujoco-py"]
 all = ["torch", "shimmy", "autorom", "mujoco", "mujoco-py", "imageio", "free-mujoco-py"]
-dev = ["pre-commit", "pytest", "mkdocs-material", "mkdocs-glightbox", "mkdocs-static-i18n", "mkdocs-git-revision-date-localized-plugin"]
+
+[tool.poetry.group.dev]
+optional = true
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^2.20.0"
+pytest = "^7.0.1"
+mkdocs-material = "^8.5.11"
+mkdocs-glightbox = "^0.3.1"
+mkdocs-static-i18n = "^0.53"
+mkdocs-git-revision-date-localized-plugin = "^1.1.0"
 
 [build-system]
 requires = ["poetry>=1.0.0"]
