@@ -48,6 +48,9 @@ fire = "^0.5.0"
 # torch
 torch = { version = "^1.12.1", optional = true }
 
+# tensorflow2
+tensorflow = { version = "^2.11.0", optional = true }
+
 # atari
 shimmy = { version = ">=0.1.0,<1.0", extras = ["atari"], optional = true }
 autorom = { version = "~=0.4.2", extras = ["accept-rom-license"], optional = true }
@@ -60,9 +63,10 @@ free-mujoco-py = { version = "2.1.6", optional = true }
 
 [tool.poetry.extras]
 torch = ["torch"]
+tf = ["tensorflow"]
 atari = ["shimmy", "autorom"]
 mujoco = ["mujoco", "mujoco-py", "imageio", "free-mujoco-py"]
-all = ["torch", "shimmy", "autorom", "mujoco", "mujoco-py", "imageio", "free-mujoco-py"]
+all = ["torch", "tensorflow", "shimmy", "autorom", "mujoco", "mujoco-py", "imageio", "free-mujoco-py"]
 
 [tool.poetry.group.dev]
 optional = true
