@@ -8,9 +8,20 @@ jobs:
     permissions:
       contents: write
     steps:
+      - name: "Get branch name and save to env"
+        env:
+          IS_PR: ${{ github.EVENT_NAME == 'pull_request' }}
+        run: |
+          if ${IS_PR}; then
+            BRANCH_NAME="${GITHUB_HEAD_REF}"
+          else
+            BRANCH_NAME="${GITHUB_REF##*/}"
+          fi
+          echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
       - name: Publish PyPi package
         uses: code-specialist/pypi-poetry-publish@v1
         with:
+          ref: ${{ env.BRANCH_NAME }}
           PACKAGE_DIRECTORY: "./abcdrl/"
           PYTHON_VERSION: "3.10"
           ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
