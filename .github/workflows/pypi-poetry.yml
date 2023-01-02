@@ -1,16 +1,16 @@
-name: Python package
+name: Build and publish python package
 on:
   release:
-    types: [published]
+    types: [ published ]
 jobs:
-  build:
+  publish-service-client-package:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v2
-      - name: Build and publish to pypi
-        uses: JRubics/poetry-publish@v1.15
+      - name: Publish PyPi package
+        uses: code-specialist/pypi-poetry-publish@v1
         with:
-          python_version: "3.9"
-          poetry_version: "==1.3.1"
-          allow_poetry_pre_release: "yes"
-          pypi_token: ${{ secrets.PYPI_TOKEN }}
+          PYTHON_VERSION: "3.9"
+          ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PUBLISH_REGISTRY_PASSWORD: ${{ secrets.PYPI_TOKEN }}
