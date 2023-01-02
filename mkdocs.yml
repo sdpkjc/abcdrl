@@ -34,16 +34,25 @@ extra:
   social:
     - icon: fontawesome/solid/house-chimney
       link: https://abcdrl.xyz
+      name: abcdrl homepage
     - icon: fontawesome/solid/envelope
       link: mailto:pazyx728@gmail.com
+      name: sdpkjc's email
     - icon: fontawesome/brands/github
       link: https://github.com/sdpkjc
+      name: github
     - icon: simple/gitee
       link: https://gitee.com/sdpkjc/abcdrl
+      name: gitee
+    - icon: simple/python
+      link: https://pypi.org/project/abcdrl
+      name: pypi
     - icon: fontawesome/brands/docker
       link: https://hub.docker.com/r/sdpkjc/abcdrl
+      name: docker hub
     - icon: simple/weightsandbiases
       link: https://report.abcdrl.xyz/
+      name: wandb reports
 
 repo_name: sdpkjc/abcdrl
 repo_url: https://github.com/sdpkjc/abcdrl

@@ -43,3 +43,30 @@ repos:
       args:
         - --no-strict-optional
         - --ignore-missing-imports
+- repo: https://github.com/python-poetry/poetry
+  rev: 1.3.1
+  hooks:
+    - id: poetry-export
+      name: poetry-export requirements.txt
+      args: ["--without-hashes", "--without-urls", "-o", "requirements/requirements.txt", "-E", "all"]
+    - id: poetry-export
+      name: poetry-export requirements-dev.txt
+      args: ["--without-hashes", "--without-urls", "-o", "requirements/requirements-dev.txt", "-E", "all", "--with", "dev"]
+    - id: poetry-export
+      name: poetry-export requirements-torch.txt
+      args: ["--without-hashes", "--without-urls", "-o", "requirements/requirements-torch.txt", "-E", "torch", "-E", "atari", "-E", "mujoco"]
+    - id: poetry-export
+      name: poetry-export requirements-torch-dev.txt
+      args: ["--without-hashes", "--without-urls", "-o", "requirements/requirements-torch-dev.txt", "-E", "torch", "-E", "atari", "-E", "mujoco", "--with", "dev"]
+    - id: poetry-export
+      name: poetry-export requirements-torch-atari.txt
+      args: ["--without-hashes", "--without-urls", "-o", "requirements/requirements-torch-atari.txt", "-E", "torch", "-E", "atari"]
+    - id: poetry-export
+      name: poetry-export requirements-torch-atari-dev.txt
+      args: ["--without-hashes", "--without-urls", "-o", "requirements/requirements-torch-atari-dev.txt", "-E", "torch", "-E", "atari", "--with", "dev"]
+    - id: poetry-export
+      name: poetry-export requirements-torch-mujoco.txt
+      args: ["--without-hashes", "--without-urls", "-o", "requirements/requirements-torch-mujoco.txt", "-E", "torch", "-E", "mujoco"]
+    - id: poetry-export
+      name: poetry-export requirements-torch-mujoco-dev.txt
+      args: ["--without-hashes", "--without-urls", "-o", "requirements/requirements-torch-mujoco-dev.txt", "-E", "torch", "-E", "mujoco", "--with", "dev"]
