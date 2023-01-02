@@ -11,6 +11,7 @@ jobs:
       - name: Publish PyPi package
         uses: code-specialist/pypi-poetry-publish@v1
         with:
-          PYTHON_VERSION: "3.9"
+          PACKAGE_DIRECTORY: "./abcdrl/"
+          PYTHON_VERSION: "3.10"
           ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PUBLISH_REGISTRY_PASSWORD: ${{ secrets.PYPI_TOKEN }}

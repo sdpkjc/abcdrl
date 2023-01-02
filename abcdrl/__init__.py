@@ -1,5 +1,3 @@
-__version__ = "0.1.0"
-
 import abcdrl.ddpg  # noqa
 import abcdrl.ddqn  # noqa
 import abcdrl.dqn  # noqa
