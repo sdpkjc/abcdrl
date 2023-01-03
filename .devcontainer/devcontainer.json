@@ -2,6 +2,5 @@
 	"name": "abcdRL dev",
 	"build": {
 		"dockerfile": "../Dockerfile",
-		"context": ".."
 	}
 }
