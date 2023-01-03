@@ -107,20 +107,21 @@ reference = "tsinghua"
 
 [[package]]
 name = "autorom"
-version = "0.4.2"
+version = "0.5.0"
 description = "Automated installation of Atari ROMs for Gym/ALE-Py"
 category = "main"
 optional = true
 python-versions = ">=3.6"
 files = [
-    {file = "AutoROM-0.4.2-py3-none-any.whl", hash = "sha256:719c9d363ef08391fdb7003d70df235b68f36de628d289a946c4a59a3adefa13"},
-    {file = "AutoROM-0.4.2.tar.gz", hash = "sha256:b426a39bc0ee3781c7791f28963a9b2e4385b6421eeaf2f368edc00c761d428a"},
+    {file = "AutoROM-0.5.0-py3-none-any.whl", hash = "sha256:9cfe4630de75fad33fd184541e1155e3d9025be6ac6d1ce215c5f67afc8ca26e"},
+    {file = "AutoROM-0.5.0.tar.gz", hash = "sha256:f639d1d8fd57bd14af11b0aa6328087f295d7b9fd731f238ca3aaf160c9d8cfe"},
 ]
 
 [package.dependencies]
 "AutoROM.accept-rom-license" = {version = "*", optional = true, markers = "extra == \"accept-rom-license\""}
 click = "*"
 importlib-resources = {version = "*", markers = "python_version < \"3.9\""}
+libtorrent = "*"
 requests = "*"
 tqdm = "*"
 
@@ -3430,4 +3431,4 @@ torch = ["torch"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.11"
-content-hash = "954589a314d03317c0bf36fd12cf97ace56fd60008c7f401530754dca04a45d7"
+content-hash = "08145dceccb2397e9e36c77e6e109b186589db08c1db12c0941f90dd75e8a3a3"
