@@ -5,12 +5,13 @@ on:
       - 'docs/**/*'
       - '**/README.*'
       - 'LICENSE'
+      - '.readthedocs.yaml'
       - 'mkdocs.yml'
       - '.gitignore'
       - '.pre-commit-config.yaml'
       - 'CITATION.cff'
 jobs:
-  build:
+  tests:
     strategy:
       fail-fast: false
       matrix:
@@ -33,7 +34,7 @@ jobs:
             libgl1-mesa-glx \
             libglew-dev \
             libosmesa6-dev patchelf swig
-      - name: Install macos dependencies
+      - name: Install macOS dependencies
         if: runner.os == 'macOS'
         run: |
           brew install gcc@9
