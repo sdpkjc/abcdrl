@@ -4,7 +4,7 @@
 - 📄 单文件实现
 - 🐷 低代码复用
 - 📐 最小化代码差异
-- 📈 Tensorboard & Wandb 支持
+- 📈 集成 Tensorboard & Wandb
 - 🛤 符合 PEP8 & PEP526 规范
 
 !!! note "📐 最小化代码差异"

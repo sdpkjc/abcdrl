@@ -18,7 +18,7 @@
 
 abcdRL 是一个**模块化单文件强化学习代码库**，提供“有但不严格”的模块化设计，和清晰的单文件算法实现。
 
-<img src="https://abcdrl.xyz/logo/adam.svg" width="300"/>
+<img src="https://docs.abcdrl.xyz/imgs/adam.svg" width="300"/>
 
 *阅读代码时，在单文件代码中，快速了解算法的完整实现细节；改进算法时，得益于轻量的模块化设计，只需专注于少量的模块。*
 
@@ -50,7 +50,7 @@ docker run --rm --gpus all sdpkjc/abcdrl python abcdrl/dqn.py
 - 📄 单文件实现
 - 🐷 低代码复用
 - 📐 最小化代码差异
-- 📈 Tensorboard & Wandb 支持
+- 📈 集成 Tensorboard & Wandb
 - 🛤 符合 PEP8 & PEP526 规范
 
 ## 🗽 设计哲学
