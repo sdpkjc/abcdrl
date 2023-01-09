@@ -18,17 +18,23 @@ The `logger📊` part uses [Tensorboard](https://www.tensorflow.org/tensorboard)
   <figcaption>Adam</figcaption>
 </figure>
 
-!!! note
-    🧵 The solid line indicates the control-flow; The dotted line indicates the data-flow.
+=== "Control-Flow Diagram"
 
-<figure markdown>
-  ![abstractions_img](/imgs/abstractions.png)
-  <figcaption>Model Structure Diagram</figcaption>
-</figure>
+    <figure markdown>
+    ![abstractions_control_flow_img](/imgs/abstractions_control_flow.png)
+    <figcaption>abcdRL's Control-Flow Diagram</figcaption>
+    </figure>
+
+=== "Data-Flow Diagram"
+
+    <figure markdown>
+    ![abstractions_data_flow_img](/imgs/abstractions_data_flow.png)
+    <figcaption>abcdRL's Data-Flow Diagram</figcaption>
+    </figure>
 
 ---
 
-```python title="abstractions.py"
+```python title="abstractions.py" linenums="1"
 class Model(nn.Module):
     def __init__(self, **kwargs) -> None:
         pass

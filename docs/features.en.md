@@ -4,7 +4,7 @@
 - 📄 Single-file implementation
 - 🐷 Low code reuse
 - 📐 Minimizing code differences
-- 📈 Tensorboard & Wandb support
+- 📈 Tensorboard & Wandb integration
 - 🛤 PEP8(code style) & PEP526(type hint) compliant
 
 !!! note "📐 Minimizing code differences"
