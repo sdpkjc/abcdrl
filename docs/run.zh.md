@@ -2,7 +2,7 @@
 
 安装好所有依赖后，即可直接运行算法文件。
 
-```bash
+```shell
 python abcdrl/dqn.py \
     --env-id Cartpole-v1 \
     --device "cuda:1" \ #(1)!

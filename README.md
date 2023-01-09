@@ -18,9 +18,9 @@ English | [简体中文](./README.cn.md)
 
 abcdRL is a **Modular Single-file Reinforcement Learning Algorithms Library** that provides modular design without strict and clean single-file implementation.
 
-<img src="https://abcdrl.xyz/logo/adam.svg" width="300"/>
+<img src="https://docs.abcdrl.xyz/imgs/adam.svg" width="300"/>
 
-*When reading the code, understand the full implementation details of the algorithm in the single file quickly; When modifying the algorithm, benefiting from a lightweight modular design, only need to focus on a small number of modules.*
+*Understand the full implementation details of the algorithm in a single file quickly when reading the code;  Benefit from a lightweight modular design, only need to focus on a small number of modules when modifying the algorithm.*
 
 > abcdRL mainly references the single-file design philosophy of [vwxyzjn/cleanrl](https://github.com/vwxyzjn/cleanrl/) and the module design of [PaddlePaddle/PARL](https://github.com/PaddlePaddle/PARL/).
 
@@ -36,7 +36,7 @@ Open the project in Gitpod🌐 and start coding immediately.
 
 Using Docker📦:
 
-```bash
+```shell
 # 0. Prerequisites: Docker & Nvidia Drive & NVIDIA Container Toolkit
 # 1. Run DQN algorithm
 docker run --rm --gpus all sdpkjc/abcdrl python abcdrl/dqn.py
@@ -50,7 +50,7 @@ docker run --rm --gpus all sdpkjc/abcdrl python abcdrl/dqn.py
 - 📄 Single-file implementation
 - 🐷 Low code reuse
 - 📐 Minimizing code differences
-- 📈 Tensorboard & Wandb support
+- 📈 Tensorboard & Wandb integration
 - 🛤 PEP8(code style) & PEP526(type hint) compliant
 
 ## 🗽 Design Philosophy

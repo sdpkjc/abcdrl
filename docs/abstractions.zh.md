@@ -18,17 +18,23 @@
   <figcaption>Adam</figcaption>
 </figure>
 
-!!! note
-    🧵 实线表示函数调用关系；虚线表示数据流向。
+=== "控制流图"
 
-<figure markdown>
-  ![abstractions_img](/imgs/abstractions.png)
-  <figcaption>模型结构图</figcaption>
-</figure>
+    <figure markdown>
+    ![abstractions_control_flow_img](/imgs/abstractions_control_flow.png)
+    <figcaption>abcdRL 控制流图</figcaption>
+    </figure>
+
+=== "数据流图"
+
+    <figure markdown>
+    ![abstractions_data_flow_img](/imgs/abstractions_data_flow.png)
+    <figcaption>abcdRL 数据流图</figcaption>
+    </figure>
 
 ---
 
-```python title="abstractions.py"
+```python title="abstractions.py" linenums="1"
 class Model(nn.Module):
     def __init__(self, **kwargs) -> None:
         pass

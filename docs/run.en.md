@@ -2,7 +2,7 @@
 
 After dependencies are installed, you can run the algorithm file directly.
 
-```bash
+```shell
 python abcdrl/dqn.py \
     --env-id Cartpole-v1 \
     --device "cuda:1" \ #(1)!

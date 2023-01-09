@@ -9,7 +9,7 @@
 
 === "CPU"
 
-    ```bash
+    ```shell
     # 0. Prerequisites: Docker
     # 1. Run DQN algorithm
     docker run --rm sdpkjc/abcdrl python abcdrl/dqn.py
@@ -17,7 +17,7 @@
 
 === "GPU"
 
-    ```bash
+    ```shell
     # 0. Prerequisites: Docker & Nvidia Drive & NVIDIA Container Toolkit
     # 1. Run DQN algorithm
     docker run --rm --gpus all sdpkjc/abcdrl python abcdrl/dqn.py
@@ -37,7 +37,7 @@
 
 === "CPU"
 
-    ```bash
+    ```shell
     # 0. Prerequisites: Python3.8+ & Pip
     # 1. Pull git repository from github
     git clone https://github.com/sdpkjc/abcdrl.git && cd abcdrl
@@ -49,7 +49,7 @@
 
 === "GPU"
 
-    ```bash
+    ```shell
     # 0. Prerequisites: Conda & Nvidia Driver
     # 1. Pull git repository from github
     git clone https://github.com/sdpkjc/abcdrl.git && cd abcdrl

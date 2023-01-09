@@ -9,7 +9,7 @@
 
 === "CPU"
 
-    ```bash
+    ```shell
     # 0. 安装 Docker
     # 1. 运行 DQN 算法
     docker run --rm sdpkjc/abcdrl python abcdrl/dqn.py
@@ -17,7 +17,7 @@
 
 === "GPU"
 
-    ```bash
+    ```shell
     # 0. 安装 Docker & Nvidia Drive & NVIDIA Container Toolkit
     # 1. 运行 DQN 算法
     docker run --rm --gpus all sdpkjc/abcdrl python abcdrl/dqn.py
@@ -37,7 +37,7 @@
 
 === "CPU"
 
-    ```bash
+    ```shell
     # 0. 安装 Python3.8+ & Pip
     # 1. 拉取代码仓库
     git clone https://github.com/sdpkjc/abcdrl.git && cd abcdrl
@@ -49,7 +49,7 @@
 
 === "GPU"
 
-    ```bash
+    ```shell
     # 0. 安装 Conda & Nvidia Driver
     # 1. 拉取代码仓库
     git clone https://github.com/sdpkjc/abcdrl.git && cd abcdrl
