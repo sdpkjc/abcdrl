@@ -14,7 +14,7 @@ abcdRL is a **Modular Single-file Reinforcement Learning Algorithms Library** th
   <figcaption>Adam</figcaption>
 </figure>
 
-*When reading the code, understand the full implementation details of the algorithm in the single file quickly; When modifying the algorithm, benefiting from a lightweight modular design, only need to focus on a small number of modules.*
+*Understand the full implementation details of the algorithm in a single file quickly when reading the code;  Benefit from a lightweight modular design, only need to focus on a small number of modules when modifying the algorithm.*
 
 !!! quote "Ref"
     abcdRL mainly references the single-file design philosophy of [vwxyzjn/cleanrl](https://github.com/vwxyzjn/cleanrl/) and the module design of [PaddlePaddle/PARL](https://github.com/PaddlePaddle/PARL/).
