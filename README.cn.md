@@ -36,7 +36,7 @@ abcdRL 是一个**模块化单文件强化学习代码库**，提供“有但不
 
 使用 Docker📦：
 
-```bash
+```shell
 # 0. 安装 Docker & Nvidia Drive & NVIDIA Container Toolkit
 # 1. 运行 DQN 算法
 docker run --rm --gpus all sdpkjc/abcdrl python abcdrl/dqn.py

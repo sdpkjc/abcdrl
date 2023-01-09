@@ -36,7 +36,7 @@ Open the project in Gitpod🌐 and start coding immediately.
 
 Using Docker📦:
 
-```bash
+```shell
 # 0. Prerequisites: Docker & Nvidia Drive & NVIDIA Container Toolkit
 # 1. Run DQN algorithm
 docker run --rm --gpus all sdpkjc/abcdrl python abcdrl/dqn.py
