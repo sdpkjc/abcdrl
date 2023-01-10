@@ -18,4 +18,5 @@
     A -->F[ddqn.py];
     A -->G[pdqn.py];
     A -->H[dqn_atari.py];
+    A -->H[dqn_tf.py];
     ```

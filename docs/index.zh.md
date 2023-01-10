@@ -17,7 +17,7 @@ abcdRL 是一个**模块化单文件强化学习代码库**，提供“有但不
 *阅读代码时，在单文件代码中，快速了解算法的完整实现细节；改进算法时，得益于轻量的模块化设计，只需专注于少量的模块。*
 
 !!! quote "Ref"
-    abcdRL 主要参考了 [vwxyzjn/cleanRL](https://github.com/vwxyzjn/cleanrl/) 的单文件设计哲学和 [PaddlePaddle/PARL](https://github.com/PaddlePaddle/PARL/) 的模块设计。
+    abcdRL 主要参考了 [vwxyzjn/cleanrl](https://github.com/vwxyzjn/cleanrl/) 的单文件设计哲学和 [PaddlePaddle/PARL](https://github.com/PaddlePaddle/PARL/) 的模块设计。
 
 ***路线图🗺️ [#57](https://github.com/sdpkjc/abcdrl/issues/57)***
 
@@ -32,16 +32,16 @@ abcdRL 是一个**模块化单文件强化学习代码库**，提供“有但不
 
 ***Weights & Biases 性能报告 ➡️ [report.abcdrl.xyz](https://report.abcdrl.xyz)***
 
-- [Deep Q Network (DQN)](https://doi.org/10.1038/nature14236)
-- [Deep Deterministic Policy Gradient (DDPG)](http://arxiv.org/abs/1509.02971)
-- [Twin Delayed Deep Deterministic Policy Gradient (TD3)](http://arxiv.org/abs/1802.09477)
-- [Soft Actor-Critic (SAC)](http://arxiv.org/abs/1801.01290)
-- [Proximal Policy Optimization (PPO)](http://arxiv.org/abs/1802.09477)
+- [Deep Q Network (DQN)](https://doi.org/10.1038/nature14236) <sub>`dqn.py`, `dqn_tf.py`, `dqn_atari.py`</sub>
+- [Deep Deterministic Policy Gradient (DDPG)](http://arxiv.org/abs/1509.02971) <sub>`ddpg`</sub>
+- [Twin Delayed Deep Deterministic Policy Gradient (TD3)](http://arxiv.org/abs/1802.09477) <sub>`td3`</sub>
+- [Soft Actor-Critic (SAC)](http://arxiv.org/abs/1801.01290) <sub>`sac`</sub>
+- [Proximal Policy Optimization (PPO)](http://arxiv.org/abs/1802.09477) <sub>`ppo`</sub>
 
 ---
 
-- [Double Deep Q Network (DDQN)](http://arxiv.org/abs/1509.06461)
-- [Prioritized Deep Q Network (PDQN)](http://arxiv.org/abs/1511.05952)
+- [Double Deep Q Network (DDQN)](http://arxiv.org/abs/1509.06461) <sub>`ddqn`</sub>
+- [Prioritized Deep Q Network (PDQN)](http://arxiv.org/abs/1511.05952) <sub>`pdqn`</sub>
 
 ## 引用 abcdRL
 

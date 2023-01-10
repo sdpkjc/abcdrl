@@ -32,16 +32,16 @@ abcdRL is a **Modular Single-file Reinforcement Learning Algorithms Library** th
 
 ***Weights & Biases Benchmark Report ➡️ [report.abcdrl.xyz](https://report.abcdrl.xyz)***
 
-- [Deep Q Network (DQN)](https://doi.org/10.1038/nature14236)
-- [Deep Deterministic Policy Gradient (DDPG)](http://arxiv.org/abs/1509.02971)
-- [Twin Delayed Deep Deterministic Policy Gradient (TD3)](http://arxiv.org/abs/1802.09477)
-- [Soft Actor-Critic (SAC)](http://arxiv.org/abs/1801.01290)
-- [Proximal Policy Optimization (PPO)](http://arxiv.org/abs/1802.09477)
+- [Deep Q Network (DQN)](https://doi.org/10.1038/nature14236) <sub>`dqn.py`, `dqn_tf.py`, `dqn_atari.py`</sub>
+- [Deep Deterministic Policy Gradient (DDPG)](http://arxiv.org/abs/1509.02971) <sub>`ddpg`</sub>
+- [Twin Delayed Deep Deterministic Policy Gradient (TD3)](http://arxiv.org/abs/1802.09477) <sub>`td3`</sub>
+- [Soft Actor-Critic (SAC)](http://arxiv.org/abs/1801.01290) <sub>`sac`</sub>
+- [Proximal Policy Optimization (PPO)](http://arxiv.org/abs/1802.09477) <sub>`ppo`</sub>
 
 ---
 
-- [Double Deep Q Network (DDQN)](http://arxiv.org/abs/1509.06461)
-- [Prioritized Deep Q Network (PDQN)](http://arxiv.org/abs/1511.05952)
+- [Double Deep Q Network (DDQN)](http://arxiv.org/abs/1509.06461) <sub>`ddqn`</sub>
+- [Prioritized Deep Q Network (PDQN)](http://arxiv.org/abs/1511.05952) <sub>`pdqn`</sub>
 
 ## Citing abcdRL
 
