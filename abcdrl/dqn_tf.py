@@ -13,7 +13,6 @@ import numpy as np
 import tensorflow as tf
 from combine_signatures.combine_signatures import combine_signatures
 from tensorflow.keras import layers, losses, models, optimizers
-from tensorflow.summary import SummaryWriter
 
 SamplesItemType = TypeVar("SamplesItemType", tf.Tensor, np.ndarray)
 
@@ -310,7 +309,7 @@ class Trainer:
         return thunk
 
 
-def wrapper_logger(
+def wrapper_logger_tf(
     wrapped: Callable[..., Generator[dict[str, Any], None, None]]
 ) -> Callable[..., Generator[dict[str, Any], None, None]]:
     import wandb
@@ -350,18 +349,19 @@ def wrapper_logger(
             )
             setup_video_monitor()
 
-        writer = SummaryWriter(f"runs/{exp_name_}")
-        writer.add_text(
-            "hyperparameters",
-            "|param|value|\n|-|-|\n" + "\n".join([f"|{key}|{value}|" for key, value in instance.kwargs.items()]),
-        )
+        writer = tf.summary.create_file_writer(f"runs/{exp_name_}")
+        with writer.as_default():
+            tf.summary.text(
+                "hyperparameters",
+                "|param|value|\n|-|-|\n" + "\n".join([f"|{key}|{value}|" for key, value in instance.kwargs.items()], 0),  # type: ignore[call-arg]
+            )
 
-        gen = wrapped(*args, **kwargs)
-        for log_data in gen:
-            if "logs" in log_data:
-                for log_item in log_data["logs"].items():
-                    writer.add_scalar(f"{log_data['log_type']}/{log_item[0]}", log_item[1], log_data["sample_step"])
-            yield log_data
+            gen = wrapped(*args, **kwargs)
+            for log_data in gen:
+                if "logs" in log_data:
+                    for log_item in log_data["logs"].items():
+                        tf.summary.scalar(f"{log_data['log_type']}/{log_item[0]}", log_item[1], log_data["sample_step"])
+                yield log_data
 
     return _wrapper
 
@@ -375,12 +375,8 @@ if __name__ == "__main__":
     np.random.seed(SEED)
     tf.random.set_seed(SEED)
 
-    Trainer.__call__ = wrapper_logger(Trainer.__call__)  # type: ignore[assignment]
+    Trainer.__call__ = wrapper_logger_tf(Trainer.__call__)  # type: ignore[assignment]
     fire.Fire(
         Trainer,
         serialize=lambda gen: (log_data for log_data in gen if "logs" in log_data and log_data["log_type"] != "train"),
     )
-
-# trainer = Trainer()
-# for log_data in trainer():
-#     print(log_data)
