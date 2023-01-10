@@ -61,17 +61,23 @@ repos:
       name: poetry-export requirements-torch-dev.txt
       args: ["--without-hashes", "--without-urls", "-o", "requirements/requirements-torch-dev.txt", "-E", "torch", "-E", "atari", "-E", "mujoco", "--with", "dev"]
     - id: poetry-export
-      name: poetry-export requirements-torch-atari.txt
-      args: ["--without-hashes", "--without-urls", "-o", "requirements/requirements-torch-atari.txt", "-E", "torch", "-E", "atari"]
+      name: poetry-export requirements-basic-torch.txt
+      args: ["--without-hashes", "--without-urls", "-o", "requirements/requirements-basic-torch.txt", "-E", "torch"]
     - id: poetry-export
-      name: poetry-export requirements-torch-atari-dev.txt
-      args: ["--without-hashes", "--without-urls", "-o", "requirements/requirements-torch-atari-dev.txt", "-E", "torch", "-E", "atari", "--with", "dev"]
+      name: poetry-export requirements-basic-torch-dev.txt
+      args: ["--without-hashes", "--without-urls", "-o", "requirements/requirements-basic-torch-dev.txt", "-E", "torch", "--with", "dev"]
     - id: poetry-export
-      name: poetry-export requirements-torch-mujoco.txt
-      args: ["--without-hashes", "--without-urls", "-o", "requirements/requirements-torch-mujoco.txt", "-E", "torch", "-E", "mujoco"]
+      name: poetry-export requirements-atari-torch.txt
+      args: ["--without-hashes", "--without-urls", "-o", "requirements/requirements-atari-torch.txt", "-E", "torch", "-E", "atari"]
     - id: poetry-export
-      name: poetry-export requirements-torch-mujoco-dev.txt
-      args: ["--without-hashes", "--without-urls", "-o", "requirements/requirements-torch-mujoco-dev.txt", "-E", "torch", "-E", "mujoco", "--with", "dev"]
+      name: poetry-export requirements-atari-torch-dev.txt
+      args: ["--without-hashes", "--without-urls", "-o", "requirements/requirements-atari-torch-dev.txt", "-E", "torch", "-E", "atari", "--with", "dev"]
+    - id: poetry-export
+      name: poetry-export requirements-mujoco-torch.txt
+      args: ["--without-hashes", "--without-urls", "-o", "requirements/requirements-mujoco-torch.txt", "-E", "torch", "-E", "mujoco"]
+    - id: poetry-export
+      name: poetry-export requirements-mujoco-torch-dev.txt
+      args: ["--without-hashes", "--without-urls", "-o", "requirements/requirements-mujoco-torch-dev.txt", "-E", "torch", "-E", "mujoco", "--with", "dev"]
     # tensorflow2
     - id: poetry-export
       name: poetry-export requirements-tf.txt
@@ -80,14 +86,20 @@ repos:
       name: poetry-export requirements-tf-dev.txt
       args: ["--without-hashes", "--without-urls", "-o", "requirements/requirements-tf-dev.txt", "-E", "tf", "-E", "atari", "-E", "mujoco", "--with", "dev"]
     - id: poetry-export
-      name: poetry-export requirements-tf-atari.txt
-      args: ["--without-hashes", "--without-urls", "-o", "requirements/requirements-tf-atari.txt", "-E", "tf", "-E", "atari"]
+      name: poetry-export requirements-basic-tf.txt
+      args: ["--without-hashes", "--without-urls", "-o", "requirements/requirements-basic-tf.txt", "-E", "tf"]
     - id: poetry-export
-      name: poetry-export requirements-tf-atari-dev.txt
-      args: ["--without-hashes", "--without-urls", "-o", "requirements/requirements-tf-atari-dev.txt", "-E", "tf", "-E", "atari", "--with", "dev"]
+      name: poetry-export requirements-basic-tf-dev.txt
+      args: ["--without-hashes", "--without-urls", "-o", "requirements/requirements-basic-tf-dev.txt", "-E", "tf", "--with", "dev"]
     - id: poetry-export
-      name: poetry-export requirements-tf-mujoco.txt
-      args: ["--without-hashes", "--without-urls", "-o", "requirements/requirements-tf-mujoco.txt", "-E", "tf", "-E", "mujoco"]
+      name: poetry-export requirements-atari-tf.txt
+      args: ["--without-hashes", "--without-urls", "-o", "requirements/requirements-atari-tf.txt", "-E", "tf", "-E", "atari"]
     - id: poetry-export
-      name: poetry-export requirements-tf-mujoco-dev.txt
-      args: ["--without-hashes", "--without-urls", "-o", "requirements/requirements-tf-mujoco-dev.txt", "-E", "tf", "-E", "mujoco", "--with", "dev"]
+      name: poetry-export requirements-atari-tf-dev.txt
+      args: ["--without-hashes", "--without-urls", "-o", "requirements/requirements-atari-tf-dev.txt", "-E", "tf", "-E", "atari", "--with", "dev"]
+    - id: poetry-export
+      name: poetry-export requirements-mujoco-tf.txt
+      args: ["--without-hashes", "--without-urls", "-o", "requirements/requirements-mujoco-tf.txt", "-E", "tf", "-E", "mujoco"]
+    - id: poetry-export
+      name: poetry-export requirements-mujoco-tf-dev.txt
+      args: ["--without-hashes", "--without-urls", "-o", "requirements/requirements-mujoco-tf-dev.txt", "-E", "tf", "-E", "mujoco", "--with", "dev"]
