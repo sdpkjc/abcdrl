@@ -353,7 +353,8 @@ def wrapper_logger_tf(
         with writer.as_default():
             tf.summary.text(
                 "hyperparameters",
-                "|param|value|\n|-|-|\n" + "\n".join([f"|{key}|{value}|" for key, value in instance.kwargs.items()], 0),  # type: ignore[call-arg]
+                "|param|value|\n|-|-|\n" + "\n".join([f"|{key}|{value}|" for key, value in instance.kwargs.items()]),
+                0,
             )
 
             gen = wrapped(*args, **kwargs)
