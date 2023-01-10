@@ -10,7 +10,7 @@ def set_all_wrappers(
     func: Callable[..., Generator[dict[str, Any], None, None]]
 ) -> Callable[..., Generator[dict[str, Any], None, None]]:
     func = abcdrl_copy_from.wrapper_eval_step(func)  # type: ignore[assignment]
-    func = abcdrl_copy_from.wrapper_logger(func)  # type: ignore[assignment]
+    func = abcdrl_copy_from.wrapper_logger_torch(func)  # type: ignore[assignment]
     func = abcdrl_copy_from.wrapper_save_model(func)  # type: ignore[assignment]
     func = abcdrl_copy_from.wrapper_print_filter(func)  # type: ignore[assignment]
     return func

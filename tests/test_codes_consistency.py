@@ -61,18 +61,37 @@ def test_codes_trainer() -> None:
 
 
 def test_codes_wrapper() -> None:
-    # wrapper_logger
-    assert inspect.getsource(abcdrl_copy_from.wrapper_logger) == inspect.getsource(abcdrl.dqn.wrapper_logger)
-    assert inspect.getsource(abcdrl_copy_from.wrapper_logger) == inspect.getsource(abcdrl.ddqn.wrapper_logger)
-    assert inspect.getsource(abcdrl_copy_from.wrapper_logger) == inspect.getsource(abcdrl.pdqn.wrapper_logger)
-    assert inspect.getsource(abcdrl_copy_from.wrapper_logger) == inspect.getsource(abcdrl.ddpg.wrapper_logger)
-    assert inspect.getsource(abcdrl_copy_from.wrapper_logger) == inspect.getsource(abcdrl.td3.wrapper_logger)
-    assert inspect.getsource(abcdrl_copy_from.wrapper_logger) == inspect.getsource(abcdrl.sac.wrapper_logger)
-    assert inspect.getsource(abcdrl_copy_from.wrapper_logger) == inspect.getsource(abcdrl.ppo.wrapper_logger)
-    assert inspect.getsource(abcdrl_copy_from.wrapper_logger) == inspect.getsource(abcdrl.dqn_atari.wrapper_logger)
-    assert inspect.getsource(abcdrl_copy_from.wrapper_logger) == inspect.getsource(
-        abcdrl_copy_from.dqn_all_wrappers.wrapper_logger
+    # wrapper_logger_torch
+    assert inspect.getsource(abcdrl_copy_from.wrapper_logger_torch) == inspect.getsource(
+        abcdrl.dqn.wrapper_logger_torch
     )
+    assert inspect.getsource(abcdrl_copy_from.wrapper_logger_torch) == inspect.getsource(
+        abcdrl.ddqn.wrapper_logger_torch
+    )
+    assert inspect.getsource(abcdrl_copy_from.wrapper_logger_torch) == inspect.getsource(
+        abcdrl.pdqn.wrapper_logger_torch
+    )
+    assert inspect.getsource(abcdrl_copy_from.wrapper_logger_torch) == inspect.getsource(
+        abcdrl.ddpg.wrapper_logger_torch
+    )
+    assert inspect.getsource(abcdrl_copy_from.wrapper_logger_torch) == inspect.getsource(
+        abcdrl.td3.wrapper_logger_torch
+    )
+    assert inspect.getsource(abcdrl_copy_from.wrapper_logger_torch) == inspect.getsource(
+        abcdrl.sac.wrapper_logger_torch
+    )
+    assert inspect.getsource(abcdrl_copy_from.wrapper_logger_torch) == inspect.getsource(
+        abcdrl.ppo.wrapper_logger_torch
+    )
+    assert inspect.getsource(abcdrl_copy_from.wrapper_logger_torch) == inspect.getsource(
+        abcdrl.dqn_atari.wrapper_logger_torch
+    )
+    assert inspect.getsource(abcdrl_copy_from.wrapper_logger_torch) == inspect.getsource(
+        abcdrl_copy_from.dqn_all_wrappers.wrapper_logger_torch
+    )
+
+    # wrapper_logger_tf
+    assert inspect.getsource(abcdrl_copy_from.wrapper_logger_tf) == inspect.getsource(abcdrl.dqn_tf.wrapper_logger_tf)
 
     # wrapper_filter
     assert inspect.getsource(abcdrl_copy_from.wrapper_print_filter) == inspect.getsource(

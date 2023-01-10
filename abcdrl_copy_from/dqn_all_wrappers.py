@@ -15,7 +15,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from combine_signatures.combine_signatures import combine_signatures
-from torch.utils.tensorboard import SummaryWriter
 
 SamplesItemType = TypeVar("SamplesItemType", torch.Tensor, np.ndarray)
 
@@ -348,10 +347,11 @@ def wrapper_eval_step(
     return _wrapper
 
 
-def wrapper_logger(
+def wrapper_logger_torch(
     wrapped: Callable[..., Generator[dict[str, Any], None, None]]
 ) -> Callable[..., Generator[dict[str, Any], None, None]]:
     import wandb
+    from torch.utils.tensorboard import SummaryWriter
 
     def setup_video_monitor() -> None:
         vcr = gym.wrappers.monitoring.video_recorder.VideoRecorder
@@ -450,7 +450,7 @@ if __name__ == "__main__":
     torch.cuda.manual_seed_all(1234)
 
     Trainer.__call__ = wrapper_eval_step(Trainer.__call__)  # type: ignore[assignment]
-    Trainer.__call__ = wrapper_logger(Trainer.__call__)  # type: ignore[assignment]
+    Trainer.__call__ = wrapper_logger_torch(Trainer.__call__)  # type: ignore[assignment]
     Trainer.__call__ = wrapper_save_model(Trainer.__call__)  # type: ignore[assignment]
     Trainer.__call__ = wrapper_print_filter(Trainer.__call__)  # type: ignore[assignment]
     fire.Fire(
