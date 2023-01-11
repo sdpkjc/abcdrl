@@ -112,6 +112,24 @@ CartPole-v1 = """
         --train-frequency 10 \
 """
 
+[ddqn.tf]
+
+CartPole-v1 = """
+    python abcdrl/ddqn_tf.py \
+        --env-id CartPole-v1 \
+        --num-envs 1 \
+        --total-timesteps 500000 \
+        --gamma 0.99 \
+        --buffer-size 10000 \
+        --start-epsilon 1.0 \
+        --end-epsilon 0.05 \
+        --exploration-fraction 0.5 \
+        --batch-size 128 \
+        --learning-rate 2.5e-4 \
+        --learning-starts 10000 \
+        --target-network-frequency 500 \
+        --train-frequency 10 \
+"""
 
 [pdqn]
 

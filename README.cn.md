@@ -72,7 +72,7 @@ docker run --rm --gpus all sdpkjc/abcdrl python abcdrl/dqn_torch.py
 
 ---
 
-- [Double Deep Q Network (DDQN)](http://arxiv.org/abs/1509.06461) <sub>`ddqn_torch.py`</sub>
+- [Double Deep Q Network (DDQN)](http://arxiv.org/abs/1509.06461) <sub>`ddqn_torch.py`, `ddqn_tf.py`</sub>
 - [Prioritized Deep Q Network (PDQN)](http://arxiv.org/abs/1511.05952) <sub>`pdqn_torch.py`</sub>
 
 ## 引用 abcdRL
