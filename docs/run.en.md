@@ -18,6 +18,16 @@ python abcdrl/dqn_torch.py \
 2.  or `0.00025`
 3.  or `--track True`
 
+!!! example "Set specific GPU device"
+    - Using `gpu:0` and `gpu:1` 👇
+        - `CUDA_VISIBLE_DEVICES="0,1" python abcdrl/dqn_torch.py --cuda`
+    - Using `gpu:1` 👇
+        - `CUDA_VISIBLE_DEVICES="1" python abcdrl/dqn_torch.py --cuda`
+    - Using `cpu` only 👇
+        - `python abcdrl/dqn_torch.py --cuda False`
+        - `CUDA_VISIBLE_DEVICES="" python abcdrl/dqn_torch.py`
+        - `CUDA_VISIBLE_DEVICES="-1" python abcdrl/dqn_torch.py`
+
 Parameters in the algorithm file, consisting of two parts. The first part is the initialization parameters of `Trainer🔁`, and the second part is the parameters of the feature (`logger`, ...).
 
 === "Algorithm Parameters"

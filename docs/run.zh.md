@@ -18,6 +18,16 @@ python abcdrl/dqn_torch.py \
 2.  或 `0.00025`
 3.  或 `--track True`
 
+!!! example "指定 GPU 设备"
+    - 使用 `gpu:0` 和 `gpu:1` 👇
+        - `CUDA_VISIBLE_DEVICES="0,1" python abcdrl/dqn_torch.py --cuda`
+    - 使用 `gpu:1` 👇
+        - `CUDA_VISIBLE_DEVICES="1" python abcdrl/dqn_torch.py --cuda`
+    - 仅使用 `cpu` 👇
+        - `python abcdrl/dqn_torch.py --cuda False`
+        - `CUDA_VISIBLE_DEVICES="" python abcdrl/dqn_torch.py`
+        - `CUDA_VISIBLE_DEVICES="-1" python abcdrl/dqn_torch.py`
+
 算法文件中的参数，由两部分组成。第一部分是算法主体 `Trainer🔁` 的参数，第二部分是功能（`logger`, ...）的参数。
 
 === "算法参数"
