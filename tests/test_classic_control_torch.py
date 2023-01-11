@@ -3,7 +3,7 @@ from __future__ import annotations
 import subprocess
 
 
-def test_dqn() -> None:
+def test_dqn_torch() -> None:
     subprocess.run(
         "python abcdrl/dqn_torch.py"
         + " --env-id CartPole-v1"
@@ -18,7 +18,7 @@ def test_dqn() -> None:
     )
 
 
-def test_ddqn() -> None:
+def test_ddqn_torch() -> None:
     subprocess.run(
         "python abcdrl/ddqn_torch.py"
         + " --env-id CartPole-v1"
@@ -33,7 +33,7 @@ def test_ddqn() -> None:
     )
 
 
-def test_pdqn() -> None:
+def test_pdqn_torch() -> None:
     subprocess.run(
         "python abcdrl/pdqn_torch.py"
         + " --env-id CartPole-v1"

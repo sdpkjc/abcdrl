@@ -3,7 +3,7 @@ from __future__ import annotations
 import subprocess
 
 
-def test_dqn() -> None:
+def test_dqn_tf() -> None:
     subprocess.run(
         "python abcdrl/dqn_tf.py"
         + " --env-id CartPole-v1"

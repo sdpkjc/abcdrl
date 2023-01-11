@@ -3,7 +3,7 @@ from __future__ import annotations
 import subprocess
 
 
-def test_example_all_wrapper() -> None:
+def test_example_dqn_all_wrapper_torch() -> None:
     subprocess.run(
         "python abcdrl/utils/dqn_all_wrappers_torch.py"
         + " --env-id CartPole-v1"
@@ -21,7 +21,7 @@ def test_example_all_wrapper() -> None:
     )
 
 
-def test_example_eval_model() -> None:
+def test_example_eval_model_torch() -> None:
     subprocess.run(
         "python abcdrl/utils/dqn_all_wrappers_torch.py"
         + " --exp_name test_eval_dqn"

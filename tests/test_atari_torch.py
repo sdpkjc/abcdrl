@@ -3,7 +3,7 @@ from __future__ import annotations
 import subprocess
 
 
-def test_dqn_atari() -> None:
+def test_dqn_atari_torch() -> None:
     subprocess.run(
         "python abcdrl/dqn_atari_torch.py"
         + " --env-id BreakoutNoFrameskip-v4"

@@ -30,7 +30,7 @@ def set_all_wrappers(
     return func
 
 
-def test_dqn_wrappers() -> None:
+def test_dqn_torch_wrappers() -> None:
     Trainer = dqn_torch.Trainer
     Trainer.__call__ = set_all_wrappers(Trainer.__call__)  # type: ignore[assignment]
     trainer = Trainer(
@@ -45,7 +45,7 @@ def test_dqn_wrappers() -> None:
         pass
 
 
-def test_dqn_atari_wrappers() -> None:
+def test_dqn_atari_torch_wrappers() -> None:
     Trainer = dqn_atari_torch.Trainer
     Trainer.__call__ = set_all_wrappers(Trainer.__call__)  # type: ignore[assignment]
     trainer = Trainer(
@@ -60,7 +60,7 @@ def test_dqn_atari_wrappers() -> None:
         pass
 
 
-def test_ddqn_wrappers() -> None:
+def test_ddqn_torch_wrappers() -> None:
     Trainer = ddqn_torch.Trainer
     Trainer.__call__ = set_all_wrappers(Trainer.__call__)  # type: ignore[assignment]
     trainer = Trainer(
@@ -75,7 +75,7 @@ def test_ddqn_wrappers() -> None:
         pass
 
 
-def test_pdqn_wrappers() -> None:
+def test_pdqn_torch_wrappers() -> None:
     Trainer = pdqn_torch.Trainer
     Trainer.__call__ = set_all_wrappers(Trainer.__call__)  # type: ignore[assignment]
     trainer = Trainer(
@@ -90,7 +90,7 @@ def test_pdqn_wrappers() -> None:
         pass
 
 
-def test_ddpg_wrappers() -> None:
+def test_ddpg_torch_wrappers() -> None:
     Trainer = ddpg_torch.Trainer
     Trainer.__call__ = set_all_wrappers(Trainer.__call__)  # type: ignore[assignment]
     trainer = Trainer(
@@ -105,7 +105,7 @@ def test_ddpg_wrappers() -> None:
         pass
 
 
-def test_td3_wrappers() -> None:
+def test_td3_torch_wrappers() -> None:
     Trainer = td3_torch.Trainer
     Trainer.__call__ = set_all_wrappers(Trainer.__call__)  # type: ignore[assignment]
     trainer = Trainer(
@@ -120,7 +120,7 @@ def test_td3_wrappers() -> None:
         pass
 
 
-def test_sac_wrappers() -> None:
+def test_sac_torch_wrappers() -> None:
     Trainer = sac_torch.Trainer
     Trainer.__call__ = set_all_wrappers(Trainer.__call__)  # type: ignore[assignment]
     trainer = Trainer(
@@ -135,7 +135,7 @@ def test_sac_wrappers() -> None:
         pass
 
 
-def test_ppo_wrappers() -> None:
+def test_ppo_torch_wrappers() -> None:
     Trainer = ppo_torch.Trainer
     Trainer.__call__ = set_all_wrappers(Trainer.__call__)  # type: ignore[assignment]
     trainer = Trainer(

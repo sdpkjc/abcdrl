@@ -3,10 +3,10 @@ from __future__ import annotations
 import subprocess
 
 
-def test_benchmark_torch() -> None:
+def test_benchmark_tf() -> None:
     try:
         subprocess.run(
-            "python benchmark.py --algs dqn --env-id CartPole-v1 --frameworks torch",
+            "python benchmark.py --algs dqn --env-id CartPole-v1 --frameworks tf",
             shell=True,
             check=True,
             timeout=3,
@@ -15,9 +15,9 @@ def test_benchmark_torch() -> None:
         pass
 
 
-def test_capture_video_torch() -> None:
+def test_capture_video_tf() -> None:
     subprocess.run(
-        "python abcdrl/dqn_torch.py"
+        "python abcdrl/dqn_tf.py"
         + " --env-id CartPole-v1"
         + " --num-envs 2"
         + " --learning-starts 8"
@@ -31,7 +31,7 @@ def test_capture_video_torch() -> None:
     )
 
 
-def test_wandb_track_torch() -> None:
+def test_wandb_track_tf() -> None:
     online_flag = False
     re = subprocess.run("wandb status", shell=True, check=True, capture_output=True, timeout=10)
     if "disabled" not in str(re.stdout):
@@ -40,7 +40,7 @@ def test_wandb_track_torch() -> None:
 
     try:
         subprocess.run(
-            "python abcdrl/dqn_torch.py"
+            "python abcdrl/dqn_tf.py"
             + " --env-id CartPole-v1"
             + " --num-envs 2"
             + " --learning-starts 8"
