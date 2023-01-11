@@ -5,7 +5,7 @@ import subprocess
 
 def test_ddpg() -> None:
     subprocess.run(
-        "python abcdrl/ddpg.py"
+        "python abcdrl/ddpg_torch.py"
         + " --env-id Hopper-v4"
         + " --device auto"
         + " --num-envs 2"
@@ -21,7 +21,7 @@ def test_ddpg() -> None:
 
 def test_td3() -> None:
     subprocess.run(
-        "python abcdrl/td3.py"
+        "python abcdrl/td3_torch.py"
         + " --env-id Hopper-v4"
         + " --device auto"
         + " --num-envs 2"
@@ -37,7 +37,7 @@ def test_td3() -> None:
 
 def test_sac() -> None:
     subprocess.run(
-        "python abcdrl/sac.py"
+        "python abcdrl/sac_torch.py"
         + " --env-id Hopper-v4"
         + " --device auto"
         + " --num-envs 2"
@@ -53,7 +53,7 @@ def test_sac() -> None:
 
 def test_ppo() -> None:
     subprocess.run(
-        "python abcdrl/ppo.py"
+        "python abcdrl/ppo_torch.py"
         + " --env-id Hopper-v4"
         + " --device auto"
         + " --num-envs 2"

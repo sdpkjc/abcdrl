@@ -5,7 +5,7 @@ import subprocess
 
 def test_dqn() -> None:
     subprocess.run(
-        "python abcdrl/dqn.py"
+        "python abcdrl/dqn_torch.py"
         + " --env-id CartPole-v1"
         + " --device auto"
         + " --num-envs 2"
@@ -21,7 +21,7 @@ def test_dqn() -> None:
 
 def test_ddqn() -> None:
     subprocess.run(
-        "python abcdrl/ddqn.py"
+        "python abcdrl/ddqn_torch.py"
         + " --env-id CartPole-v1"
         + " --device auto"
         + " --num-envs 2"
@@ -37,7 +37,7 @@ def test_ddqn() -> None:
 
 def test_pdqn() -> None:
     subprocess.run(
-        "python abcdrl/pdqn.py"
+        "python abcdrl/pdqn_torch.py"
         + " --env-id CartPole-v1"
         + " --device auto"
         + " --num-envs 2"

@@ -17,7 +17,7 @@ def test_benchmark() -> None:
 
 def test_capture_video() -> None:
     subprocess.run(
-        "python abcdrl/dqn.py"
+        "python abcdrl/dqn_torch.py"
         + " --env-id CartPole-v1"
         + " --device auto"
         + " --num-envs 2"
@@ -41,7 +41,7 @@ def test_wandb_track() -> None:
 
     try:
         subprocess.run(
-            "python abcdrl/dqn.py"
+            "python abcdrl/dqn_torch.py"
             + " --env-id CartPole-v1"
             + " --device auto"
             + " --num-envs 2"

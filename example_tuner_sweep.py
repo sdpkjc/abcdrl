@@ -5,7 +5,7 @@ import time
 import fire
 import wandb
 
-from abcdrl import dqn
+from abcdrl import dqn_torch
 
 sweep_configuration = {
     "method": "random",
@@ -24,9 +24,9 @@ sweep_configuration = {
 
 def tune_agent() -> None:
     with wandb.init(name=f"{sweep_configuration['name']}__{int(time.time())}") as writer:  # type: ignore[union-attr]
-        wandb.save("abcdrl/dqn.py")
+        wandb.save("abcdrl/dqn_torch.py")
 
-        trainer = dqn.Trainer(
+        trainer = dqn_torch.Trainer(
             env_id=wandb.config.env_id,
             learning_rate=wandb.config.learning_rate,
             batch_size=wandb.config.batch_size,

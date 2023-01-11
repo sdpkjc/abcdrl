@@ -2,7 +2,16 @@ from __future__ import annotations
 
 from typing import Any, Callable, Generator
 
-from abcdrl import ddpg, ddqn, dqn, dqn_atari, pdqn, ppo, sac, td3
+from abcdrl import (
+    ddpg_torch,
+    ddqn_torch,
+    dqn_atari_torch,
+    dqn_torch,
+    pdqn_torch,
+    ppo_torch,
+    sac_torch,
+    td3_torch,
+)
 from abcdrl.utils import (
     wrapper_eval_step,
     wrapper_logger_torch,
@@ -22,7 +31,7 @@ def set_all_wrappers(
 
 
 def test_dqn_wrappers() -> None:
-    Trainer = dqn.Trainer
+    Trainer = dqn_torch.Trainer
     Trainer.__call__ = set_all_wrappers(Trainer.__call__)  # type: ignore[assignment]
     trainer = Trainer(
         env_id="CartPole-v1",
@@ -38,7 +47,7 @@ def test_dqn_wrappers() -> None:
 
 
 def test_dqn_atari_wrappers() -> None:
-    Trainer = dqn_atari.Trainer
+    Trainer = dqn_atari_torch.Trainer
     Trainer.__call__ = set_all_wrappers(Trainer.__call__)  # type: ignore[assignment]
     trainer = Trainer(
         env_id="BreakoutNoFrameskip-v4",
@@ -54,7 +63,7 @@ def test_dqn_atari_wrappers() -> None:
 
 
 def test_ddqn_wrappers() -> None:
-    Trainer = ddqn.Trainer
+    Trainer = ddqn_torch.Trainer
     Trainer.__call__ = set_all_wrappers(Trainer.__call__)  # type: ignore[assignment]
     trainer = Trainer(
         env_id="CartPole-v1",
@@ -70,7 +79,7 @@ def test_ddqn_wrappers() -> None:
 
 
 def test_pdqn_wrappers() -> None:
-    Trainer = pdqn.Trainer
+    Trainer = pdqn_torch.Trainer
     Trainer.__call__ = set_all_wrappers(Trainer.__call__)  # type: ignore[assignment]
     trainer = Trainer(
         env_id="CartPole-v1",
@@ -86,7 +95,7 @@ def test_pdqn_wrappers() -> None:
 
 
 def test_ddpg_wrappers() -> None:
-    Trainer = ddpg.Trainer
+    Trainer = ddpg_torch.Trainer
     Trainer.__call__ = set_all_wrappers(Trainer.__call__)  # type: ignore[assignment]
     trainer = Trainer(
         env_id="Hopper-v4",
@@ -102,7 +111,7 @@ def test_ddpg_wrappers() -> None:
 
 
 def test_td3_wrappers() -> None:
-    Trainer = td3.Trainer
+    Trainer = td3_torch.Trainer
     Trainer.__call__ = set_all_wrappers(Trainer.__call__)  # type: ignore[assignment]
     trainer = Trainer(
         env_id="Hopper-v4",
@@ -118,7 +127,7 @@ def test_td3_wrappers() -> None:
 
 
 def test_sac_wrappers() -> None:
-    Trainer = sac.Trainer
+    Trainer = sac_torch.Trainer
     Trainer.__call__ = set_all_wrappers(Trainer.__call__)  # type: ignore[assignment]
     trainer = Trainer(
         env_id="Hopper-v4",
@@ -134,7 +143,7 @@ def test_sac_wrappers() -> None:
 
 
 def test_ppo_wrappers() -> None:
-    Trainer = ppo.Trainer
+    Trainer = ppo_torch.Trainer
     Trainer.__call__ = set_all_wrappers(Trainer.__call__)  # type: ignore[assignment]
     trainer = Trainer(
         env_id="Hopper-v4",

@@ -12,7 +12,7 @@
     ```shell
     # 0. Prerequisites: Docker
     # 1. Run DQN algorithm
-    docker run --rm sdpkjc/abcdrl python abcdrl/dqn.py
+    docker run --rm sdpkjc/abcdrl python abcdrl/dqn_torch.py
     ```
 
 === "GPU"
@@ -20,7 +20,7 @@
     ```shell
     # 0. Prerequisites: Docker & Nvidia Drive & NVIDIA Container Toolkit
     # 1. Run DQN algorithm
-    docker run --rm --gpus all sdpkjc/abcdrl python abcdrl/dqn.py
+    docker run --rm --gpus all sdpkjc/abcdrl python abcdrl/dqn_torch.py
     ```
 
     !!! note
@@ -44,7 +44,7 @@
     # 2. Install dependencies
     pip install -r requirements/requirements.txt
     # 3. Run DQN algorithm
-    python abcdrl/dqn.py
+    python abcdrl/dqn_torch.py
     ```
 
 === "GPU"
@@ -60,7 +60,7 @@
     # 4. Install dependencies
     pip install -r requirements/requirements.txt
     # 5. Run DQN algorithm
-    python abcdrl/dqn.py
+    python abcdrl/dqn_torch.py
     ```
 
     !!! note

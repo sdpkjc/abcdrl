@@ -11,12 +11,12 @@
     为了便于比较不同算法之间的差异和统一代码风格，我们的代码将按照下述的关系图，尽力做到连线的代码文件差异的最小化。
     ``` mermaid
     graph LR
-    A[dqn.py] -->B[ddpg.py];
-    B -->C[td3.py];
-    C -->D[sac.py];
-    B -->E[ppo.py];
-    A -->F[ddqn.py];
-    A -->G[pdqn.py];
-    A -->H[dqn_atari.py];
+    A[dqn_torch.py] -->B[ddpg_torch.py];
+    B -->C[td3_torch.py];
+    C -->D[sac_torch.py];
+    B -->E[ppo_torch.py];
+    A -->F[ddqn_torch.py];
+    A -->G[pdqn_torch.py];
+    A -->H[dqn_atari_torch.py];
     A -->H[dqn_tf.py];
     ```

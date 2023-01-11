@@ -11,12 +11,12 @@
     In order to facilitate the comparison of the differences between algorithms and to unify the code style, the code will try to minimize the differences between the wired code files as shown in the diagram below.
     ``` mermaid
     graph LR
-    A[dqn.py] -->B[ddpg.py];
-    B -->C[td3.py];
-    C -->D[sac.py];
-    B -->E[ppo.py];
-    A -->F[ddqn.py];
-    A -->G[pdqn.py];
-    A -->H[dqn_atari.py];
+    A[dqn_torch.py] -->B[ddpg_torch.py];
+    B -->C[td3_torch.py];
+    C -->D[sac_torch.py];
+    B -->E[ppo_torch.py];
+    A -->F[ddqn_torch.py];
+    A -->G[pdqn_torch.py];
+    A -->H[dqn_atari_torch.py];
     A -->H[dqn_tf.py];
     ```

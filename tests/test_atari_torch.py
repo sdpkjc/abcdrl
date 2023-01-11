@@ -5,7 +5,7 @@ import subprocess
 
 def test_dqn_atari() -> None:
     subprocess.run(
-        "python abcdrl/dqn_atari.py"
+        "python abcdrl/dqn_atari_torch.py"
         + " --env-id BreakoutNoFrameskip-v4"
         + " --device auto"
         + " --num-envs 2"

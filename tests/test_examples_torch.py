@@ -5,7 +5,7 @@ import subprocess
 
 def test_example_all_wrapper() -> None:
     subprocess.run(
-        "python abcdrl/utils/dqn_all_wrappers.py"
+        "python abcdrl/utils/dqn_all_wrappers_torch.py"
         + " --env-id CartPole-v1"
         + " --device auto"
         + " --num-envs 2"
@@ -24,7 +24,7 @@ def test_example_all_wrapper() -> None:
 
 def test_example_eval_model() -> None:
     subprocess.run(
-        "python abcdrl/utils/dqn_all_wrappers.py"
+        "python abcdrl/utils/dqn_all_wrappers_torch.py"
         + " --exp_name test_eval_dqn"
         + " --env-id CartPole-v1"
         + " --device auto"

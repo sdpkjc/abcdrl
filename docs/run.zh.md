@@ -3,7 +3,7 @@
 安装好所有依赖后，即可直接运行算法文件。
 
 ```shell
-python abcdrl/dqn.py \
+python abcdrl/dqn_torch.py \
     --env-id Cartpole-v1 \
     --device "cuda:1" \ #(1)!
     --total_timesteps 500000 \ #(2)!
@@ -24,7 +24,7 @@ python abcdrl/dqn.py \
 
 === "算法参数"
 
-    ```python title="abcdrl/dqn.py" linenums="206" hl_lines="4-11 13-16 18-19 21-23"
+    ```python title="abcdrl/dqn_torch.py" linenums="206" hl_lines="4-11 13-16 18-19 21-23"
     class Trainer:
         def __init__(
             self,
@@ -53,7 +53,7 @@ python abcdrl/dqn.py \
 
 === "功能参数"
 
-    ```python title="abcdrl/dqn.py" linenums="312" hl_lines="21-24"
+    ```python title="abcdrl/dqn_torch.py" linenums="312" hl_lines="21-24"
     def wrapper_logger(
         wrapped: Callable[..., Generator[dict[str, Any], None, None]]
     ) -> Callable[..., Generator[dict[str, Any], None, None]]:
@@ -83,4 +83,4 @@ python abcdrl/dqn.py \
     ```
 
 !!! note
-    可使用 `python abcdrl/dqn.py --help` 命令查看算法参数，使用 `python abcdrl/dqn.py __call__ --help` 命令查看功能参数。
+    可使用 `python abcdrl/dqn_torch.py --help` 命令查看算法参数，使用 `python abcdrl/dqn_torch.py __call__ --help` 命令查看功能参数。

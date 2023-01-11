@@ -12,7 +12,7 @@
     ```shell
     # 0. 安装 Docker
     # 1. 运行 DQN 算法
-    docker run --rm sdpkjc/abcdrl python abcdrl/dqn.py
+    docker run --rm sdpkjc/abcdrl python abcdrl/dqn_torch.py
     ```
 
 === "GPU"
@@ -20,7 +20,7 @@
     ```shell
     # 0. 安装 Docker & Nvidia Drive & NVIDIA Container Toolkit
     # 1. 运行 DQN 算法
-    docker run --rm --gpus all sdpkjc/abcdrl python abcdrl/dqn.py
+    docker run --rm --gpus all sdpkjc/abcdrl python abcdrl/dqn_torch.py
     ```
 
     !!! note
@@ -44,7 +44,7 @@
     # 2. 安装依赖
     pip install -r requirements/requirements.txt
     # 3. 运行 DQN 算法
-    python abcdrl/dqn.py
+    python abcdrl/dqn_torch.py
     ```
 
 === "GPU"
@@ -60,7 +60,7 @@
     # 4. 安装依赖
     pip install -r requirements/requirements.txt
     # 5. 运行 DQN 算法
-    python abcdrl/dqn.py
+    python abcdrl/dqn_torch.py
     ```
 
     !!! note
