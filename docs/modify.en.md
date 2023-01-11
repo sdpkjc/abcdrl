@@ -74,7 +74,7 @@ def wrapper_example(
 
 ### Using Decorator
 
-```python hl_lines="1-11 24-25"
+```python hl_lines="1-11 25-26"
 # Step 1：Copy the decorators you need
 def wrapper_example(
     wrapped: Callable[..., Generator[dict[str, Any], None, None]]
@@ -89,13 +89,14 @@ def wrapper_example(
 
 
 if __name__ == "__main__":
-    torch.manual_seed(1234)
-    torch.cuda.manual_seed(1234)
-    np.random.seed(1234)
-    random.seed(1234)
+    SEED=1234
+    random.seed(SEED)
+    np.random.seed(SEED)
+    torch.manual_seed(SEED)
+    torch.cuda.manual_seed(SEED)
+    torch.cuda.manual_seed_all(SEED)
     torch.backends.cudnn.benchmark = False
     torch.backends.cudnn.deterministic = True
-    torch.cuda.manual_seed_all(1234)
 
     Trainer.__call__ = wrapper_logger(Trainer.__call__)  # type: ignore[assignment]
     # Step 2：Decorate the Trainer.__call__ function

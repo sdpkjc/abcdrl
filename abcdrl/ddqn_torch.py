@@ -367,13 +367,14 @@ def wrapper_logger_torch(
 
 
 if __name__ == "__main__":
-    torch.manual_seed(1234)
-    torch.cuda.manual_seed(1234)
-    np.random.seed(1234)
-    random.seed(1234)
+    SEED = 1234
+    random.seed(SEED)
+    np.random.seed(SEED)
+    torch.manual_seed(SEED)
+    torch.cuda.manual_seed(SEED)
+    torch.cuda.manual_seed_all(SEED)
     torch.backends.cudnn.benchmark = False
     torch.backends.cudnn.deterministic = True
-    torch.cuda.manual_seed_all(1234)
 
     Trainer.__call__ = wrapper_logger_torch(Trainer.__call__)  # type: ignore[assignment]
     fire.Fire(
