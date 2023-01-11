@@ -20,7 +20,7 @@ CartPole-v1 = """
 """
 
 BreakoutNoFrameskip-v4 = """
-    python abcdrl/dqn_atari_torch_torch.py \
+    python abcdrl/dqn_atari_torch.py \
         --env-id BreakoutNoFrameskip-v4 \
         --num-envs 1 \
         --total-timesteps 10000000 \
@@ -37,7 +37,7 @@ BreakoutNoFrameskip-v4 = """
 """
 
 PongNoFrameskip-v4 = """
-    python abcdrl/dqn_atari_torch_torch.py \
+    python abcdrl/dqn_atari_torch.py \
         --env-id PongNoFrameskip-v4 \
         --num-envs 1 \
         --total-timesteps 10000000 \
