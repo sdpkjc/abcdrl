@@ -125,8 +125,8 @@ class PrioritizedReplayBuffer:
         obs: np.ndarray,
         next_obs: np.ndarray,
         act: np.ndarray,
-        rew: float,
-        done: bool,
+        rew: np.ndarray,
+        done: np.ndarray,
         infos: dict[str, Any],
     ) -> None:
         for obs_i, next_obs_i, act_i, rew_i, done_i in zip(obs, next_obs, act, rew, done):  # type: ignore[call-overload]
