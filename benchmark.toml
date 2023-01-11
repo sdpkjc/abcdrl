@@ -1,5 +1,7 @@
 [dqn]
 
+[dqn.torch]
+
 CartPole-v1 = """
     python abcdrl/dqn_torch.py \
         --env-id CartPole-v1 \
@@ -68,8 +70,30 @@ BeamRiderNoFrameskip-v4 = """
         --train-frequency 4 \
 """
 
+[dqn.tf]
+
+CartPole-v1 = """
+    python abcdrl/dqn_tf.py \
+        --env-id CartPole-v1 \
+        --num-envs 1 \
+        --total-timesteps 500000 \
+        --gamma 0.99 \
+        --buffer-size 10000 \
+        --start-epsilon 1.0 \
+        --end-epsilon 0.05 \
+        --exploration-fraction 0.5 \
+        --batch-size 128 \
+        --learning-rate 2.5e-4 \
+        --learning-starts 10000 \
+        --target-network-frequency 500 \
+        --train-frequency 10 \
+"""
+
 
 [ddqn]
+
+
+[ddqn.torch]
 
 CartPole-v1 = """
     python abcdrl/ddqn_torch.py \
@@ -90,6 +114,9 @@ CartPole-v1 = """
 
 
 [pdqn]
+
+
+[pdqn.torch]
 
 CartPole-v1 = """
     python abcdrl/pdqn_torch.py \
@@ -112,6 +139,9 @@ CartPole-v1 = """
 
 
 [ddpg]
+
+
+[ddpg.torch]
 
 Pendulum-v1 = """
     python abcdrl/ddpg_torch.py \
@@ -179,6 +209,9 @@ HalfCheetah-v4 = """
 
 
 [td3]
+
+
+[td3.torch]
 
 Pendulum-v1 = """
     python abcdrl/td3_torch.py \
@@ -254,6 +287,8 @@ HalfCheetah-v4 = """
 
 
 [sac]
+
+[sac.torch]
 
 Pendulum-v1 = """
     python abcdrl/sac_torch.py \
@@ -333,6 +368,8 @@ HalfCheetah-v4 = """
 
 
 [ppo]
+
+[ppo.torch]
 
 Pendulum-v1 = """
     python abcdrl/ppo_torch.py \

@@ -19,7 +19,6 @@ def test_capture_video() -> None:
     subprocess.run(
         "python abcdrl/dqn_torch.py"
         + " --env-id CartPole-v1"
-        + " --device auto"
         + " --num-envs 2"
         + " --learning-starts 8"
         + " --total-timesteps 32"
@@ -43,7 +42,6 @@ def test_wandb_track() -> None:
         subprocess.run(
             "python abcdrl/dqn_torch.py"
             + " --env-id CartPole-v1"
-            + " --device auto"
             + " --num-envs 2"
             + " --learning-starts 8"
             + " --total-timesteps 32"

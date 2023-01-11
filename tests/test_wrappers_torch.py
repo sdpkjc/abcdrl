@@ -35,7 +35,6 @@ def test_dqn_wrappers() -> None:
     Trainer.__call__ = set_all_wrappers(Trainer.__call__)  # type: ignore[assignment]
     trainer = Trainer(
         env_id="CartPole-v1",
-        device="auto",
         num_envs=2,
         learning_starts=8,
         total_timesteps=32,
@@ -51,7 +50,6 @@ def test_dqn_atari_wrappers() -> None:
     Trainer.__call__ = set_all_wrappers(Trainer.__call__)  # type: ignore[assignment]
     trainer = Trainer(
         env_id="BreakoutNoFrameskip-v4",
-        device="auto",
         num_envs=2,
         learning_starts=8,
         total_timesteps=32,
@@ -67,7 +65,6 @@ def test_ddqn_wrappers() -> None:
     Trainer.__call__ = set_all_wrappers(Trainer.__call__)  # type: ignore[assignment]
     trainer = Trainer(
         env_id="CartPole-v1",
-        device="auto",
         num_envs=2,
         learning_starts=8,
         total_timesteps=32,
@@ -83,7 +80,6 @@ def test_pdqn_wrappers() -> None:
     Trainer.__call__ = set_all_wrappers(Trainer.__call__)  # type: ignore[assignment]
     trainer = Trainer(
         env_id="CartPole-v1",
-        device="auto",
         num_envs=2,
         learning_starts=8,
         total_timesteps=32,
@@ -99,7 +95,6 @@ def test_ddpg_wrappers() -> None:
     Trainer.__call__ = set_all_wrappers(Trainer.__call__)  # type: ignore[assignment]
     trainer = Trainer(
         env_id="Hopper-v4",
-        device="auto",
         num_envs=2,
         learning_starts=64,
         total_timesteps=256,
@@ -115,7 +110,6 @@ def test_td3_wrappers() -> None:
     Trainer.__call__ = set_all_wrappers(Trainer.__call__)  # type: ignore[assignment]
     trainer = Trainer(
         env_id="Hopper-v4",
-        device="auto",
         num_envs=2,
         learning_starts=64,
         total_timesteps=256,
@@ -131,7 +125,6 @@ def test_sac_wrappers() -> None:
     Trainer.__call__ = set_all_wrappers(Trainer.__call__)  # type: ignore[assignment]
     trainer = Trainer(
         env_id="Hopper-v4",
-        device="auto",
         num_envs=2,
         learning_starts=64,
         total_timesteps=256,
@@ -147,7 +140,6 @@ def test_ppo_wrappers() -> None:
     Trainer.__call__ = set_all_wrappers(Trainer.__call__)  # type: ignore[assignment]
     trainer = Trainer(
         env_id="Hopper-v4",
-        device="auto",
         num_envs=2,
         num_steps=64,
         num_minibatches=16,

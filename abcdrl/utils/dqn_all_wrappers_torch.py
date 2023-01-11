@@ -207,7 +207,7 @@ class Trainer:
         self,
         exp_name: str | None = None,
         seed: int = 1,
-        device: str | torch.device = "auto",
+        cuda: bool = True,
         capture_video: bool = False,
         env_id: str = "CartPole-v1",
         num_envs: int = 1,
@@ -234,8 +234,7 @@ class Trainer:
         self.kwargs["target_network_frequency"] = max(
             self.kwargs["target_network_frequency"] // self.kwargs["num_envs"] * self.kwargs["num_envs"], 1
         )
-        if self.kwargs["device"] == "auto":
-            self.kwargs["device"] = "cuda" if torch.cuda.is_available() else "cpu"
+        self.kwargs["device"] = "cuda" if self.kwargs["cuda"] and torch.cuda.is_available() else "cpu"
 
         self.envs = gym.vector.SyncVectorEnv([self._make_env(i) for i in range(self.kwargs["num_envs"])])  # type: ignore[arg-type]
         assert isinstance(self.envs.single_action_space, gym.spaces.Discrete)

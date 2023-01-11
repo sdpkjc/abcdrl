@@ -7,7 +7,6 @@ def test_example_all_wrapper() -> None:
     subprocess.run(
         "python abcdrl/utils/dqn_all_wrappers_torch.py"
         + " --env-id CartPole-v1"
-        + " --device auto"
         + " --num-envs 2"
         + " --learning-starts 8"
         + " --total-timesteps 32"
@@ -27,7 +26,6 @@ def test_example_eval_model() -> None:
         "python abcdrl/utils/dqn_all_wrappers_torch.py"
         + " --exp_name test_eval_dqn"
         + " --env-id CartPole-v1"
-        + " --device auto"
         + " --num-envs 1"
         + " --learning-starts 8"
         + " --total-timesteps 32"
