@@ -51,7 +51,7 @@
 
 ### 编写装饰器
 
-我们的通用功能主要通过装饰器实现，可以参考以下代码和 `abcdrl_copy_from/wrapper_*.py` 文件，实现你想要的新功能并应用到所有算法上。
+我们的通用功能主要通过装饰器实现，可以参考以下代码和 `abcdrl/utils/wrapper_*.py` 文件，实现你想要的新功能并应用到所有算法上。
 
 ```python hl_lines="8-9 13 15"
 from combine_signatures.combine_signatures import combine_signatures

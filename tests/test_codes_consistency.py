@@ -3,7 +3,7 @@ from __future__ import annotations
 import inspect
 
 from abcdrl import ddpg, ddqn, dqn, dqn_atari, dqn_tf, pdqn, ppo, sac, td3
-from abcdrl_copy_from import (
+from abcdrl.utils import (
     dqn_all_wrappers,
     wrapper_eval_step,
     wrapper_logger_tf,

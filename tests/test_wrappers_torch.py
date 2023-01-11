@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Any, Callable, Generator
 
 from abcdrl import ddpg, ddqn, dqn, dqn_atari, pdqn, ppo, sac, td3
-from abcdrl_copy_from import (
+from abcdrl.utils import (
     wrapper_eval_step,
     wrapper_logger_torch,
     wrapper_print_filter,

@@ -51,7 +51,7 @@ Our modular design does not prescribe a strict interface, and you are free to mo
 
 ### Writing Decorator
 
-The generic feature is implemented as a decorator, you can refer to the code below and `abcdrl_copy_from/wrapper_*.py` file to implement the new feature you want and apply it to all algorithms.
+The generic feature is implemented as a decorator, you can refer to the code below and `abcdrl/utils/wrapper_*.py` file to implement the new feature you want and apply it to all algorithms.
 
 ```python hl_lines="8-9 13 15"
 from combine_signatures.combine_signatures import combine_signatures
