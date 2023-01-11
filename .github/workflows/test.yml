@@ -54,6 +54,7 @@ jobs:
       - name: Install linux dependencies
         if: runner.os == 'Linux'
         run: |
+          sudo apt-get update && \
           sudo apt-get -y install wget unzip \
             git software-properties-common \
             libgl1-mesa-dev \
@@ -93,6 +94,7 @@ jobs:
       - name: Install linux dependencies
         if: runner.os == 'Linux'
         run: |
+          sudo apt-get update && \
           sudo apt-get -y install wget unzip \
             git software-properties-common \
             libgl1-mesa-dev \
