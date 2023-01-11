@@ -41,7 +41,7 @@ abcdRL is a **Modular Single-file Reinforcement Learning Algorithms Library** th
 ---
 
 - [Double Deep Q Network (DDQN)](http://arxiv.org/abs/1509.06461) <sub>`ddqn_torch.py`, `ddqn_tf.py`</sub>
-- [Prioritized Deep Q Network (PDQN)](http://arxiv.org/abs/1511.05952) <sub>`pdqn_torch.py`</sub>
+- [Prioritized Deep Q Network (PDQN)](http://arxiv.org/abs/1511.05952) <sub>`pdqn_torch.py`, `pdqn_tf.py`</sub>
 
 ## Citing abcdRL
 

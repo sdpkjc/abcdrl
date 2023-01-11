@@ -18,5 +18,7 @@
     A -->F[ddqn_torch.py];
     A -->G[pdqn_torch.py];
     A -->H[dqn_atari_torch.py];
-    A -->H[dqn_tf.py];
+    A -->I[dqn_tf.py];
+    F -->J[ddqn_tf.py];
+    G -->K[pdqn_tf.py];
     ```
