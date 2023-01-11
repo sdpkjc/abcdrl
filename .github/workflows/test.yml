@@ -11,7 +11,34 @@ on:
       - '.pre-commit-config.yaml'
       - 'CITATION.cff'
 jobs:
-  tests:
+
+  tests-codes-consistency:
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10"]
+        os: [ubuntu-22.04]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Python # Set Python version
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install pip dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements/requirements-dev.txt
+      - name: Test with pytest
+        run: pytest tests/test_codes_consistency.py --doctest-modules --junitxml=junit/tests-codes-consistency-results-${{ matrix.python-version }}.xml
+      - name: Upload pytest test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: pytest-tests-codes-consistency-results-${{ matrix.python-version }}
+          path: junit/tests-codes-consistency-results-${{ matrix.python-version }}.xml
+        if: ${{ always() }}
+
+  tests-torch:
     strategy:
       fail-fast: false
       matrix:
@@ -24,7 +51,6 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-      # Install pip and pytest
       - name: Install linux dependencies
         if: runner.os == 'Linux'
         run: |
@@ -41,13 +67,51 @@ jobs:
       - name: Install pip dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements/requirements-dev.txt
+          pip install -r requirements/requirements-torch-dev.txt
       - name: Test with pytest
-        run: pytest --doctest-modules --junitxml=junit/test-results-${{ matrix.python-version }}.xml
+        run: pytest tests/test_*_torch.py --doctest-modules --junitxml=junit/tests-torch-results-${{ matrix.python-version }}.xml
       - name: Upload pytest test results
         uses: actions/upload-artifact@v3
         with:
-          name: pytest-results-${{ matrix.python-version }}
-          path: junit/test-results-${{ matrix.python-version }}.xml
-        # Use always() to always run this step to publish test results when there are test failures
+          name: pytest-tests-torch-results-${{ matrix.python-version }}
+          path: junit/tests-torch-results-${{ matrix.python-version }}.xml
+        if: ${{ always() }}
+
+  tests-tf:
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.8", "3.9", "3.10"]
+        os: [ubuntu-22.04, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Python # Set Python version
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install linux dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get -y install wget unzip \
+            git software-properties-common \
+            libgl1-mesa-dev \
+            libgl1-mesa-glx \
+            libglew-dev \
+            libosmesa6-dev patchelf swig
+      - name: Install macOS dependencies
+        if: runner.os == 'macOS'
+        run: |
+          brew install gcc@9
+      - name: Install pip dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements/requirements-tf-dev.txt
+      - name: Test with pytest
+        run: pytest tests/test_*_tf.py --doctest-modules --junitxml=junit/tests-tf-results-${{ matrix.python-version }}.xml
+      - name: Upload pytest test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: pytest-tests-tf-results-${{ matrix.python-version }}
+          path: junit/tests-tf-results-${{ matrix.python-version }}.xml
         if: ${{ always() }}
