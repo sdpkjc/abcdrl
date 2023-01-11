@@ -6,6 +6,7 @@ from abcdrl import (
     ddpg_torch,
     ddqn_tf,
     ddqn_torch,
+    dqn_atari_tf,
     dqn_atari_torch,
     dqn_tf,
     dqn_torch,
@@ -34,6 +35,10 @@ def test_codes_buffer() -> None:
     assert inspect.getsource(dqn_torch.ReplayBuffer) == inspect.getsource(dqn_tf.ReplayBuffer)
     assert inspect.getsource(dqn_torch.ReplayBuffer) == inspect.getsource(ddqn_tf.ReplayBuffer)
 
+    # ReplayBuffer optimize_memory_usage
+    assert inspect.getsource(dqn_atari_torch.ReplayBuffer) == inspect.getsource(dqn_atari_tf.ReplayBuffer)
+
+    # PrioritizedReplayBuffer
     assert inspect.getsource(pdqn_torch.PrioritizedReplayBuffer) == inspect.getsource(pdqn_tf.PrioritizedReplayBuffer)
 
 
@@ -78,6 +83,7 @@ def test_codes_trainer() -> None:
     assert inspect.getsource(dqn_torch.Trainer.__call__) == inspect.getsource(dqn_atari_torch.Trainer.__call__)
     assert inspect.getsource(dqn_torch.Trainer.__call__) == inspect.getsource(ddqn_tf.Trainer.__call__)
     assert inspect.getsource(dqn_torch.Trainer.__call__) == inspect.getsource(pdqn_tf.Trainer.__call__)
+    assert inspect.getsource(dqn_torch.Trainer.__call__) == inspect.getsource(dqn_atari_tf.Trainer.__call__)
 
     assert inspect.getsource(dqn_torch.Trainer._run_collect) == inspect.getsource(ddqn_torch.Trainer._run_collect)
     assert inspect.getsource(dqn_torch.Trainer._run_collect) == inspect.getsource(pdqn_torch.Trainer._run_collect)
@@ -86,6 +92,7 @@ def test_codes_trainer() -> None:
     assert inspect.getsource(dqn_torch.Trainer._run_collect) == inspect.getsource(sac_torch.Trainer._run_collect)
     assert inspect.getsource(dqn_torch.Trainer._run_collect) == inspect.getsource(ddqn_tf.Trainer._run_collect)
     assert inspect.getsource(dqn_torch.Trainer._run_collect) == inspect.getsource(pdqn_tf.Trainer._run_collect)
+    assert inspect.getsource(dqn_torch.Trainer._run_collect) == inspect.getsource(dqn_atari_tf.Trainer._run_collect)
 
     assert inspect.getsource(dqn_torch.Trainer._run_train) == inspect.getsource(ddqn_torch.Trainer._run_train)
     assert inspect.getsource(dqn_torch.Trainer._run_train) == inspect.getsource(ddpg_torch.Trainer._run_train)
@@ -94,11 +101,15 @@ def test_codes_trainer() -> None:
     assert inspect.getsource(dqn_torch.Trainer._run_train) == inspect.getsource(dqn_atari_torch.Trainer._run_train)
     assert inspect.getsource(dqn_torch.Trainer._run_train) == inspect.getsource(dqn_tf.Trainer._run_train)
     assert inspect.getsource(dqn_torch.Trainer._run_train) == inspect.getsource(ddqn_tf.Trainer._run_train)
+    assert inspect.getsource(dqn_torch.Trainer._run_train) == inspect.getsource(dqn_atari_tf.Trainer._run_train)
 
     assert inspect.getsource(dqn_torch.Trainer._make_env) == inspect.getsource(ddqn_torch.Trainer._make_env)
     assert inspect.getsource(dqn_torch.Trainer._make_env) == inspect.getsource(pdqn_torch.Trainer._make_env)
     assert inspect.getsource(ddpg_torch.Trainer._make_env) == inspect.getsource(td3_torch.Trainer._make_env)
     assert inspect.getsource(ddpg_torch.Trainer._make_env) == inspect.getsource(sac_torch.Trainer._make_env)
+    assert inspect.getsource(dqn_torch.Trainer._run_train) == inspect.getsource(dqn_tf.Trainer._run_train)
+    assert inspect.getsource(dqn_torch.Trainer._run_train) == inspect.getsource(ddqn_tf.Trainer._run_train)
+    assert inspect.getsource(dqn_atari_torch.Trainer._run_train) == inspect.getsource(dqn_atari_tf.Trainer._run_train)
 
     assert inspect.getsource(dqn_torch.Trainer) == inspect.getsource(ddqn_torch.Trainer)
 
@@ -139,6 +150,7 @@ def test_codes_wrapper() -> None:
     assert inspect.getsource(wrapper_logger_tf.wrapper_logger_tf) == inspect.getsource(dqn_tf.wrapper_logger_tf)
     assert inspect.getsource(wrapper_logger_tf.wrapper_logger_tf) == inspect.getsource(ddqn_tf.wrapper_logger_tf)
     assert inspect.getsource(wrapper_logger_tf.wrapper_logger_tf) == inspect.getsource(pdqn_tf.wrapper_logger_tf)
+    assert inspect.getsource(wrapper_logger_tf.wrapper_logger_tf) == inspect.getsource(dqn_atari_tf.wrapper_logger_tf)
 
     # wrapper_filter
     assert inspect.getsource(wrapper_print_filter.wrapper_print_filter) == inspect.getsource(
@@ -175,8 +187,9 @@ def test_codes_other() -> None:
     assert inspect.getsource(dqn_torch.get_space_shape) == inspect.getsource(ppo_torch.get_space_shape)
     assert inspect.getsource(dqn_torch.get_space_shape) == inspect.getsource(dqn_atari_torch.get_space_shape)
     assert inspect.getsource(dqn_torch.get_space_shape) == inspect.getsource(dqn_tf.get_space_shape)
+    assert inspect.getsource(dqn_torch.get_space_shape) == inspect.getsource(dqn_atari_tf.get_space_shape)
 
-    # if __name__ == "__main__":
+    # torch if __name__ == "__main__":
     dqn_codes = inspect.getsource(dqn_torch)
     dqn_codes = dqn_codes[dqn_codes.find('if __name__ == "__main__":') :]
     ddqn_codes = inspect.getsource(ddqn_torch)
@@ -199,4 +212,17 @@ def test_codes_other() -> None:
     assert dqn_codes == td3_codes
     assert dqn_codes == sac_codes
     assert dqn_codes == ppo_codes
+    assert dqn_codes == dqn_atari_codes
+
+    # tensorflow if __name__ == "__main__":
+    dqn_codes = inspect.getsource(dqn_tf)
+    dqn_codes = dqn_codes[dqn_codes.find('if __name__ == "__main__":') :]
+    ddqn_codes = inspect.getsource(ddqn_tf)
+    ddqn_codes = ddqn_codes[ddqn_codes.find('if __name__ == "__main__":') :]
+    pdqn_codes = inspect.getsource(pdqn_tf)
+    pdqn_codes = pdqn_codes[pdqn_codes.find('if __name__ == "__main__":') :]
+    dqn_atari_codes = inspect.getsource(dqn_atari_tf)
+    dqn_atari_codes = dqn_atari_codes[dqn_atari_codes.find('if __name__ == "__main__":') :]
+    assert dqn_codes == ddqn_codes
+    assert dqn_codes == pdqn_codes
     assert dqn_codes == dqn_atari_codes

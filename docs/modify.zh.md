@@ -74,7 +74,7 @@ def wrapper_example(
 
 ### 使用装饰器
 
-```python hl_lines="1-11 24-25"
+```python hl_lines="1-11 25-26"
 # 第一步：复制需要的装饰器
 def wrapper_example(
     wrapped: Callable[..., Generator[dict[str, Any], None, None]]
