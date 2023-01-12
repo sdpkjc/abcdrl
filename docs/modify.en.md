@@ -51,7 +51,7 @@ Our modular design does not prescribe a strict interface, and you are free to mo
 
 ### Writing Decorator
 
-The generic feature is implemented as a decorator, you can refer to the code below and `abcdrl_copy_from/wrapper_*.py` file to implement the new feature you want and apply it to all algorithms.
+The generic feature is implemented as a decorator, you can refer to the code below and `abcdrl/utils/wrapper_*.py` file to implement the new feature you want and apply it to all algorithms.
 
 ```python hl_lines="8-9 13 15"
 from combine_signatures.combine_signatures import combine_signatures
@@ -74,7 +74,7 @@ def wrapper_example(
 
 ### Using Decorator
 
-```python hl_lines="1-11 24-25"
+```python hl_lines="1-11 25-26"
 # Step 1：Copy the decorators you need
 def wrapper_example(
     wrapped: Callable[..., Generator[dict[str, Any], None, None]]
@@ -89,13 +89,14 @@ def wrapper_example(
 
 
 if __name__ == "__main__":
-    torch.manual_seed(1234)
-    torch.cuda.manual_seed(1234)
-    np.random.seed(1234)
-    random.seed(1234)
+    SEED=1234
+    random.seed(SEED)
+    np.random.seed(SEED)
+    torch.manual_seed(SEED)
+    torch.cuda.manual_seed(SEED)
+    torch.cuda.manual_seed_all(SEED)
     torch.backends.cudnn.benchmark = False
     torch.backends.cudnn.deterministic = True
-    torch.cuda.manual_seed_all(1234)
 
     Trainer.__call__ = wrapper_logger(Trainer.__call__)  # type: ignore[assignment]
     # Step 2：Decorate the Trainer.__call__ function

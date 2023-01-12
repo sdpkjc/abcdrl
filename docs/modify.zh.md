@@ -51,7 +51,7 @@
 
 ### 编写装饰器
 
-我们的通用功能主要通过装饰器实现，可以参考以下代码和 `abcdrl_copy_from/wrapper_*.py` 文件，实现你想要的新功能并应用到所有算法上。
+我们的通用功能主要通过装饰器实现，可以参考以下代码和 `abcdrl/utils/wrapper_*.py` 文件，实现你想要的新功能并应用到所有算法上。
 
 ```python hl_lines="8-9 13 15"
 from combine_signatures.combine_signatures import combine_signatures
@@ -74,7 +74,7 @@ def wrapper_example(
 
 ### 使用装饰器
 
-```python hl_lines="1-11 24-25"
+```python hl_lines="1-11 25-26"
 # 第一步：复制需要的装饰器
 def wrapper_example(
     wrapped: Callable[..., Generator[dict[str, Any], None, None]]
@@ -89,13 +89,14 @@ def wrapper_example(
 
 
 if __name__ == "__main__":
-    torch.manual_seed(1234)
-    torch.cuda.manual_seed(1234)
-    np.random.seed(1234)
-    random.seed(1234)
+    SEED=1234
+    random.seed(SEED)
+    np.random.seed(SEED)
+    torch.manual_seed(SEED)
+    torch.cuda.manual_seed(SEED)
+    torch.cuda.manual_seed_all(SEED)
     torch.backends.cudnn.benchmark = False
     torch.backends.cudnn.deterministic = True
-    torch.cuda.manual_seed_all(1234)
 
     Trainer.__call__ = wrapper_logger(Trainer.__call__)  # type: ignore[assignment]
     # 第二步：对 Trainer.__call__ 函数装饰

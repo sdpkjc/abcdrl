@@ -3,11 +3,10 @@ from __future__ import annotations
 import subprocess
 
 
-def test_dqn() -> None:
+def test_dqn_tf() -> None:
     subprocess.run(
-        "python abcdrl/dqn.py"
+        "python abcdrl/dqn_tf.py"
         + " --env-id CartPole-v1"
-        + " --device auto"
         + " --num-envs 2"
         + " --learning-starts 8"
         + " --total-timesteps 32"
@@ -19,11 +18,10 @@ def test_dqn() -> None:
     )
 
 
-def test_ddqn() -> None:
+def test_ddqn_tf() -> None:
     subprocess.run(
-        "python abcdrl/ddqn.py"
+        "python abcdrl/ddqn_tf.py"
         + " --env-id CartPole-v1"
-        + " --device auto"
         + " --num-envs 2"
         + " --learning-starts 8"
         + " --total-timesteps 32"
@@ -35,11 +33,10 @@ def test_ddqn() -> None:
     )
 
 
-def test_pdqn() -> None:
+def test_pdqn_tf() -> None:
     subprocess.run(
-        "python abcdrl/pdqn.py"
+        "python abcdrl/pdqn_tf.py"
         + " --env-id CartPole-v1"
-        + " --device auto"
         + " --num-envs 2"
         + " --learning-starts 8"
         + " --total-timesteps 32"

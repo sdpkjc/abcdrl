@@ -3,11 +3,10 @@ from __future__ import annotations
 import subprocess
 
 
-def test_dqn_atari() -> None:
+def test_dqn_atari_tf() -> None:
     subprocess.run(
-        "python abcdrl/dqn_atari.py"
+        "python abcdrl/dqn_atari_tf.py"
         + " --env-id BreakoutNoFrameskip-v4"
-        + " --device auto"
         + " --num-envs 2"
         + " --learning-starts 8"
         + " --total-timesteps 32"

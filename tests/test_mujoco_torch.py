@@ -3,11 +3,10 @@ from __future__ import annotations
 import subprocess
 
 
-def test_ddpg() -> None:
+def test_ddpg_torch() -> None:
     subprocess.run(
-        "python abcdrl/ddpg.py"
+        "python abcdrl/ddpg_torch.py"
         + " --env-id Hopper-v4"
-        + " --device auto"
         + " --num-envs 2"
         + " --learning-starts 64"
         + " --total-timesteps 256"
@@ -19,11 +18,10 @@ def test_ddpg() -> None:
     )
 
 
-def test_td3() -> None:
+def test_td3_torch() -> None:
     subprocess.run(
-        "python abcdrl/td3.py"
+        "python abcdrl/td3_torch.py"
         + " --env-id Hopper-v4"
-        + " --device auto"
         + " --num-envs 2"
         + " --learning-starts 64"
         + " --total-timesteps 256"
@@ -35,11 +33,10 @@ def test_td3() -> None:
     )
 
 
-def test_sac() -> None:
+def test_sac_torch() -> None:
     subprocess.run(
-        "python abcdrl/sac.py"
+        "python abcdrl/sac_torch.py"
         + " --env-id Hopper-v4"
-        + " --device auto"
         + " --num-envs 2"
         + " --learning-starts 64"
         + " --total-timesteps 256"
@@ -51,11 +48,10 @@ def test_sac() -> None:
     )
 
 
-def test_ppo() -> None:
+def test_ppo_torch() -> None:
     subprocess.run(
-        "python abcdrl/ppo.py"
+        "python abcdrl/ppo_torch.py"
         + " --env-id Hopper-v4"
-        + " --device auto"
         + " --num-envs 2"
         + " --num-steps 64"
         + " --num-minibatches 16"

@@ -12,7 +12,7 @@
     ```shell
     # 0. 安装 Docker
     # 1. 运行 DQN 算法
-    docker run --rm sdpkjc/abcdrl python abcdrl/dqn.py
+    docker run --rm sdpkjc/abcdrl python abcdrl/dqn_torch.py
     ```
 
 === "GPU"
@@ -20,7 +20,7 @@
     ```shell
     # 0. 安装 Docker & Nvidia Drive & NVIDIA Container Toolkit
     # 1. 运行 DQN 算法
-    docker run --rm --gpus all sdpkjc/abcdrl python abcdrl/dqn.py
+    docker run --rm --gpus all sdpkjc/abcdrl python abcdrl/dqn_torch.py
     ```
 
     !!! note
@@ -44,10 +44,10 @@
     # 2. 安装依赖
     pip install -r requirements/requirements.txt
     # 3. 运行 DQN 算法
-    python abcdrl/dqn.py
+    python abcdrl/dqn_torch.py
     ```
 
-=== "GPU"
+=== "GPU with PyTorch"
 
     ```shell
     # 0. 安装 Conda & Nvidia Driver
@@ -60,10 +60,30 @@
     # 4. 安装依赖
     pip install -r requirements/requirements.txt
     # 5. 运行 DQN 算法
-    python abcdrl/dqn.py
+    python abcdrl/dqn_torch.py
     ```
 
     !!! note
         Pytorch 安装方法有多种可选，具体可参考视频 [李沐：环境安装，BERT、GPT、T5 性能测试，和横向对比【100亿模型计划】-哔哩哔哩](https://b23.tv/qvAxVzd) 。
 
         `cudatoolkit` 的版本选择与 Nvidia Driver 版本相关，请参考[视频教程](https://b23.tv/qvAxVzd)和 [Pytorch 官网安装页面](https://pytorch.org/get-started/locally/)。
+
+=== "GPU with TensorFlow2"
+
+    ```shell
+    # 0. 安装 Conda & Nvidia Driver
+    # 1. 拉取代码仓库
+    git clone https://github.com/sdpkjc/abcdrl.git && cd abcdrl
+    # 2. 建立虚拟环境并激活
+    conda create -n abcdrl python=3.9 pip && conda activate abcdrl
+    # 3. 安装 cudatoolkit
+    conda install -c conda-forge cudatoolkit=11.2 cudnn=8.1.0
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CONDA_PREFIX/lib/
+    # 4. 安装依赖
+    pip install -r requirements/requirements-tf.txt
+    # 5. 运行 DQN 算法
+    python abcdrl/dqn_tf.py
+    ```
+
+    !!! quote "Ref"
+        [TensorFlow 官方指南](https://www.tensorflow.org/install/pip)

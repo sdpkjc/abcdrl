@@ -2,7 +2,7 @@ name: pre-commit
 on: [push]
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v2
         with:
@@ -14,4 +14,4 @@ jobs:
           python-version: 3.9
       - uses: pre-commit/action@v2.0.3
         with:
-          extra_args: --hook-stage manual --all-files
+          extra_args: --all-files

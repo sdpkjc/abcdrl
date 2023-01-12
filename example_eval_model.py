@@ -17,14 +17,13 @@ class Evaluater:
         model_path: str,
         env_id: str = "CartPole-v1",
         total_timesteps: int = 1_000_0,
-        device: str = "auto",
+        cuda: bool = True,
         seed: int = 1,
         capture_video: bool = False,
     ) -> None:
         self.kwargs = locals()
         self.kwargs.pop("self")
-        if self.kwargs["device"] == "auto":
-            self.kwargs["device"] = "cuda" if torch.cuda.is_available() else "cpu"
+        self.kwargs["device"] = "cuda" if self.kwargs["cuda"] and torch.cuda.is_available() else "cpu"
 
         self.eval_env = gym.vector.SyncVectorEnv([self._make_env(0)])  # type: ignore[arg-type]
         self.eval_obs, _ = self.eval_env.reset(seed=0)
