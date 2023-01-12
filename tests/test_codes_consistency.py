@@ -101,7 +101,7 @@ def test_codes_trainer() -> None:
     assert inspect.getsource(dqn_torch.Trainer._run_train) == inspect.getsource(dqn_atari_torch.Trainer._run_train)
     assert inspect.getsource(dqn_torch.Trainer._run_train) == inspect.getsource(dqn_tf.Trainer._run_train)
     assert inspect.getsource(dqn_torch.Trainer._run_train) == inspect.getsource(ddqn_tf.Trainer._run_train)
-    assert inspect.getsource(dqn_torch.Trainer._run_train) == inspect.getsource(dqn_atari_tf.Trainer._run_train)
+    assert inspect.getsource(dqn_atari_torch.Trainer._run_train) == inspect.getsource(dqn_atari_tf.Trainer._run_train)
 
     assert inspect.getsource(dqn_torch.Trainer._make_env) == inspect.getsource(ddqn_torch.Trainer._make_env)
     assert inspect.getsource(dqn_torch.Trainer._make_env) == inspect.getsource(pdqn_torch.Trainer._make_env)

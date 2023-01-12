@@ -196,14 +196,16 @@ class ReplayBuffer:
 class Network(models.Model):
     def __init__(self, out_n: int, name: str = "q_network", **kwargs):
         super().__init__(name=name, **kwargs)
-        self.layer_cov_0 = layers.Conv2DTranspose(32, 8, strides=4, activation="relu", input_shape=(4, 84, 84))
-        self.layer_cov_1 = layers.Conv2DTranspose(filters=64, kernel_size=[4, 4], strides=2, activation="relu")
-        self.layer_cov_2 = layers.Conv2DTranspose(filters=64, kernel_size=[3, 3], strides=1, activation="relu")
+        self.layer_permute = layers.Permute((2, 3, 1))
+        self.layer_cov_0 = layers.Conv2D(32, 8, strides=4, activation="relu", input_shape=(4, 84, 84))
+        self.layer_cov_1 = layers.Conv2D(64, 4, strides=2, activation="relu")
+        self.layer_cov_2 = layers.Conv2D(64, 4, strides=1, activation="relu")
         self.layer_flatten_3 = layers.Flatten()
         self.layer_dense_4 = layers.Dense(512, activation="relu")
         self.layer_output = layers.Dense(out_n)
 
     def call(self, x: tf.Tensor) -> tf.Tensor:
+        x = self.layer_permute(x)
         x = self.layer_cov_0(x)
         x = self.layer_cov_1(x)
         x = self.layer_cov_2(x)
