@@ -47,7 +47,6 @@ def main(
 
     git_commit_sha = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode("ascii").strip()
     wandb_tags.append(git_commit_sha)
-    wandb_tags.append("latest")
 
     with ThreadPoolExecutor(max_workers=workers) as executor:
         for alg, framework, env_id, seed in itertools.product(algs, frameworks, env_ids, seeds):
