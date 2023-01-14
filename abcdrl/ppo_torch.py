@@ -380,6 +380,7 @@ class Trainer:
 
         if self.kwargs["exp_name"] is None:
             self.kwargs["exp_name"] = f"{self.kwargs['env_id']}__{os.path.basename(__file__).rstrip('.py')}"
+        self.kwargs["run_name"] = f"{self.kwargs['exp_name']}__{self.kwargs['seed']}__{int(time.time())}"
         self.kwargs["batch_size"] = self.kwargs["num_envs"] * self.kwargs["num_steps"]
         self.kwargs["minibatch_size"] = self.kwargs["batch_size"] // self.kwargs["num_minibatches"]
         self.kwargs["device"] = "cuda" if self.kwargs["cuda"] and torch.cuda.is_available() else "cpu"
@@ -464,7 +465,7 @@ class Trainer:
             env = gym.wrappers.RecordEpisodeStatistics(env)
             if self.kwargs["capture_video"]:
                 if idx == 0:
-                    env = gym.wrappers.RecordVideo(env, f"videos/{self.kwargs['exp_name']}")
+                    env = gym.wrappers.RecordVideo(env, f"videos/{self.kwargs['run_name']}")
             env = gym.wrappers.ClipAction(env)
             env = gym.wrappers.NormalizeObservation(env)
             env = gym.wrappers.TransformObservation(env, lambda obs: np.clip(obs, -10, 10))
@@ -505,7 +506,6 @@ def wrapper_logger_torch(
         **kwargs,
     ) -> Generator[dict[str, Any], None, None]:
         instance = args[0]
-        exp_name_ = f"{instance.kwargs['exp_name']}__{instance.kwargs['seed']}__{int(time.time())}"
         if track:
             wandb.init(
                 project=wandb_project_name,
@@ -513,12 +513,12 @@ def wrapper_logger_torch(
                 entity=wandb_entity,
                 sync_tensorboard=True,
                 config=instance.kwargs,
-                name=exp_name_,
+                name=instance.kwargs["run_name"],
                 save_code=True,
             )
             setup_video_monitor()
 
-        writer = SummaryWriter(f"runs/{exp_name_}")
+        writer = SummaryWriter(f"runs/{instance.kwargs['run_name']}")
         writer.add_text(
             "hyperparameters",
             "|param|value|\n|-|-|\n" + "\n".join([f"|{key}|{value}|" for key, value in instance.kwargs.items()]),

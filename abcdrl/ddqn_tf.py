@@ -123,6 +123,7 @@ class Algorithm:
         self.model = Model(**self.kwargs)
         self.model_t = copy.deepcopy(self.model)
         self.optimizer = optimizers.Adam(self.kwargs["learning_rate"])
+        self.loss_func = losses.MeanSquaredError()
 
         model_init_obs = tf.convert_to_tensor(np.array([self.kwargs["obs_space"].sample()]))
         self.model.value(model_init_obs)
@@ -155,7 +156,7 @@ class Algorithm:
                     axis=1,
                 )
             )
-            td_loss = losses.MSE(td_target, old_val)
+            td_loss = self.loss_func(td_target, old_val)
         grads = tape.gradient(td_loss, self.model.network.trainable_variables)
         self.optimizer.apply_gradients(zip(grads, self.model.network.trainable_variables))
 
@@ -242,6 +243,7 @@ class Trainer:
 
         if self.kwargs["exp_name"] is None:
             self.kwargs["exp_name"] = f"{self.kwargs['env_id']}__{os.path.basename(__file__).rstrip('.py')}"
+        self.kwargs["run_name"] = f"{self.kwargs['exp_name']}__{self.kwargs['seed']}__{int(time.time())}"
         self.kwargs["target_network_frequency"] = max(
             self.kwargs["target_network_frequency"] // self.kwargs["num_envs"] * self.kwargs["num_envs"], 1
         )
@@ -311,7 +313,7 @@ class Trainer:
             env = gym.wrappers.RecordEpisodeStatistics(env)
             if self.kwargs["capture_video"]:
                 if idx == 0:
-                    env = gym.wrappers.RecordVideo(env, f"videos/{self.kwargs['exp_name']}")
+                    env = gym.wrappers.RecordVideo(env, f"videos/{self.kwargs['run_name']}")
             env.action_space.seed(self.kwargs["seed"] + idx)
             env.observation_space.seed(self.kwargs["seed"] + idx)
             return env
@@ -346,7 +348,6 @@ def wrapper_logger_tf(
         **kwargs,
     ) -> Generator[dict[str, Any], None, None]:
         instance = args[0]
-        exp_name_ = f"{instance.kwargs['exp_name']}__{instance.kwargs['seed']}__{int(time.time())}"
         if track:
             wandb.init(
                 project=wandb_project_name,
@@ -354,12 +355,12 @@ def wrapper_logger_tf(
                 entity=wandb_entity,
                 sync_tensorboard=True,
                 config=instance.kwargs,
-                name=exp_name_,
+                name=instance.kwargs["run_name"],
                 save_code=True,
             )
             setup_video_monitor()
 
-        writer = tf.summary.create_file_writer(f"runs/{exp_name_}")
+        writer = tf.summary.create_file_writer(f"runs/{instance.kwargs['run_name']}")
         with writer.as_default():
             tf.summary.text(
                 "hyperparameters",

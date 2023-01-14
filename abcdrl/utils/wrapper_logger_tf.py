@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import time
 from typing import Any, Callable, Generator
 
 import gymnasium as gym
@@ -35,7 +34,6 @@ def wrapper_logger_tf(
         **kwargs,
     ) -> Generator[dict[str, Any], None, None]:
         instance = args[0]
-        exp_name_ = f"{instance.kwargs['exp_name']}__{instance.kwargs['seed']}__{int(time.time())}"
         if track:
             wandb.init(
                 project=wandb_project_name,
@@ -43,12 +41,12 @@ def wrapper_logger_tf(
                 entity=wandb_entity,
                 sync_tensorboard=True,
                 config=instance.kwargs,
-                name=exp_name_,
+                name=instance.kwargs["run_name"],
                 save_code=True,
             )
             setup_video_monitor()
 
-        writer = tf.summary.create_file_writer(f"runs/{exp_name_}")
+        writer = tf.summary.create_file_writer(f"runs/{instance.kwargs['run_name']}")
         with writer.as_default():
             tf.summary.text(
                 "hyperparameters",
