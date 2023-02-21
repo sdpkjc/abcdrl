@@ -10,14 +10,11 @@ from typing import Any, Callable, Generator, Generic, TypeVar
 import fire
 import gymnasium as gym
 import numpy as np
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-import torch.optim as optim
+import tensorflow as tf
 from combine_signatures.combine_signatures import combine_signatures
-from torch.utils.tensorboard import SummaryWriter
+from tensorflow.keras import layers, losses, models, optimizers
 
-SamplesItemType = TypeVar("SamplesItemType", torch.Tensor, np.ndarray)
+SamplesItemType = TypeVar("SamplesItemType", tf.Tensor, np.ndarray)
 
 
 def get_space_shape(env_space: gym.Space) -> tuple[int, ...]:
@@ -65,8 +62,8 @@ class ReplayBuffer:
         obs: np.ndarray,
         next_obs: np.ndarray,
         act: np.ndarray,
-        rew: float,
-        done: bool,
+        rew: np.ndarray,
+        done: np.ndarray,
         infos: dict[str, Any],
     ) -> None:
         for obs_i, next_obs_i, act_i, rew_i, done_i in zip(obs, next_obs, act, rew, done):  # type: ignore[call-overload]
@@ -92,32 +89,30 @@ class ReplayBuffer:
         return self.size
 
 
-class Network(nn.Module):
-    def __init__(self, in_n: int, out_n: int) -> None:
-        super().__init__()
-        self.network = nn.Sequential(
-            nn.Linear(in_n, 120),
-            nn.ReLU(),
-            nn.Linear(120, 84),
-            nn.ReLU(),
-            nn.Linear(84, out_n),
-        )
+class Network(models.Model):
+    def __init__(self, out_n: int, name: str = "q_network", **kwargs):
+        super().__init__(name=name, **kwargs)
+        self.layer_dense_0 = layers.Dense(120, activation="relu")
+        self.layer_dense_1 = layers.Dense(84, activation="relu")
+        self.layer_output = layers.Dense(out_n)
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        return self.network(x)
+    def call(self, x: tf.Tensor) -> tf.Tensor:
+        x = self.layer_dense_0(x)
+        x = self.layer_dense_1(x)
+        x = self.layer_output(x)
+        return x
 
 
-class Model(nn.Module):
+class Model:
     def __init__(self, **kwargs) -> None:
-        super().__init__()
         self.kwargs = kwargs
 
+        # input shape: int(np.prod(get_space_shape(self.kwargs["obs_space"])))
         self.network = Network(
-            int(np.prod(get_space_shape(self.kwargs["obs_space"]))),
             self.kwargs["act_space"].n,
         )
 
-    def value(self, obs: torch.Tensor) -> torch.Tensor:
+    def value(self, obs: tf.Tensor) -> tf.Tensor:
         return self.network(obs)
 
 
@@ -125,31 +120,51 @@ class Algorithm:
     def __init__(self, **kwargs) -> None:
         self.kwargs = kwargs
 
-        self.model = Model(**self.kwargs).to(self.kwargs["device"])
+        self.model = Model(**self.kwargs)
         self.model_t = copy.deepcopy(self.model)
-        self.optimizer = optim.Adam(self.model.parameters(), lr=self.kwargs["learning_rate"])
+        self.optimizer = optimizers.Adam(self.kwargs["learning_rate"])
+        self.loss_func = losses.MeanSquaredError()
 
-    def predict(self, obs: torch.Tensor) -> torch.Tensor:
+        model_init_obs = tf.convert_to_tensor(np.array([self.kwargs["obs_space"].sample()]))
+        self.model.value(model_init_obs)
+        self.model_t.value(model_init_obs)
+
+    def predict(self, obs: tf.Tensor) -> tf.Tensor:
         val = self.model.value(obs)
         return val
 
-    def learn(self, data: ReplayBuffer.Samples[torch.Tensor]) -> dict[str, Any]:
-        with torch.no_grad():
-            target_max, _ = self.model_t.value(data.next_observations).max(dim=1)
-            td_target = data.rewards.flatten() + self.kwargs["gamma"] * target_max * (1 - data.dones.flatten())
+    def learn(self, data: ReplayBuffer.Samples[tf.Tensor]) -> dict[str, Any]:
+        # double dqn
+        target_next_q_val = self.model_t.value(data.next_observations)
+        target_argmax = tf.math.argmax(target_next_q_val, axis=1)
+        target_max = tf.squeeze(
+            tf.gather(
+                target_next_q_val,
+                indices=tf.squeeze(target_argmax),
+                batch_dims=tf.rank(tf.squeeze(target_argmax)),
+                axis=1,
+            )
+        )
+        td_target = data.rewards + self.kwargs["gamma"] * target_max * (1 - data.dones)
 
-        old_val = self.model.value(data.observations).gather(1, data.actions).squeeze()
-        td_loss = F.mse_loss(td_target, old_val)
+        with tf.GradientTape() as tape:
+            old_val = tf.squeeze(
+                tf.gather(
+                    self.model.value(data.observations),
+                    indices=tf.squeeze(data.actions),
+                    batch_dims=tf.rank(tf.squeeze(data.actions)),
+                    axis=1,
+                )
+            )
+            td_loss = self.loss_func(td_target, old_val)
+        grads = tape.gradient(td_loss, self.model.network.trainable_variables)
+        self.optimizer.apply_gradients(zip(grads, self.model.network.trainable_variables))
 
-        self.optimizer.zero_grad()
-        td_loss.backward()
-        self.optimizer.step()
-
-        log_data = {"td_loss": td_loss, "q_value": old_val.mean()}
+        log_data = {"td_loss": td_loss, "q_value": tf.reduce_mean(old_val)}
         return log_data
 
     def sync_target(self) -> None:
-        self.model_t.load_state_dict(self.model.state_dict())
+        self.model_t.network.set_weights(self.model.network.get_weights())
 
 
 class Agent:
@@ -161,20 +176,18 @@ class Agent:
         self.learn_step = 0
 
     def predict(self, obs: np.ndarray) -> np.ndarray:
-        obs_ts = torch.as_tensor(obs, device=self.kwargs["device"])
-        with torch.no_grad():
-            _, act_ts = self.alg.predict(obs_ts).max(dim=1)
-        act_np = act_ts.cpu().numpy()
+        obs_ts = tf.convert_to_tensor(obs)
+        act_ts = tf.math.argmax(self.alg.predict(obs_ts), axis=1)
+        act_np = act_ts.numpy()
         return act_np
 
     def sample(self, obs: np.ndarray) -> np.ndarray:
         if random.random() < self._get_epsilon():
             act_np = np.array([self.kwargs["act_space"].sample() for _ in range(self.kwargs["num_envs"])])
         else:
-            obs_ts = torch.as_tensor(obs, device=self.kwargs["device"])
-            with torch.no_grad():
-                _, act_ts = self.alg.predict(obs_ts).max(dim=1)
-            act_np = act_ts.cpu().numpy()
+            obs_ts = tf.convert_to_tensor(obs)
+            act_ts = tf.math.argmax(self.alg.predict(obs_ts), axis=1)
+            act_np = act_ts.numpy()
 
         self.sample_step += self.kwargs["num_envs"]
         if self.sample_step % self.kwargs["target_network_frequency"] == 0:
@@ -182,11 +195,9 @@ class Agent:
         return act_np
 
     def learn(self, data: ReplayBuffer.Samples[np.ndarray]) -> dict[str, Any]:
-        data_ts = ReplayBuffer.Samples[torch.Tensor](
+        data_ts = ReplayBuffer.Samples[tf.Tensor](
             **{
-                item[0]: torch.as_tensor(item[1], device=self.kwargs["device"])
-                if isinstance(item[1], np.ndarray)
-                else item[1]
+                item[0]: tf.convert_to_tensor(item[1]) if isinstance(item[1], np.ndarray) else item[1]
                 for item in dataclasses.asdict(data).items()
             }
         )
@@ -208,7 +219,7 @@ class Trainer:
         self,
         exp_name: str | None = None,
         seed: int = 1,
-        device: str | torch.device = "auto",
+        cuda: bool = True,
         capture_video: bool = False,
         env_id: str = "CartPole-v1",
         num_envs: int = 1,
@@ -232,11 +243,12 @@ class Trainer:
 
         if self.kwargs["exp_name"] is None:
             self.kwargs["exp_name"] = f"{self.kwargs['env_id']}__{os.path.basename(__file__).rstrip('.py')}"
+        self.kwargs["run_name"] = f"{self.kwargs['exp_name']}__{self.kwargs['seed']}__{int(time.time())}"
         self.kwargs["target_network_frequency"] = max(
             self.kwargs["target_network_frequency"] // self.kwargs["num_envs"] * self.kwargs["num_envs"], 1
         )
-        if self.kwargs["device"] == "auto":
-            self.kwargs["device"] = "cuda" if torch.cuda.is_available() else "cpu"
+        if not self.kwargs["cuda"]:
+            tf.config.experimental.set_visible_devices([], "GPU")
 
         self.envs = gym.vector.SyncVectorEnv([self._make_env(i) for i in range(self.kwargs["num_envs"])])  # type: ignore[arg-type]
         assert isinstance(self.envs.single_action_space, gym.spaces.Discrete)
@@ -301,7 +313,7 @@ class Trainer:
             env = gym.wrappers.RecordEpisodeStatistics(env)
             if self.kwargs["capture_video"]:
                 if idx == 0:
-                    env = gym.wrappers.RecordVideo(env, f"videos/{self.kwargs['exp_name']}")
+                    env = gym.wrappers.RecordVideo(env, f"videos/{self.kwargs['run_name']}")
             env.action_space.seed(self.kwargs["seed"] + idx)
             env.observation_space.seed(self.kwargs["seed"] + idx)
             return env
@@ -309,46 +321,7 @@ class Trainer:
         return thunk
 
 
-def wrapper_eval_step(
-    wrapped: Callable[..., Generator[dict[str, Any], None, None]]
-) -> Callable[..., Generator[dict[str, Any], None, None]]:
-    @combine_signatures(wrapped)
-    def _wrapper(
-        *args,
-        eval_frequency: int = 5_000,
-        num_steps_eval: int = 500,
-        eval_env_seed: int = 1,
-        **kwargs,
-    ) -> Generator[dict[str, Any], None, None]:
-        instance = args[0]
-        eval_frequency = max(eval_frequency // instance.kwargs["num_envs"] * instance.kwargs["num_envs"], 1)
-        eval_env = gym.vector.SyncVectorEnv([instance._make_env(eval_env_seed)])  # type: ignore[arg-type]
-        eval_obs, _ = eval_env.reset(seed=1)
-
-        gen = wrapped(*args, **kwargs)
-        for log_data in gen:
-            if not log_data["sample_step"] % eval_frequency and log_data["log_type"] == "collect":
-                el_list, er_list = [], []
-                for _ in range(num_steps_eval):
-                    act = instance.agent.predict(eval_obs)
-                    eval_obs, _, _, _, infos = eval_env.step(act)
-                    if "final_info" in infos.keys():
-                        final_info = next(item for item in infos["final_info"] if item is not None)
-                        el_list.append(final_info["episode"]["l"][0])
-                        er_list.append(final_info["episode"]["r"][0])
-                eval_log_data = {"log_type": "evaluate", "sample_step": log_data["sample_step"]}
-                if el_list and er_list:
-                    eval_log_data["logs"] = {
-                        "mean_episodic_length": sum(el_list) / len(el_list),
-                        "mean_episodic_return": sum(er_list) / len(er_list),
-                    }
-                yield eval_log_data
-            yield log_data
-
-    return _wrapper
-
-
-def wrapper_logger(
+def wrapper_logger_tf(
     wrapped: Callable[..., Generator[dict[str, Any], None, None]]
 ) -> Callable[..., Generator[dict[str, Any], None, None]]:
     import wandb
@@ -375,7 +348,6 @@ def wrapper_logger(
         **kwargs,
     ) -> Generator[dict[str, Any], None, None]:
         instance = args[0]
-        exp_name_ = f"{instance.kwargs['exp_name']}__{instance.kwargs['seed']}__{int(time.time())}"
         if track:
             wandb.init(
                 project=wandb_project_name,
@@ -383,76 +355,39 @@ def wrapper_logger(
                 entity=wandb_entity,
                 sync_tensorboard=True,
                 config=instance.kwargs,
-                name=exp_name_,
+                name=instance.kwargs["run_name"],
                 save_code=True,
             )
             setup_video_monitor()
 
-        writer = SummaryWriter(f"runs/{exp_name_}")
-        writer.add_text(
-            "hyperparameters",
-            "|param|value|\n|-|-|\n" + "\n".join([f"|{key}|{value}|" for key, value in instance.kwargs.items()]),
-        )
+        writer = tf.summary.create_file_writer(f"runs/{instance.kwargs['run_name']}")
+        with writer.as_default():
+            tf.summary.text(
+                "hyperparameters",
+                "|param|value|\n|-|-|\n" + "\n".join([f"|{key}|{value}|" for key, value in instance.kwargs.items()]),
+                0,
+            )
 
-        gen = wrapped(*args, **kwargs)
-        for log_data in gen:
-            if "logs" in log_data:
-                for log_item in log_data["logs"].items():
-                    writer.add_scalar(f"{log_data['log_type']}/{log_item[0]}", log_item[1], log_data["sample_step"])
-            yield log_data
-
-    return _wrapper
-
-
-def wrapper_save_model(
-    wrapped: Callable[..., Generator[dict[str, Any], None, None]]
-) -> Callable[..., Generator[dict[str, Any], None, None]]:
-
-    import dill
-
-    @combine_signatures(wrapped)
-    def _wrapper(*args, save_frequency: int = 10_000, **kwargs) -> Generator[dict[str, Any], None, None]:
-        instance = args[0]
-        save_frequency = max(save_frequency // instance.kwargs["num_envs"] * instance.kwargs["num_envs"], 1)
-
-        gen = wrapped(*args, **kwargs)
-        for log_data in gen:
-            if not log_data["sample_step"] % save_frequency:
-                if not os.path.exists(f"models/{instance.kwargs['exp_name']}"):
-                    os.makedirs(f"models/{instance.kwargs['exp_name']}")
-                with open(f"models/{instance.kwargs['exp_name']}/s{instance.agent.sample_step}.agent", "wb+") as file:
-                    dill.dump(instance.agent, file)
-            yield log_data
-
-    return _wrapper
-
-
-def wrapper_print_filter(
-    wrapped: Callable[..., Generator[dict[str, Any], None, None]]
-) -> Callable[..., Generator[dict[str, Any], None, None]]:
-    @combine_signatures(wrapped)
-    def _wrapper(*args, **kwargs) -> Generator[dict[str, Any], None, None]:
-        gen = wrapped(*args, **kwargs)
-        for log_data in gen:
-            if "logs" in log_data and log_data["log_type"] != "train":
+            gen = wrapped(*args, **kwargs)
+            for log_data in gen:
+                if "logs" in log_data:
+                    for log_item in log_data["logs"].items():
+                        tf.summary.scalar(f"{log_data['log_type']}/{log_item[0]}", log_item[1], log_data["sample_step"])
                 yield log_data
 
     return _wrapper
 
 
 if __name__ == "__main__":
-    torch.manual_seed(1234)
-    torch.cuda.manual_seed(1234)
-    np.random.seed(1234)
-    random.seed(1234)
-    torch.backends.cudnn.benchmark = False
-    torch.backends.cudnn.deterministic = True
-    torch.cuda.manual_seed_all(1234)
+    SEED = 1234
+    os.environ["PYTHONHASHSEED"] = str(SEED)
+    os.environ["TF_DETERMINISTIC_OPS"] = "1"
+    os.environ["TF_CUDNN_DETERMINISTIC"] = "1"
+    random.seed(SEED)
+    np.random.seed(SEED)
+    tf.random.set_seed(SEED)
 
-    Trainer.__call__ = wrapper_eval_step(Trainer.__call__)  # type: ignore[assignment]
-    Trainer.__call__ = wrapper_logger(Trainer.__call__)  # type: ignore[assignment]
-    Trainer.__call__ = wrapper_save_model(Trainer.__call__)  # type: ignore[assignment]
-    Trainer.__call__ = wrapper_print_filter(Trainer.__call__)  # type: ignore[assignment]
+    Trainer.__call__ = wrapper_logger_tf(Trainer.__call__)  # type: ignore[assignment]
     fire.Fire(
         Trainer,
         serialize=lambda gen: (log_data for log_data in gen if "logs" in log_data and log_data["log_type"] != "train"),

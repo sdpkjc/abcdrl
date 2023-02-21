@@ -3,34 +3,42 @@
 After dependencies are installed, you can run the algorithm file directly.
 
 ```shell
-python abcdrl/dqn.py \
+python abcdrl/dqn_torch.py \
     --env-id Cartpole-v1 \
-    --device "cuda:1" \ #(1)!
-    --total_timesteps 500000 \ #(2)!
+    --total_timesteps 500000 \ #(1)!
     --gamma 0.99 \
-    --learning-rate 2.5e-4 \ #(3)!
+    --learning-rate 2.5e-4 \ #(2)!
     --capture-video True \
-    --track \ #(4)!
+    --track \ #(3)!
     --wandb-project-name 'abcdrl' \
     --wandb-tags "['tag1', 'tag2']"
 ```
 
-1.  or `--device cuda:1`
-2.  The connector can use `_` or `-`
-3.  or `0.00025`
-4.  or `--track True`
+1.  The connector can use `_` or `-`
+2.  or `0.00025`
+3.  or `--track True`
+
+!!! example "Set specific GPU device"
+    - Using `gpu:0` and `gpu:1` 👇
+        - `CUDA_VISIBLE_DEVICES="0,1" python abcdrl/dqn_torch.py --cuda`
+    - Using `gpu:1` 👇
+        - `CUDA_VISIBLE_DEVICES="1" python abcdrl/dqn_torch.py --cuda`
+    - Using `cpu` only 👇
+        - `python abcdrl/dqn_torch.py --cuda False`
+        - `CUDA_VISIBLE_DEVICES="" python abcdrl/dqn_torch.py`
+        - `CUDA_VISIBLE_DEVICES="-1" python abcdrl/dqn_torch.py`
 
 Parameters in the algorithm file, consisting of two parts. The first part is the initialization parameters of `Trainer🔁`, and the second part is the parameters of the feature (`logger`, ...).
 
 === "Algorithm Parameters"
 
-    ```python title="abcdrl/dqn.py" linenums="206" hl_lines="4-11 13-16 18-19 21-23"
+    ```python title="abcdrl/dqn_torch.py" linenums="205" hl_lines="4-11 13-16 18-19 21-23"
     class Trainer:
         def __init__(
             self,
             exp_name: str | None = None,
             seed: int = 1,
-            device: str | torch.device = "auto",
+            cuda: bool = True,
             capture_video: bool = False,
             env_id: str = "CartPole-v1",
             num_envs: int = 1,
@@ -53,11 +61,12 @@ Parameters in the algorithm file, consisting of two parts. The first part is the
 
 === "Features Parameters"
 
-    ```python title="abcdrl/dqn.py" linenums="312" hl_lines="21-24"
+    ```python title="abcdrl/dqn_torch.py" linenums="310" hl_lines="22-25"
     def wrapper_logger(
         wrapped: Callable[..., Generator[dict[str, Any], None, None]]
     ) -> Callable[..., Generator[dict[str, Any], None, None]]:
         import wandb
+        from torch.utils.tensorboard import SummaryWriter
 
         def setup_video_monitor() -> None:
             vcr = gym.wrappers.monitoring.video_recorder.VideoRecorder
@@ -83,4 +92,4 @@ Parameters in the algorithm file, consisting of two parts. The first part is the
     ```
 
 !!! note
-    You can use the `python abcdrl/dqn.py --help` command to view algorithm parameters and the `python abcdrl/dqn.py __call__ --help` command to view features parameters.
+    You can use the `python abcdrl/dqn_torch.py --help` command to view algorithm parameters and the `python abcdrl/dqn_torch.py __call__ --help` command to view features parameters.

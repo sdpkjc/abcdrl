@@ -14,7 +14,6 @@ import torch.nn as nn
 import torch.optim as optim
 from combine_signatures.combine_signatures import combine_signatures
 from torch.distributions.normal import Normal
-from torch.utils.tensorboard import SummaryWriter
 
 SamplesItemType = TypeVar("SamplesItemType", torch.Tensor, np.ndarray)
 
@@ -353,7 +352,7 @@ class Trainer:
         self,
         exp_name: str | None = None,
         seed: int = 1,
-        device: str | torch.device = "auto",
+        cuda: bool = True,
         capture_video: bool = False,
         env_id: str = "Hopper-v4",
         num_envs: int = 1,
@@ -381,10 +380,10 @@ class Trainer:
 
         if self.kwargs["exp_name"] is None:
             self.kwargs["exp_name"] = f"{self.kwargs['env_id']}__{os.path.basename(__file__).rstrip('.py')}"
+        self.kwargs["run_name"] = f"{self.kwargs['exp_name']}__{self.kwargs['seed']}__{int(time.time())}"
         self.kwargs["batch_size"] = self.kwargs["num_envs"] * self.kwargs["num_steps"]
         self.kwargs["minibatch_size"] = self.kwargs["batch_size"] // self.kwargs["num_minibatches"]
-        if self.kwargs["device"] == "auto":
-            self.kwargs["device"] = "cuda" if torch.cuda.is_available() else "cpu"
+        self.kwargs["device"] = "cuda" if self.kwargs["cuda"] and torch.cuda.is_available() else "cpu"
 
         self.envs = gym.vector.SyncVectorEnv([self._make_env(i) for i in range(self.kwargs["num_envs"])])  # type: ignore[arg-type]
         assert isinstance(self.envs.single_action_space, gym.spaces.Box)
@@ -466,7 +465,7 @@ class Trainer:
             env = gym.wrappers.RecordEpisodeStatistics(env)
             if self.kwargs["capture_video"]:
                 if idx == 0:
-                    env = gym.wrappers.RecordVideo(env, f"videos/{self.kwargs['exp_name']}")
+                    env = gym.wrappers.RecordVideo(env, f"videos/{self.kwargs['run_name']}")
             env = gym.wrappers.ClipAction(env)
             env = gym.wrappers.NormalizeObservation(env)
             env = gym.wrappers.TransformObservation(env, lambda obs: np.clip(obs, -10, 10))
@@ -479,10 +478,11 @@ class Trainer:
         return thunk
 
 
-def wrapper_logger(
+def wrapper_logger_torch(
     wrapped: Callable[..., Generator[dict[str, Any], None, None]]
 ) -> Callable[..., Generator[dict[str, Any], None, None]]:
     import wandb
+    from torch.utils.tensorboard import SummaryWriter
 
     def setup_video_monitor() -> None:
         vcr = gym.wrappers.monitoring.video_recorder.VideoRecorder
@@ -506,7 +506,6 @@ def wrapper_logger(
         **kwargs,
     ) -> Generator[dict[str, Any], None, None]:
         instance = args[0]
-        exp_name_ = f"{instance.kwargs['exp_name']}__{instance.kwargs['seed']}__{int(time.time())}"
         if track:
             wandb.init(
                 project=wandb_project_name,
@@ -514,12 +513,12 @@ def wrapper_logger(
                 entity=wandb_entity,
                 sync_tensorboard=True,
                 config=instance.kwargs,
-                name=exp_name_,
+                name=instance.kwargs["run_name"],
                 save_code=True,
             )
             setup_video_monitor()
 
-        writer = SummaryWriter(f"runs/{exp_name_}")
+        writer = SummaryWriter(f"runs/{instance.kwargs['run_name']}")
         writer.add_text(
             "hyperparameters",
             "|param|value|\n|-|-|\n" + "\n".join([f"|{key}|{value}|" for key, value in instance.kwargs.items()]),
@@ -536,15 +535,16 @@ def wrapper_logger(
 
 
 if __name__ == "__main__":
-    torch.manual_seed(1234)
-    torch.cuda.manual_seed(1234)
-    np.random.seed(1234)
-    random.seed(1234)
+    SEED = 1234
+    random.seed(SEED)
+    np.random.seed(SEED)
+    torch.manual_seed(SEED)
+    torch.cuda.manual_seed(SEED)
+    torch.cuda.manual_seed_all(SEED)
     torch.backends.cudnn.benchmark = False
     torch.backends.cudnn.deterministic = True
-    torch.cuda.manual_seed_all(1234)
 
-    Trainer.__call__ = wrapper_logger(Trainer.__call__)  # type: ignore[assignment]
+    Trainer.__call__ = wrapper_logger_torch(Trainer.__call__)  # type: ignore[assignment]
     fire.Fire(
         Trainer,
         serialize=lambda gen: (log_data for log_data in gen if "logs" in log_data and log_data["log_type"] != "train"),

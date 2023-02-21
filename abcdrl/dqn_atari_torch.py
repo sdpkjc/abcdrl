@@ -15,7 +15,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from combine_signatures.combine_signatures import combine_signatures
-from torch.utils.tensorboard import SummaryWriter
 
 SamplesItemType = TypeVar("SamplesItemType", torch.Tensor, np.ndarray)
 
@@ -35,6 +34,93 @@ def get_space_shape(env_space: gym.Space) -> tuple[int, ...]:
     raise NotImplementedError(f"{env_space} observation space is not supported")
 
 
+class NoopResetEnv(gym.Wrapper):
+    def __init__(self, env: gym.Env, noop_max: int = 30) -> None:
+        gym.Wrapper.__init__(self, env)
+        self.noop_max = noop_max
+        self.override_num_noops = None
+        self.noop_action = 0
+        assert env.unwrapped.get_action_meanings()[0] == "NOOP"  # type: ignore[attr-defined]
+
+    def reset(self, **kwargs) -> tuple[np.ndarray, dict[str, Any]]:
+        self.env.reset(**kwargs)
+        if self.override_num_noops is not None:
+            noops = self.override_num_noops
+        else:
+            noops = self.unwrapped.np_random.integers(1, self.noop_max + 1)
+        assert noops > 0
+
+        for _ in range(noops):
+            obs, _, terminated, truncated, info = self.env.step(self.noop_action)
+            if terminated or truncated:
+                obs, info = self.env.reset(**kwargs)
+        return obs, info
+
+
+class FireResetEnv(gym.Wrapper):
+    def __init__(self, env: gym.Env) -> None:
+        gym.Wrapper.__init__(self, env)
+        assert env.unwrapped.get_action_meanings()[1] == "FIRE"  # type: ignore[attr-defined]
+        assert len(env.unwrapped.get_action_meanings()) >= 3  # type: ignore[attr-defined]
+
+    def reset(self, **kwargs) -> tuple[np.ndarray, dict[str, Any]]:
+        self.env.reset(**kwargs)
+        obs, _, terminated, truncated, info = self.env.step(1)
+        if terminated or truncated:
+            self.env.reset(**kwargs)
+        obs, _, terminated, truncated, info = self.env.step(2)
+        if terminated or truncated:
+            self.env.reset(**kwargs)
+        return obs, info
+
+
+class EpisodicLifeEnv(gym.Wrapper):
+    def __init__(self, env: gym.Env) -> None:
+        gym.Wrapper.__init__(self, env)
+        self.lives = 0
+        self.was_real_done = True
+
+    def step(self, action: int) -> tuple[np.ndarray, float, bool, bool, dict[str, Any]]:
+        obs, reward, terminated, truncated, info = self.env.step(action)
+        self.was_real_done = terminated or truncated
+        lives = self.env.unwrapped.ale.lives()  # type: ignore[attr-defined]
+        if 0 < lives < self.lives:
+            terminated = True
+        self.lives = lives
+        return obs, reward, terminated, truncated, info
+
+    def reset(self, **kwargs) -> tuple[np.ndarray, dict[str, Any]]:
+        if self.was_real_done:
+            obs, info = self.env.reset(**kwargs)
+        else:
+            obs, _, _, _, info = self.env.step(0)
+        self.lives = self.env.unwrapped.ale.lives()  # type: ignore[attr-defined]
+        return obs, info
+
+
+class MaxAndSkipEnv(gym.Wrapper):
+    def __init__(self, env: gym.Env, skip: int = 4) -> None:
+        gym.Wrapper.__init__(self, env)
+        self._obs_buffer = np.zeros((2,) + env.observation_space.shape, dtype=env.observation_space.dtype)
+        self._skip = skip
+
+    def step(self, action: int) -> tuple[np.ndarray, float, bool, bool, dict[str, Any]]:
+        total_reward = 0.0
+        terminated, truncated = None, None
+        for i in range(self._skip):
+            obs, reward, terminated, truncated, info = self.env.step(action)
+            if i == self._skip - 2:
+                self._obs_buffer[0] = obs
+            if i == self._skip - 1:
+                self._obs_buffer[1] = obs
+            total_reward += reward
+            if terminated or truncated:
+                break
+        max_frame = self._obs_buffer.max(axis=0)
+
+        return max_frame, total_reward, terminated, truncated, info
+
+
 class ReplayBuffer:
     @dataclasses.dataclass(frozen=True)
     class Samples(Generic[SamplesItemType]):
@@ -49,9 +135,11 @@ class ReplayBuffer:
         obs_space: gym.Space,
         act_space: gym.Space,
         buffer_size: int = 1_000_0,
+        optimize_memory_usage: bool = False,
     ) -> None:
         self.obs_buf = np.zeros((buffer_size,) + get_space_shape(obs_space), dtype=obs_space.dtype)
-        self.next_obs_buf = np.zeros((buffer_size,) + get_space_shape(obs_space), dtype=obs_space.dtype)
+        if not optimize_memory_usage:
+            self.next_obs_buf = np.zeros((buffer_size,) + get_space_shape(obs_space), dtype=obs_space.dtype)
         self.acts_buf = np.zeros((buffer_size,) + get_space_shape(act_space), dtype=act_space.dtype)
         self.rews_buf = np.zeros((buffer_size,), dtype=np.float32)
         self.dones_buf = np.zeros((buffer_size,), dtype=np.float32)
@@ -59,19 +147,23 @@ class ReplayBuffer:
         self.buffer_size = buffer_size
         self.ptr = 0
         self.size = 0
+        self.optimize_memory_usage = optimize_memory_usage
 
     def add(
         self,
         obs: np.ndarray,
         next_obs: np.ndarray,
         act: np.ndarray,
-        rew: float,
-        done: bool,
+        rew: np.ndarray,
+        done: np.ndarray,
         infos: dict[str, Any],
     ) -> None:
         for obs_i, next_obs_i, act_i, rew_i, done_i in zip(obs, next_obs, act, rew, done):  # type: ignore[call-overload]
             self.obs_buf[self.ptr] = np.array(obs_i).copy()
-            self.next_obs_buf[self.ptr] = np.array(next_obs_i).copy()
+            if not self.optimize_memory_usage:
+                self.next_obs_buf[self.ptr] = np.array(next_obs_i).copy()
+            else:
+                self.obs_buf[(self.ptr + 1) % self.buffer_size] = np.array(next_obs_i).copy()
             self.acts_buf[self.ptr] = np.array(act_i).copy()
             self.rews_buf[self.ptr] = np.array(rew_i).copy()
             self.dones_buf[self.ptr] = np.array(done_i).copy()
@@ -79,10 +171,21 @@ class ReplayBuffer:
             self.size = min(self.size + 1, self.buffer_size)
 
     def sample(self, batch_size: int = 1) -> Samples[np.ndarray]:
-        idxs = np.random.choice(self.size, size=batch_size, replace=True)
+        if not self.optimize_memory_usage:
+            idxs = np.random.choice(self.size, size=batch_size, replace=True)
+            next_observations = self.next_obs_buf[idxs]
+        else:
+            if self.size != self.buffer_size:
+                idxs = np.random.choice(self.size, size=batch_size, replace=True)
+            else:
+                idxs = (
+                    (np.random.choice(self.size - 1, size=batch_size, replace=True) + 1) + self.ptr
+                ) % self.buffer_size
+            next_observations = self.obs_buf[(idxs + 1) % self.buffer_size]
+
         return ReplayBuffer.Samples[np.ndarray](
             observations=self.obs_buf[idxs],
-            next_observations=self.next_obs_buf[idxs],
+            next_observations=next_observations,
             actions=self.acts_buf[idxs],
             rewards=self.rews_buf[idxs],
             dones=self.dones_buf[idxs],
@@ -92,35 +195,24 @@ class ReplayBuffer:
         return self.size
 
 
-class ActorNetwork(nn.Module):
-    def __init__(self, in_n: int, out_n: int) -> None:
+class Network(nn.Module):
+    def __init__(self, out_n: int) -> None:
         super().__init__()
         self.network = nn.Sequential(
-            nn.Linear(in_n, 256),
+            nn.Conv2d(4, 32, 8, stride=4),
             nn.ReLU(),
-            nn.Linear(256, 256),
+            nn.Conv2d(32, 64, 4, stride=2),
             nn.ReLU(),
-            nn.Linear(256, out_n),
-            nn.Tanh(),
+            nn.Conv2d(64, 64, 3, stride=1),
+            nn.ReLU(),
+            nn.Flatten(),
+            nn.Linear(3136, 512),
+            nn.ReLU(),
+            nn.Linear(512, out_n),
         )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         return self.network(x)
-
-
-class CriticNetwork(nn.Module):
-    def __init__(self, in_n: int) -> None:
-        super().__init__()
-        self.network = nn.Sequential(
-            nn.Linear(in_n, 256),
-            nn.ReLU(),
-            nn.Linear(256, 256),
-            nn.ReLU(),
-            nn.Linear(256, 1),
-        )
-
-    def forward(self, x: torch.Tensor, a: torch.Tensor) -> torch.Tensor:
-        return self.network(torch.cat([x, a], 1))
 
 
 class Model(nn.Module):
@@ -128,34 +220,12 @@ class Model(nn.Module):
         super().__init__()
         self.kwargs = kwargs
 
-        self.actor_nn = ActorNetwork(
-            int(np.prod(get_space_shape(self.kwargs["obs_space"]))),
-            int(np.prod(get_space_shape(self.kwargs["act_space"]))),
-        )
-        self.critic_nn_0 = CriticNetwork(
-            int(np.prod(get_space_shape(self.kwargs["obs_space"])) + np.prod(get_space_shape(self.kwargs["act_space"])))
-        )
-        self.critic_nn_1 = CriticNetwork(
-            int(np.prod(get_space_shape(self.kwargs["obs_space"])) + np.prod(get_space_shape(self.kwargs["act_space"])))
+        self.network = Network(
+            self.kwargs["act_space"].n,
         )
 
-        self.register_buffer(
-            "action_scale",
-            torch.FloatTensor((self.kwargs["act_space"].high - self.kwargs["act_space"].low) / 2.0),
-        )
-        self.register_buffer(
-            "action_bias",
-            torch.FloatTensor((self.kwargs["act_space"].high + self.kwargs["act_space"].low) / 2.0),
-        )
-
-    def value(self, obs: torch.Tensor, act: torch.Tensor | None = None) -> tuple[torch.Tensor, torch.Tensor]:
-        if act is None:
-            act = self.action(obs)
-        return self.critic_nn_0(obs, act), self.critic_nn_1(obs, act)
-
-    def action(self, obs: torch.Tensor) -> torch.Tensor:
-        act = self.actor_nn(obs) * self.action_scale + self.action_bias
-        return act
+    def value(self, obs: torch.Tensor) -> torch.Tensor:
+        return self.network(obs / 255.0)
 
 
 class Algorithm:
@@ -164,64 +234,29 @@ class Algorithm:
 
         self.model = Model(**self.kwargs).to(self.kwargs["device"])
         self.model_t = copy.deepcopy(self.model)
-        self.optimizer_actor = optim.Adam(self.model.actor_nn.parameters(), lr=self.kwargs["learning_rate"])
-        self.optimizer_critic = optim.Adam(
-            list(self.model.critic_nn_0.parameters()) + list(self.model.critic_nn_1.parameters()),
-            lr=self.kwargs["learning_rate"],
-        )
+        self.optimizer = optim.Adam(self.model.parameters(), lr=self.kwargs["learning_rate"])
 
     def predict(self, obs: torch.Tensor) -> torch.Tensor:
-        act = self.model.action(obs)
-        return act
+        val = self.model.value(obs)
+        return val
 
-    def learn(self, data: ReplayBuffer.Samples, update_actor: bool) -> dict[str, Any]:
+    def learn(self, data: ReplayBuffer.Samples[torch.Tensor]) -> dict[str, Any]:
         with torch.no_grad():
-            clipped_noise = (torch.randn_like(torch.Tensor(data.actions[0])) * self.kwargs["policy_noise"]).clamp(
-                -self.kwargs["noise_clip"], self.kwargs["noise_clip"]
-            )
-            next_state_action = self.model_t.action(data.next_observations)
-            next_state_action = (next_state_action + clipped_noise.to(self.kwargs["device"])).clamp(
-                self.kwargs["act_space"].low[0], self.kwargs["act_space"].high[0]
-            )
-            next_q_value_0, next_q_value_1 = self.model_t.value(data.next_observations, next_state_action)
-            next_q_value = torch.min(next_q_value_0, next_q_value_1)
-            td_target = data.rewards.flatten() + self.kwargs["gamma"] * next_q_value.view(-1) * (
-                1 - data.dones.flatten()
-            )
+            target_max, _ = self.model_t.value(data.next_observations).max(dim=1)
+            td_target = data.rewards.flatten() + self.kwargs["gamma"] * target_max * (1 - data.dones.flatten())
 
-        old_val_0, old_val_1 = self.model.value(data.observations, data.actions)
-        old_val_0, old_val_1 = old_val_0.view(-1), old_val_1.view(-1)
+        old_val = self.model.value(data.observations).gather(1, data.actions).squeeze()
+        td_loss = F.mse_loss(td_target, old_val)
 
-        critic_loss_0 = F.mse_loss(td_target, old_val_0)
-        critic_loss_1 = F.mse_loss(td_target, old_val_1)
-        critic_loss = critic_loss_0 + critic_loss_1
-        self.optimizer_critic.zero_grad()
-        critic_loss.backward()
-        self.optimizer_critic.step()
+        self.optimizer.zero_grad()
+        td_loss.backward()
+        self.optimizer.step()
 
-        log_data = {
-            "td_loss": critic_loss / 2,
-            "td_loss_0": critic_loss_0,
-            "td_loss_1": critic_loss_1,
-            "q_value": ((old_val_0 + old_val_1) / 2).mean(),
-            "q_value_0": old_val_0.mean(),
-            "q_value_1": old_val_1.mean(),
-        }
-
-        if update_actor:
-            actor_loss, _ = self.model.value(data.observations)
-            actor_loss = -actor_loss.mean()
-            self.optimizer_actor.zero_grad()
-            actor_loss.backward()
-            self.optimizer_actor.step()
-
-            log_data["actor_loss"] = actor_loss
-
+        log_data = {"td_loss": td_loss, "q_value": old_val.mean()}
         return log_data
 
     def sync_target(self) -> None:
-        for param, target_param in zip(self.model.parameters(), self.model_t.parameters()):
-            target_param.data.copy_(self.kwargs["tau"] * param.data + (1 - self.kwargs["tau"]) * target_param.data)
+        self.model_t.load_state_dict(self.model.state_dict())
 
 
 class Agent:
@@ -232,29 +267,24 @@ class Agent:
         self.sample_step = 0
         self.learn_step = 0
 
-        self.action_scale = torch.FloatTensor((self.kwargs["act_space"].high - self.kwargs["act_space"].low) / 2.0)
-        self.action_bias = torch.FloatTensor((self.kwargs["act_space"].high + self.kwargs["act_space"].low) / 2.0)
-
     def predict(self, obs: np.ndarray) -> np.ndarray:
         obs_ts = torch.as_tensor(obs, device=self.kwargs["device"])
         with torch.no_grad():
-            act_ts = self.alg.predict(obs_ts)
+            _, act_ts = self.alg.predict(obs_ts).max(dim=1)
         act_np = act_ts.cpu().numpy()
         return act_np
 
     def sample(self, obs: np.ndarray) -> np.ndarray:
-        if self.sample_step < self.kwargs["learning_starts"]:
+        if random.random() < self._get_epsilon():
             act_np = np.array([self.kwargs["act_space"].sample() for _ in range(self.kwargs["num_envs"])])
         else:
             obs_ts = torch.as_tensor(obs, device=self.kwargs["device"])
             with torch.no_grad():
-                act_ts = self.alg.predict(obs_ts)
-            noise = torch.normal(0, self.action_scale * self.kwargs["exploration_noise"]).to(self.kwargs["device"])
-            act_ts += noise
-            act_np = act_ts.cpu().numpy().clip(self.kwargs["act_space"].low, self.kwargs["act_space"].high)
+                _, act_ts = self.alg.predict(obs_ts).max(dim=1)
+            act_np = act_ts.cpu().numpy()
 
         self.sample_step += self.kwargs["num_envs"]
-        if self.sample_step % self.kwargs["policy_frequency"] == 0:
+        if self.sample_step % self.kwargs["target_network_frequency"] == 0:
             self.alg.sync_target()
         return act_np
 
@@ -268,9 +298,16 @@ class Agent:
             }
         )
 
-        log_data = self.alg.learn(data_ts, self.sample_step % self.kwargs["policy_frequency"] == 0)
+        log_data = self.alg.learn(data_ts)
         self.learn_step += 1
+        log_data["epsilon"] = self._get_epsilon()
         return log_data
+
+    def _get_epsilon(self) -> float:
+        slope = (self.kwargs["end_epsilon"] - self.kwargs["start_epsilon"]) * (
+            self.sample_step / (self.kwargs["exploration_fraction"] * self.kwargs["total_timesteps"])
+        ) + self.kwargs["start_epsilon"]
+        return max(slope, self.kwargs["end_epsilon"])
 
 
 class Trainer:
@@ -278,39 +315,38 @@ class Trainer:
         self,
         exp_name: str | None = None,
         seed: int = 1,
-        device: str | torch.device = "auto",
+        cuda: bool = True,
         capture_video: bool = False,
-        env_id: str = "Hopper-v4",
+        env_id: str = "BreakoutNoFrameskip-v4",
         num_envs: int = 1,
-        total_timesteps: int = 1_000_000,
+        total_timesteps: int = 10_000_000,
         gamma: float = 0.99,
         # Collect
         buffer_size: int = 1_000_000,
-        exploration_noise: float = 0.1,
-        noise_clip: float = 0.5,
+        start_epsilon: float = 1.0,
+        end_epsilon: float = 0.01,
+        exploration_fraction: float = 0.1,
         # Learn
-        batch_size: int = 256,
-        learning_rate: float = 3e-4,
-        tau: float = 0.005,
-        policy_noise: float = 0.2,
+        batch_size: int = 32,
+        learning_rate: float = 1e-4,
         # Train
-        learning_starts: int = 25_000,
-        train_frequency: int = 1,
-        policy_frequency: int = 2,
+        learning_starts: int = 50_000,
+        target_network_frequency: int = 1000,
+        train_frequency: int = 4,
     ) -> None:
         self.kwargs = locals()
         self.kwargs.pop("self")
 
         if self.kwargs["exp_name"] is None:
             self.kwargs["exp_name"] = f"{self.kwargs['env_id']}__{os.path.basename(__file__).rstrip('.py')}"
-        self.kwargs["policy_frequency"] = max(
-            self.kwargs["policy_frequency"] // self.kwargs["num_envs"] * self.kwargs["num_envs"], 1
+        self.kwargs["run_name"] = f"{self.kwargs['exp_name']}__{self.kwargs['seed']}__{int(time.time())}"
+        self.kwargs["target_network_frequency"] = max(
+            self.kwargs["target_network_frequency"] // self.kwargs["num_envs"] * self.kwargs["num_envs"], 1
         )
-        if self.kwargs["device"] == "auto":
-            self.kwargs["device"] = "cuda" if torch.cuda.is_available() else "cpu"
+        self.kwargs["device"] = "cuda" if self.kwargs["cuda"] and torch.cuda.is_available() else "cpu"
 
         self.envs = gym.vector.SyncVectorEnv([self._make_env(i) for i in range(self.kwargs["num_envs"])])  # type: ignore[arg-type]
-        assert isinstance(self.envs.single_action_space, gym.spaces.Box)
+        assert isinstance(self.envs.single_action_space, gym.spaces.Discrete)
 
         self.kwargs["obs_space"] = self.envs.single_observation_space
         self.kwargs["act_space"] = self.envs.single_action_space
@@ -319,6 +355,7 @@ class Trainer:
             self.kwargs["obs_space"],
             self.kwargs["act_space"],
             buffer_size=self.kwargs["buffer_size"],
+            optimize_memory_usage=True,
         )
 
         self.obs, _ = self.envs.reset(seed=self.kwargs["seed"])
@@ -350,14 +387,16 @@ class Trainer:
 
         if "final_info" in infos.keys():
             final_info = next(item for item in infos["final_info"] if item is not None)
-            return {
-                "log_type": "collect",
-                "sample_step": self.agent.sample_step,
-                "logs": {
-                    "episodic_length": final_info["episode"]["l"][0],
-                    "episodic_return": final_info["episode"]["r"][0],
-                },
-            }
+            # EpisodicLifeEnv
+            if "episode" in final_info:
+                return {
+                    "log_type": "collect",
+                    "sample_step": self.agent.sample_step,
+                    "logs": {
+                        "episodic_length": final_info["episode"]["l"][0],
+                        "episodic_return": final_info["episode"]["r"][0],
+                    },
+                }
         return {"log_type": "collect", "sample_step": self.agent.sample_step}
 
     def _run_train(self) -> dict[str, Any]:
@@ -369,11 +408,20 @@ class Trainer:
     def _make_env(self, idx: int) -> Callable[[], gym.Env]:
         def thunk() -> gym.Env:
             env = gym.make(self.kwargs["env_id"], render_mode="rgb_array")
-            env.observation_space.dtype = np.float32  # type: ignore[assignment]
             env = gym.wrappers.RecordEpisodeStatistics(env)
             if self.kwargs["capture_video"]:
                 if idx == 0:
-                    env = gym.wrappers.RecordVideo(env, f"videos/{self.kwargs['exp_name']}")
+                    env = gym.wrappers.RecordVideo(env, f"videos/{self.kwargs['run_name']}")
+            if "NOOP" in env.unwrapped.get_action_meanings():  # type: ignore[attr-defined]
+                env = NoopResetEnv(env, noop_max=30)
+            env = MaxAndSkipEnv(env, skip=4)
+            env = EpisodicLifeEnv(env)
+            if "FIRE" in env.unwrapped.get_action_meanings():  # type: ignore[attr-defined]
+                env = FireResetEnv(env)
+            env = gym.wrappers.TransformReward(env, np.sign)
+            env = gym.wrappers.ResizeObservation(env, (84, 84))
+            env = gym.wrappers.GrayScaleObservation(env)
+            env = gym.wrappers.FrameStack(env, 4)
             env.action_space.seed(self.kwargs["seed"] + idx)
             env.observation_space.seed(self.kwargs["seed"] + idx)
             return env
@@ -381,10 +429,11 @@ class Trainer:
         return thunk
 
 
-def wrapper_logger(
+def wrapper_logger_torch(
     wrapped: Callable[..., Generator[dict[str, Any], None, None]]
 ) -> Callable[..., Generator[dict[str, Any], None, None]]:
     import wandb
+    from torch.utils.tensorboard import SummaryWriter
 
     def setup_video_monitor() -> None:
         vcr = gym.wrappers.monitoring.video_recorder.VideoRecorder
@@ -408,7 +457,6 @@ def wrapper_logger(
         **kwargs,
     ) -> Generator[dict[str, Any], None, None]:
         instance = args[0]
-        exp_name_ = f"{instance.kwargs['exp_name']}__{instance.kwargs['seed']}__{int(time.time())}"
         if track:
             wandb.init(
                 project=wandb_project_name,
@@ -416,12 +464,12 @@ def wrapper_logger(
                 entity=wandb_entity,
                 sync_tensorboard=True,
                 config=instance.kwargs,
-                name=exp_name_,
+                name=instance.kwargs["run_name"],
                 save_code=True,
             )
             setup_video_monitor()
 
-        writer = SummaryWriter(f"runs/{exp_name_}")
+        writer = SummaryWriter(f"runs/{instance.kwargs['run_name']}")
         writer.add_text(
             "hyperparameters",
             "|param|value|\n|-|-|\n" + "\n".join([f"|{key}|{value}|" for key, value in instance.kwargs.items()]),
@@ -438,15 +486,16 @@ def wrapper_logger(
 
 
 if __name__ == "__main__":
-    torch.manual_seed(1234)
-    torch.cuda.manual_seed(1234)
-    np.random.seed(1234)
-    random.seed(1234)
+    SEED = 1234
+    random.seed(SEED)
+    np.random.seed(SEED)
+    torch.manual_seed(SEED)
+    torch.cuda.manual_seed(SEED)
+    torch.cuda.manual_seed_all(SEED)
     torch.backends.cudnn.benchmark = False
     torch.backends.cudnn.deterministic = True
-    torch.cuda.manual_seed_all(1234)
 
-    Trainer.__call__ = wrapper_logger(Trainer.__call__)  # type: ignore[assignment]
+    Trainer.__call__ = wrapper_logger_torch(Trainer.__call__)  # type: ignore[assignment]
     fire.Fire(
         Trainer,
         serialize=lambda gen: (log_data for log_data in gen if "logs" in log_data and log_data["log_type"] != "train"),

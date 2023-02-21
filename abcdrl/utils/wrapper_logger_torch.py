@@ -1,17 +1,16 @@
 from __future__ import annotations
 
-import time
 from typing import Any, Callable, Generator
 
 import gymnasium as gym
 from combine_signatures.combine_signatures import combine_signatures
-from torch.utils.tensorboard import SummaryWriter
 
 
-def wrapper_logger(
+def wrapper_logger_torch(
     wrapped: Callable[..., Generator[dict[str, Any], None, None]]
 ) -> Callable[..., Generator[dict[str, Any], None, None]]:
     import wandb
+    from torch.utils.tensorboard import SummaryWriter
 
     def setup_video_monitor() -> None:
         vcr = gym.wrappers.monitoring.video_recorder.VideoRecorder
@@ -35,7 +34,6 @@ def wrapper_logger(
         **kwargs,
     ) -> Generator[dict[str, Any], None, None]:
         instance = args[0]
-        exp_name_ = f"{instance.kwargs['exp_name']}__{instance.kwargs['seed']}__{int(time.time())}"
         if track:
             wandb.init(
                 project=wandb_project_name,
@@ -43,12 +41,12 @@ def wrapper_logger(
                 entity=wandb_entity,
                 sync_tensorboard=True,
                 config=instance.kwargs,
-                name=exp_name_,
+                name=instance.kwargs["run_name"],
                 save_code=True,
             )
             setup_video_monitor()
 
-        writer = SummaryWriter(f"runs/{exp_name_}")
+        writer = SummaryWriter(f"runs/{instance.kwargs['run_name']}")
         writer.add_text(
             "hyperparameters",
             "|param|value|\n|-|-|\n" + "\n".join([f"|{key}|{value}|" for key, value in instance.kwargs.items()]),

@@ -1,7 +1,9 @@
 [dqn]
 
+[dqn.torch]
+
 CartPole-v1 = """
-    python abcdrl/dqn.py \
+    python abcdrl/dqn_torch.py \
         --env-id CartPole-v1 \
         --num-envs 1 \
         --total-timesteps 500000 \
@@ -18,7 +20,7 @@ CartPole-v1 = """
 """
 
 BreakoutNoFrameskip-v4 = """
-    python abcdrl/dqn_atari.py \
+    python abcdrl/dqn_atari_torch.py \
         --env-id BreakoutNoFrameskip-v4 \
         --num-envs 1 \
         --total-timesteps 10000000 \
@@ -35,7 +37,7 @@ BreakoutNoFrameskip-v4 = """
 """
 
 PongNoFrameskip-v4 = """
-    python abcdrl/dqn_atari.py \
+    python abcdrl/dqn_atari_torch.py \
         --env-id PongNoFrameskip-v4 \
         --num-envs 1 \
         --total-timesteps 10000000 \
@@ -52,7 +54,7 @@ PongNoFrameskip-v4 = """
 """
 
 BeamRiderNoFrameskip-v4 = """
-    python abcdrl/dqn_atari.py \
+    python abcdrl/dqn_atari_torch.py \
         --env-id BeamRiderNoFrameskip-v4 \
         --num-envs 1 \
         --total-timesteps 10000000 \
@@ -68,11 +70,10 @@ BeamRiderNoFrameskip-v4 = """
         --train-frequency 4 \
 """
 
-
-[ddqn]
+[dqn.tf]
 
 CartPole-v1 = """
-    python abcdrl/ddqn.py \
+    python abcdrl/dqn_tf.py \
         --env-id CartPole-v1 \
         --num-envs 1 \
         --total-timesteps 500000 \
@@ -88,11 +89,127 @@ CartPole-v1 = """
         --train-frequency 10 \
 """
 
+BreakoutNoFrameskip-v4 = """
+    python abcdrl/dqn_atari_tf.py \
+        --env-id BreakoutNoFrameskip-v4 \
+        --num-envs 1 \
+        --total-timesteps 10000000 \
+        --gamma 0.99 \
+        --buffer-size 1000000 \
+        --start-epsilon 1.0 \
+        --end-epsilon 0.01 \
+        --exploration-fraction 0.1 \
+        --batch-size 32 \
+        --learning-rate 1e-4 \
+        --learning-starts 50000 \
+        --target-network-frequency 1000 \
+        --train-frequency 4 \
+"""
+
+PongNoFrameskip-v4 = """
+    python abcdrl/dqn_atari_tf.py \
+        --env-id PongNoFrameskip-v4 \
+        --num-envs 1 \
+        --total-timesteps 10000000 \
+        --gamma 0.99 \
+        --buffer-size 1000000 \
+        --start-epsilon 1.0 \
+        --end-epsilon 0.01 \
+        --exploration-fraction 0.1 \
+        --batch-size 32 \
+        --learning-rate 1e-4 \
+        --learning-starts 50000 \
+        --target-network-frequency 1000 \
+        --train-frequency 4 \
+"""
+
+BeamRiderNoFrameskip-v4 = """
+    python abcdrl/dqn_atari_tf.py \
+        --env-id BeamRiderNoFrameskip-v4 \
+        --num-envs 1 \
+        --total-timesteps 10000000 \
+        --gamma 0.99 \
+        --buffer-size 1000000 \
+        --start-epsilon 1.0 \
+        --end-epsilon 0.01 \
+        --exploration-fraction 0.1 \
+        --batch-size 32 \
+        --learning-rate 1e-4 \
+        --learning-starts 50000 \
+        --target-network-frequency 1000 \
+        --train-frequency 4 \
+"""
+
+[ddqn]
+
+
+[ddqn.torch]
+
+CartPole-v1 = """
+    python abcdrl/ddqn_torch.py \
+        --env-id CartPole-v1 \
+        --num-envs 1 \
+        --total-timesteps 500000 \
+        --gamma 0.99 \
+        --buffer-size 10000 \
+        --start-epsilon 1.0 \
+        --end-epsilon 0.05 \
+        --exploration-fraction 0.5 \
+        --batch-size 128 \
+        --learning-rate 2.5e-4 \
+        --learning-starts 10000 \
+        --target-network-frequency 500 \
+        --train-frequency 10 \
+"""
+
+[ddqn.tf]
+
+CartPole-v1 = """
+    python abcdrl/ddqn_tf.py \
+        --env-id CartPole-v1 \
+        --num-envs 1 \
+        --total-timesteps 500000 \
+        --gamma 0.99 \
+        --buffer-size 10000 \
+        --start-epsilon 1.0 \
+        --end-epsilon 0.05 \
+        --exploration-fraction 0.5 \
+        --batch-size 128 \
+        --learning-rate 2.5e-4 \
+        --learning-starts 10000 \
+        --target-network-frequency 500 \
+        --train-frequency 10 \
+"""
 
 [pdqn]
 
+
+[pdqn.torch]
+
 CartPole-v1 = """
-    python abcdrl/pdqn.py \
+    python abcdrl/pdqn_torch.py \
+        --env-id CartPole-v1 \
+        --num-envs 1 \
+        --total-timesteps 500000 \
+        --gamma 0.99 \
+        --alpha 0.2 \
+        --beta 0.6 \
+        --buffer-size 10000 \
+        --start-epsilon 1.0 \
+        --end-epsilon 0.05 \
+        --exploration-fraction 0.5 \
+        --batch-size 128 \
+        --learning-rate 2.5e-4 \
+        --learning-starts 10000 \
+        --target-network-frequency 500 \
+        --train-frequency 10 \
+"""
+
+
+[pdqn.tf]
+
+CartPole-v1 = """
+    python abcdrl/pdqn_tf.py \
         --env-id CartPole-v1 \
         --num-envs 1 \
         --total-timesteps 500000 \
@@ -113,8 +230,11 @@ CartPole-v1 = """
 
 [ddpg]
 
+
+[ddpg.torch]
+
 Pendulum-v1 = """
-    python abcdrl/ddpg.py \
+    python abcdrl/ddpg_torch.py \
         --env-id Pendulum-v1 \
         --num-envs 1 \
         --total-timesteps 50000 \
@@ -130,7 +250,7 @@ Pendulum-v1 = """
 """
 
 Hopper-v4 = """
-    python abcdrl/ddpg.py \
+    python abcdrl/ddpg_torch.py \
         --env-id Hopper-v4 \
         --num-envs 1 \
         --total-timesteps 1000000 \
@@ -146,7 +266,7 @@ Hopper-v4 = """
 """
 
 Walker2d-v4 = """
-    python abcdrl/ddpg.py \
+    python abcdrl/ddpg_torch.py \
         --env-id Walker2d-v4 \
         --num-envs 1 \
         --total-timesteps 1000000 \
@@ -162,7 +282,7 @@ Walker2d-v4 = """
 """
 
 HalfCheetah-v4 = """
-    python abcdrl/ddpg.py \
+    python abcdrl/ddpg_torch.py \
         --env-id HalfCheetah-v4 \
         --num-envs 1 \
         --total-timesteps 1000000 \
@@ -180,8 +300,11 @@ HalfCheetah-v4 = """
 
 [td3]
 
+
+[td3.torch]
+
 Pendulum-v1 = """
-    python abcdrl/td3.py \
+    python abcdrl/td3_torch.py \
         --env-id Pendulum-v1 \
         --num-envs 1 \
         --total-timesteps 50000 \
@@ -199,7 +322,7 @@ Pendulum-v1 = """
 """
 
 Hopper-v4 = """
-    python abcdrl/td3.py \
+    python abcdrl/td3_torch.py \
         --env-id Hopper-v4 \
         --num-envs 1 \
         --total-timesteps 1000000 \
@@ -217,7 +340,7 @@ Hopper-v4 = """
 """
 
 Walker2d-v4 = """
-    python abcdrl/td3.py \
+    python abcdrl/td3_torch.py \
         --env-id Walker2d-v4 \
         --num-envs 1 \
         --total-timesteps 1000000 \
@@ -235,7 +358,7 @@ Walker2d-v4 = """
 """
 
 HalfCheetah-v4 = """
-    python abcdrl/td3.py \
+    python abcdrl/td3_torch.py \
         --env-id HalfCheetah-v4 \
         --num-envs 1 \
         --total-timesteps 1000000 \
@@ -255,8 +378,10 @@ HalfCheetah-v4 = """
 
 [sac]
 
+[sac.torch]
+
 Pendulum-v1 = """
-    python abcdrl/sac.py \
+    python abcdrl/sac_torch.py \
         --env-id Pendulum-v1 \
         --num-envs 1 \
         --total-timesteps 50000 \
@@ -275,7 +400,7 @@ Pendulum-v1 = """
 """
 
 Hopper-v4 = """
-    python abcdrl/sac.py \
+    python abcdrl/sac_torch.py \
         --env-id Hopper-v4 \
         --num-envs 1 \
         --total-timesteps 1000000 \
@@ -294,7 +419,7 @@ Hopper-v4 = """
 """
 
 Walker2d-v4 = """
-    python abcdrl/sac.py \
+    python abcdrl/sac_torch.py \
         --env-id Walker2d-v4 \
         --num-envs 1 \
         --total-timesteps 1000000 \
@@ -313,7 +438,7 @@ Walker2d-v4 = """
 """
 
 HalfCheetah-v4 = """
-    python abcdrl/sac.py \
+    python abcdrl/sac_torch.py \
         --env-id HalfCheetah-v4 \
         --num-envs 1 \
         --total-timesteps 1000000 \
@@ -334,8 +459,10 @@ HalfCheetah-v4 = """
 
 [ppo]
 
+[ppo.torch]
+
 Pendulum-v1 = """
-    python abcdrl/ppo.py \
+    python abcdrl/ppo_torch.py \
         --env-id Pendulum-v1 \
         --num-envs 1 \
         --total-timesteps 50000 \
@@ -355,7 +482,7 @@ Pendulum-v1 = """
 """
 
 Hopper-v4 = """
-    python abcdrl/ppo.py \
+    python abcdrl/ppo_torch.py \
         --env-id Hopper-v4 \
         --num-envs 1 \
         --total-timesteps 1000000 \
@@ -375,7 +502,7 @@ Hopper-v4 = """
 """
 
 Walker2d-v4 = """
-    python abcdrl/ppo.py \
+    python abcdrl/ppo_torch.py \
         --env-id Walker2d-v4 \
         --num-envs 1 \
         --total-timesteps 1000000 \
@@ -395,7 +522,7 @@ Walker2d-v4 = """
 """
 
 HalfCheetah-v4 = """
-    python abcdrl/ppo.py \
+    python abcdrl/ppo_torch.py \
         --env-id HalfCheetah-v4 \
         --num-envs 1 \
         --total-timesteps 1000000 \
