@@ -24,7 +24,7 @@ def test_capture_video_torch() -> None:
         + " --trainer.total-timesteps 32"
         + " --trainer.buffer-size 10"
         + " --trainer.batch-size 4"
-        + " --trainer.capture-video True",
+        + " --trainer.capture-video",
         shell=True,
         check=True,
         timeout=100,
@@ -47,8 +47,8 @@ def test_wandb_track_torch() -> None:
             + " --trainer.total-timesteps 32"
             + " --trainer.buffer-size 10"
             + " --trainer.batch-size 4"
-            + " --trainer.capture-video True"
-            + " --logger.track True",
+            + " --trainer.capture-video"
+            + " --logger.track",
             shell=True,
             check=True,
             timeout=100,
