@@ -18,13 +18,13 @@ def test_benchmark_torch() -> None:
 def test_capture_video_torch() -> None:
     subprocess.run(
         "python abcdrl/dqn_torch.py"
-        + " --env-id CartPole-v1"
-        + " --num-envs 2"
-        + " --learning-starts 8"
-        + " --total-timesteps 32"
-        + " --buffer-size 10"
-        + " --batch-size 4"
-        + " --capture-video True",
+        + " --trainer.env-id CartPole-v1"
+        + " --trainer.num-envs 2"
+        + " --trainer.learning-starts 8"
+        + " --trainer.total-timesteps 32"
+        + " --trainer.buffer-size 10"
+        + " --trainer.batch-size 4"
+        + " --trainer.capture-video True",
         shell=True,
         check=True,
         timeout=100,
@@ -41,13 +41,14 @@ def test_wandb_track_torch() -> None:
     try:
         subprocess.run(
             "python abcdrl/dqn_torch.py"
-            + " --env-id CartPole-v1"
-            + " --num-envs 2"
-            + " --learning-starts 8"
-            + " --total-timesteps 32"
-            + " --buffer-size 10"
-            + " --batch-size 4"
-            + " --capture-video True",
+            + " --trainer.env-id CartPole-v1"
+            + " --trainer.num-envs 2"
+            + " --trainer.learning-starts 8"
+            + " --trainer.total-timesteps 32"
+            + " --trainer.buffer-size 10"
+            + " --trainer.batch-size 4"
+            + " --trainer.capture-video True"
+            + " --logger.track True",
             shell=True,
             check=True,
             timeout=100,
