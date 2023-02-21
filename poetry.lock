@@ -135,7 +135,6 @@ files = [
 ]
 
 [package.dependencies]
-"AutoROM.accept-rom-license" = {version = "*", optional = true, markers = "extra == \"accept-rom-license\""}
 click = "*"
 importlib-resources = {version = "*", markers = "python_version < \"3.9\""}
 requests = "*"
@@ -151,20 +150,20 @@ reference = "tsinghua"
 
 [[package]]
 name = "autorom-accept-rom-license"
-version = "0.5.5"
+version = "0.4.2"
 description = "Automated installation of Atari ROMs for Gym/ALE-Py"
 category = "main"
 optional = true
-python-versions = ">=3.7"
+python-versions = ">=3.6"
 files = [
-    {file = "AutoROM.accept-rom-license-0.5.5.tar.gz", hash = "sha256:62367fb149ccd286734c39cdb5735c9645ac5f8f43e2bda01bdefcfd50e54d00"},
+    {file = "AutoROM.accept-rom-license-0.4.2.tar.gz", hash = "sha256:f08654c9d2a6837c5ec951c0364bda352510920ea0523005a2d4460c7d2be7f2"},
 ]
 
 [package.dependencies]
 click = "*"
 importlib-resources = {version = "*", markers = "python_version < \"3.9\""}
-libtorrent = "*"
 requests = "*"
+tqdm = "*"
 
 [package.extras]
 tests = ["ale_py", "multi_agent_ale_py"]
@@ -1357,49 +1356,6 @@ files = [
     {file = "libclang-15.0.6.1-py2.py3-none-win_amd64.whl", hash = "sha256:85afb47630d2070e74b886040ceea1846097ca53cc88d0f1d7751d0f49220028"},
     {file = "libclang-15.0.6.1-py2.py3-none-win_arm64.whl", hash = "sha256:687d8549c110c700fece58dd87727421d0710fdd111aa7eecb01faf8e3f50d4e"},
     {file = "libclang-15.0.6.1.tar.gz", hash = "sha256:a1a8fe038af2962c787c5bac81bfa4b82bb8e279e61e70cc934c10f6e20c73ec"},
-]
-
-[package.source]
-type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tsinghua"
-
-[[package]]
-name = "libtorrent"
-version = "2.0.7"
-description = "Python bindings for libtorrent-rasterbar"
-category = "main"
-optional = true
-python-versions = "*"
-files = [
-    {file = "libtorrent-2.0.7-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:7ac05ec01dd89642327c2e03444ad9aca87a7ab8c9e795a2da93a9c930d3c61f"},
-    {file = "libtorrent-2.0.7-cp310-cp310-manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:c7513a1b2478507db46fbacd4d3d54e6666c158b71f989408e0c5e62b5ce1aa6"},
-    {file = "libtorrent-2.0.7-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:5ee696a35d85ae0423a74c66ea018ad540b762d6edfd221d4cb49928e87979d8"},
-    {file = "libtorrent-2.0.7-cp310-cp310-musllinux_1_1_aarch64.whl", hash = "sha256:a67be057b3bac921fb3158db25d1e3ab14c07b6f21a97fff18143f18b5061e6e"},
-    {file = "libtorrent-2.0.7-cp310-cp310-musllinux_1_1_x86_64.whl", hash = "sha256:9fd1644fbda3d45d5d9a3d1f9e9ed179d911f92d5b908a80fd34fef689cfe0f5"},
-    {file = "libtorrent-2.0.7-cp310-cp310-win32.whl", hash = "sha256:4291680c3e759c8022dbde24a0d1375b5d08d9f56d2a714abd29248f8ba2966c"},
-    {file = "libtorrent-2.0.7-cp310-cp310-win_amd64.whl", hash = "sha256:604eec9d3296007048a3e7426b5ba1961dace3a69a589351492a8de9dfc5cd60"},
-    {file = "libtorrent-2.0.7-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:5d066257cc5e1841ae9d66df621d66a129b15a2094038f127e5075b0fbd6923b"},
-    {file = "libtorrent-2.0.7-cp37-cp37m-manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:c9b7fd5d975434b32ee207588bfb43bac191bf77720a81c8920a3d36aee4fde8"},
-    {file = "libtorrent-2.0.7-cp37-cp37m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:d387ebd4cebdca089f3be26223d7a8deebdfab64f5fd4ff7f2d2c7e03a30a0af"},
-    {file = "libtorrent-2.0.7-cp37-cp37m-musllinux_1_1_aarch64.whl", hash = "sha256:5ff2391f33c1dd1847dd7abf1c96cf076bd9c19e24ddb9313ae6f848bfd87b7d"},
-    {file = "libtorrent-2.0.7-cp37-cp37m-musllinux_1_1_x86_64.whl", hash = "sha256:20c82f8332aa44c34cbe5daf24a664c515a98902ba8dc57a40ff06cc371dff2d"},
-    {file = "libtorrent-2.0.7-cp37-cp37m-win32.whl", hash = "sha256:b93c89186f0dcb0f785c135949e3e6106be722afcf4b1ed7e065e97da5d5fdd5"},
-    {file = "libtorrent-2.0.7-cp37-cp37m-win_amd64.whl", hash = "sha256:0b997c9f2f363f75cb1deebf0de24397e1b750990c2642c22a948460d9dc17f1"},
-    {file = "libtorrent-2.0.7-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:d61a5775c1e405fef0f6b441308ff9522ba76a145e3f13e98d09dc572d7280a9"},
-    {file = "libtorrent-2.0.7-cp38-cp38-manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:9e1ae3010f8b604d6e5fcabf453b2694026eff506b29dca64ca49a86e8e4a264"},
-    {file = "libtorrent-2.0.7-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:fe72fcac67d0ed28ce326f8b3fa0f153f7ff5b2183d829a960953474515986d4"},
-    {file = "libtorrent-2.0.7-cp38-cp38-musllinux_1_1_aarch64.whl", hash = "sha256:41ac59497c3a8c247e167da0f5e24898e726d12b110eb2cdcbe159e06a342b30"},
-    {file = "libtorrent-2.0.7-cp38-cp38-musllinux_1_1_x86_64.whl", hash = "sha256:b5b682e5ee280d2b1c3704d76c35c8f769efcb19995e505818a4927a82c420ef"},
-    {file = "libtorrent-2.0.7-cp38-cp38-win32.whl", hash = "sha256:0315b273ea6e1902c0559ba1350fe1b6beff1695587b699179183d92e9aab50b"},
-    {file = "libtorrent-2.0.7-cp38-cp38-win_amd64.whl", hash = "sha256:d5f3cab75a9870a854c6e86b4b36869dee2abf5c43bc76a109f6019ad120a33c"},
-    {file = "libtorrent-2.0.7-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:1a43ceca91856e7296423fd29c31bd902bca47280425985bd4f04dd89ee5e902"},
-    {file = "libtorrent-2.0.7-cp39-cp39-manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:4c315724d2226ead6852555d2776c905540186a3cd5fe6a504ad4fe9d3209132"},
-    {file = "libtorrent-2.0.7-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:a189a1f4bb1f1ab42cf4719f9a3bf115c574209f7603db1a9c12140ce619a439"},
-    {file = "libtorrent-2.0.7-cp39-cp39-musllinux_1_1_aarch64.whl", hash = "sha256:416ff05730735ddd158973c54ba996234992326d5a8528dc72ddf3772e75723f"},
-    {file = "libtorrent-2.0.7-cp39-cp39-musllinux_1_1_x86_64.whl", hash = "sha256:0265fa3c215da96036c7aa44e9a89466f3ebb04dbc52e565fe1c5dc8e216d94b"},
-    {file = "libtorrent-2.0.7-cp39-cp39-win32.whl", hash = "sha256:39707d5174ecb3f8f7e69d24109e004e32d836b98857db3e3ebfa7791e3880ca"},
-    {file = "libtorrent-2.0.7-cp39-cp39-win_amd64.whl", hash = "sha256:96e8e7300a378e73e26edbe9974de8512ee951083ab38f50eadee33db9556410"},
 ]
 
 [package.source]
@@ -3496,8 +3452,8 @@ url = "https://pypi.tuna.tsinghua.edu.cn/simple"
 reference = "tsinghua"
 
 [extras]
-all = ["torch", "tensorflow", "shimmy", "autorom", "mujoco", "mujoco-py", "imageio", "free-mujoco-py"]
-atari = ["shimmy", "autorom"]
+all = ["torch", "tensorflow", "shimmy", "autorom", "autorom-accept-rom-license", "mujoco", "mujoco-py", "imageio", "free-mujoco-py"]
+atari = ["shimmy", "autorom", "autorom-accept-rom-license"]
 mujoco = ["mujoco", "mujoco-py", "imageio", "free-mujoco-py"]
 tf = ["tensorflow"]
 torch = ["torch"]
@@ -3505,4 +3461,4 @@ torch = ["torch"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.11"
-content-hash = "e94627fad3826a23c15bcfe242546d3eafb266ccfd9c7b371c6e56eed29a7432"
+content-hash = "ec6e9908615b3bba0dc1b21d120a84567eb71c273729b080e9612fe835dcf4c0"
