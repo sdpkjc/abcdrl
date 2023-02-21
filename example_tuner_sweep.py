@@ -26,7 +26,7 @@ def tune_agent() -> None:
     with wandb.init(name=f"{sweep_configuration['name']}__{int(time.time())}") as writer:  # type: ignore[union-attr]
         wandb.save("abcdrl/dqn_torch.py")
 
-        trainer = dqn_torch.Trainer(
+        agent_config = dqn_torch.Trainer.Config(
             env_id=wandb.config.env_id,
             learning_rate=wandb.config.learning_rate,
             batch_size=wandb.config.batch_size,
@@ -34,6 +34,7 @@ def tune_agent() -> None:
             target_network_frequency=wandb.config.target_network_frequency,
             exploration_fraction=wandb.config.exploration_fraction,
         )
+        trainer = dqn_torch.Trainer(agent_config)
 
         for log_data in trainer():
             if "logs" in log_data:

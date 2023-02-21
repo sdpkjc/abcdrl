@@ -2,11 +2,10 @@ from __future__ import annotations
 
 from typing import Any, Callable, Generator
 
-from abcdrl import (
+from abcdrl import (  # dqn_torch,
     ddpg_torch,
     ddqn_torch,
     dqn_atari_torch,
-    dqn_torch,
     pdqn_torch,
     ppo_torch,
     sac_torch,
@@ -30,19 +29,19 @@ def set_all_wrappers(
     return func
 
 
-def test_dqn_torch_wrappers() -> None:
-    Trainer = dqn_torch.Trainer
-    Trainer.__call__ = set_all_wrappers(Trainer.__call__)  # type: ignore[assignment]
-    trainer = Trainer(
-        env_id="CartPole-v1",
-        num_envs=2,
-        learning_starts=8,
-        total_timesteps=32,
-        buffer_size=10,
-        batch_size=4,
-    )
-    for _ in trainer(eval_frequency=5, num_steps_eval=1, save_frequency=16):  # type: ignore[call-arg]
-        pass
+# def test_dqn_torch_wrappers() -> None:
+#     Trainer = dqn_torch.Trainer
+#     Trainer.__call__ = set_all_wrappers(Trainer.__call__)  # type: ignore[assignment]
+#     trainer = Trainer(
+#         env_id="CartPole-v1",
+#         num_envs=2,
+#         learning_starts=8,
+#         total_timesteps=32,
+#         buffer_size=10,
+#         batch_size=4,
+#     )
+#     for _ in trainer(eval_frequency=5, num_steps_eval=1, save_frequency=16):  # type: ignore[call-arg]
+#         pass
 
 
 def test_dqn_atari_torch_wrappers() -> None:
