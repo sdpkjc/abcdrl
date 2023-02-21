@@ -5,7 +5,7 @@ import dataclasses
 import os
 import random
 import time
-from typing import Any, Callable, Generator, Generic, TypeVar
+from typing import Any, Callable, Generator, Generic, Optional, TypeVar
 
 import gymnasium as gym
 import numpy as np
@@ -205,7 +205,7 @@ class Agent:
 class Trainer:
     @dataclasses.dataclass
     class Config:
-        exp_name: str | None = None
+        exp_name: Optional[str] = None
         seed: int = 1
         cuda: bool = True
         capture_video: bool = False
@@ -313,7 +313,7 @@ class Logger:
         track: bool = False
         wandb_project_name: str = "abcdrl"
         wandb_tags: list[str] = dataclasses.field(default_factory=lambda: [])
-        wandb_entity: str | None = None
+        wandb_entity: Optional[str] = None
 
     @classmethod
     def decorator(cls, config: Config = Config()) -> Callable[..., Generator[dict[str, Any], None, None]]:
