@@ -132,10 +132,10 @@ class Model(nn.Module):
             int(np.prod(get_space_shape(self.config["act_space"]))),
         )
         self.critic_nn_0 = CriticNetwork(
-            int(np.prod(get_space_shape(self.config["obs_space"])) + np.prod(get_space_shape(self.kwargs["act_space"])))
+            int(np.prod(get_space_shape(self.config["obs_space"])) + np.prod(get_space_shape(self.config["act_space"])))
         )
         self.critic_nn_1 = CriticNetwork(
-            int(np.prod(get_space_shape(self.config["obs_space"])) + np.prod(get_space_shape(self.kwargs["act_space"])))
+            int(np.prod(get_space_shape(self.config["obs_space"])) + np.prod(get_space_shape(self.config["act_space"])))
         )
 
         self.register_buffer(
