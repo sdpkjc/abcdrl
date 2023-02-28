@@ -236,7 +236,7 @@ class Algorithm:
         self.optimizer = optimizers.Adam(self.config["learning_rate"])
         self.loss_func = losses.MeanSquaredError()
 
-        model_init_obs = tf.convert_to_tensor(np.array([self.config["obs_space"].sample()]))
+        model_init_obs = tf.convert_to_tensor(np.array([self.config["obs_space"].sample()]), dtype=tf.float32)
         self.model.value(model_init_obs)
         self.model_t.value(model_init_obs)
 

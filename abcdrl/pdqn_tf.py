@@ -233,7 +233,7 @@ class Algorithm:
         self.model = Model(self.config)
         self.model_t = copy.deepcopy(self.model)
         self.optimizer = optimizers.Adam(self.config["learning_rate"])
-        self.loss_func = losses.MeanSquaredError()
+        self.loss_func = losses.MeanSquaredError(reduction=tf.keras.losses.Reduction.NONE)
 
         model_init_obs = tf.convert_to_tensor(np.array([self.config["obs_space"].sample()]))
         self.model.value(model_init_obs)
