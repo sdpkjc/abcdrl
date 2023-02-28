@@ -451,7 +451,6 @@ if __name__ == "__main__":
     torch.backends.cudnn.deterministic = True
 
     def main(trainer: Trainer.Config, evaluator: Evaluator.Config, saver: Saver.Config, logger: Logger.Config) -> None:
-
         Trainer.__call__ = Evaluator.decorator(evaluator)(Trainer.__call__)  # type: ignore[assignment]
         Trainer.__call__ = Saver.decorator(saver)(Trainer.__call__)  # type: ignore[assignment]
         Trainer.__call__ = Logger.decorator(logger)(Trainer.__call__)  # type: ignore[assignment]
