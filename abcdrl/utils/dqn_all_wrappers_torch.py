@@ -356,7 +356,6 @@ class Saver:
 
         @wrapt.decorator
         def wrapper(wrapped, instance, args, kwargs) -> Generator[dict[str, Any], None, None]:
-            instance = args[0]
             save_frequency = max(config.save_frequency // instance.config["num_envs"] * instance.config["num_envs"], 1)
 
             gen = wrapped(*args, **kwargs)
