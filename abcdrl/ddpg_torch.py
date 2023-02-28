@@ -280,7 +280,7 @@ class Trainer:
         self.config["device"] = "cuda" if self.config["cuda"] and torch.cuda.is_available() else "cpu"
 
         self.envs = gym.vector.SyncVectorEnv([self._make_env(i) for i in range(self.config["num_envs"])])  # type: ignore[arg-type]
-        assert isinstance(self.envs.single_action_space, gym.spaces.Discrete)
+        assert isinstance(self.envs.single_action_space, gym.spaces.Box)
 
         self.config["obs_space"] = self.envs.single_observation_space
         self.config["act_space"] = self.envs.single_action_space
