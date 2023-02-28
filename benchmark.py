@@ -52,7 +52,7 @@ def main(
         for alg, framework, env_id, seed in itertools.product(algs, frameworks, env_ids, seeds):
             kwargs = {
                 "trainer.cuda": cuda,
-                "track": track,
+                "logger.track": track,
                 "logger.wandb-project-name": wandb_project_name,
                 "logger.wandb-entity": wandb_entity,
                 "logger.wandb-tags": wandb_tags,
