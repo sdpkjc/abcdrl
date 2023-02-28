@@ -51,13 +51,13 @@ def main(
     with ThreadPoolExecutor(max_workers=workers) as executor:
         for alg, framework, env_id, seed in itertools.product(algs, frameworks, env_ids, seeds):
             kwargs = {
-                "cuda": cuda,
+                "trainer.cuda": cuda,
                 "track": track,
-                "wandb-project-name": wandb_project_name,
-                "wandb-entity": wandb_entity,
-                "wandb-tags": wandb_tags,
-                "capture-video": capture_video,
-                "seed": seed,
+                "logger.wandb-project-name": wandb_project_name,
+                "logger.wandb-entity": wandb_entity,
+                "logger.wandb-tags": wandb_tags,
+                "trainer.capture-video": capture_video,
+                "trainer.seed": seed,
             }
             executor.submit(train_process, alg, framework, env_id, kwargs)
 
