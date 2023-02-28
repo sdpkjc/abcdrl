@@ -19,10 +19,10 @@ from abcdrl import (
 from abcdrl.utils import (
     dqn_all_wrappers_torch,
     eval_step,
+    logger_tf,
     logger_torch,
     model_saver,
     print_filter,
-    wrapper_logger_tf,
 )
 
 
@@ -131,10 +131,10 @@ def test_codes_wrapper() -> None:
     assert inspect.getsource(logger_torch.Logger) == inspect.getsource(dqn_all_wrappers_torch.Logger)
 
     # wrapper_logger_tf
-    assert inspect.getsource(wrapper_logger_tf.wrapper_logger_tf) == inspect.getsource(dqn_tf.wrapper_logger_tf)
-    assert inspect.getsource(wrapper_logger_tf.wrapper_logger_tf) == inspect.getsource(ddqn_tf.wrapper_logger_tf)
-    assert inspect.getsource(wrapper_logger_tf.wrapper_logger_tf) == inspect.getsource(pdqn_tf.wrapper_logger_tf)
-    assert inspect.getsource(wrapper_logger_tf.wrapper_logger_tf) == inspect.getsource(dqn_atari_tf.wrapper_logger_tf)
+    assert inspect.getsource(logger_tf.Logger) == inspect.getsource(dqn_tf.Logger)
+    assert inspect.getsource(logger_tf.Logger) == inspect.getsource(ddqn_tf.Logger)
+    assert inspect.getsource(logger_tf.Logger) == inspect.getsource(pdqn_tf.Logger)
+    assert inspect.getsource(logger_tf.Logger) == inspect.getsource(dqn_atari_tf.Logger)
 
     # wrapper_filter
     assert inspect.getsource(print_filter.Filter) == inspect.getsource(dqn_all_wrappers_torch.Filter)

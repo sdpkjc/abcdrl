@@ -12,7 +12,7 @@ def test_example_dqn_all_wrapper_torch() -> None:
         + " --trainer.total-timesteps 32"
         + " --trainer.buffer-size 10"
         + " --trainer.batch-size 4"
-        + " --trainer.eval-frequency 5"
+        + " --evaluator.eval-frequency 5"
         + " --trainer.num-steps-eval 1"
         + " --saver.save-frequency 16",
         shell=True,

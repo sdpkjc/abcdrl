@@ -74,70 +74,70 @@ BeamRiderNoFrameskip-v4 = """
 
 CartPole-v1 = """
     python abcdrl/dqn_tf.py \
-        --env-id CartPole-v1 \
-        --num-envs 1 \
-        --total-timesteps 500000 \
-        --gamma 0.99 \
-        --buffer-size 10000 \
-        --start-epsilon 1.0 \
-        --end-epsilon 0.05 \
-        --exploration-fraction 0.5 \
-        --batch-size 128 \
-        --learning-rate 2.5e-4 \
-        --learning-starts 10000 \
-        --target-network-frequency 500 \
-        --train-frequency 10 \
+        --trainer.env-id CartPole-v1 \
+        --trainer.num-envs 1 \
+        --trainer.total-timesteps 500000 \
+        --trainer.gamma 0.99 \
+        --trainer.buffer-size 10000 \
+        --trainer.start-epsilon 1.0 \
+        --trainer.end-epsilon 0.05 \
+        --trainer.exploration-fraction 0.5 \
+        --trainer.batch-size 128 \
+        --trainer.learning-rate 2.5e-4 \
+        --trainer.learning-starts 10000 \
+        --trainer.target-network-frequency 500 \
+        --trainer.train-frequency 10 \
 """
 
 BreakoutNoFrameskip-v4 = """
     python abcdrl/dqn_atari_tf.py \
-        --env-id BreakoutNoFrameskip-v4 \
-        --num-envs 1 \
-        --total-timesteps 10000000 \
-        --gamma 0.99 \
-        --buffer-size 1000000 \
-        --start-epsilon 1.0 \
-        --end-epsilon 0.01 \
-        --exploration-fraction 0.1 \
-        --batch-size 32 \
-        --learning-rate 1e-4 \
-        --learning-starts 50000 \
-        --target-network-frequency 1000 \
-        --train-frequency 4 \
+        --trainer.env-id BreakoutNoFrameskip-v4 \
+        --trainer.num-envs 1 \
+        --trainer.total-timesteps 10000000 \
+        --trainer.gamma 0.99 \
+        --trainer.buffer-size 1000000 \
+        --trainer.start-epsilon 1.0 \
+        --trainer.end-epsilon 0.01 \
+        --trainer.exploration-fraction 0.1 \
+        --trainer.batch-size 32 \
+        --trainer.learning-rate 1e-4 \
+        --trainer.learning-starts 50000 \
+        --trainer.target-network-frequency 1000 \
+        --trainer.train-frequency 4 \
 """
 
 PongNoFrameskip-v4 = """
     python abcdrl/dqn_atari_tf.py \
-        --env-id PongNoFrameskip-v4 \
-        --num-envs 1 \
-        --total-timesteps 10000000 \
-        --gamma 0.99 \
-        --buffer-size 1000000 \
-        --start-epsilon 1.0 \
-        --end-epsilon 0.01 \
-        --exploration-fraction 0.1 \
-        --batch-size 32 \
-        --learning-rate 1e-4 \
-        --learning-starts 50000 \
-        --target-network-frequency 1000 \
-        --train-frequency 4 \
+        --trainer.env-id PongNoFrameskip-v4 \
+        --trainer.num-envs 1 \
+        --trainer.total-timesteps 10000000 \
+        --trainer.gamma 0.99 \
+        --trainer.buffer-size 1000000 \
+        --trainer.start-epsilon 1.0 \
+        --trainer.end-epsilon 0.01 \
+        --trainer.exploration-fraction 0.1 \
+        --trainer.batch-size 32 \
+        --trainer.learning-rate 1e-4 \
+        --trainer.learning-starts 50000 \
+        --trainer.target-network-frequency 1000 \
+        --trainer.train-frequency 4 \
 """
 
 BeamRiderNoFrameskip-v4 = """
     python abcdrl/dqn_atari_tf.py \
-        --env-id BeamRiderNoFrameskip-v4 \
-        --num-envs 1 \
-        --total-timesteps 10000000 \
-        --gamma 0.99 \
-        --buffer-size 1000000 \
-        --start-epsilon 1.0 \
-        --end-epsilon 0.01 \
-        --exploration-fraction 0.1 \
-        --batch-size 32 \
-        --learning-rate 1e-4 \
-        --learning-starts 50000 \
-        --target-network-frequency 1000 \
-        --train-frequency 4 \
+        --trainer.env-id BeamRiderNoFrameskip-v4 \
+        --trainer.num-envs 1 \
+        --trainer.total-timesteps 10000000 \
+        --trainer.gamma 0.99 \
+        --trainer.buffer-size 1000000 \
+        --trainer.start-epsilon 1.0 \
+        --trainer.end-epsilon 0.01 \
+        --trainer.exploration-fraction 0.1 \
+        --trainer.batch-size 32 \
+        --trainer.learning-rate 1e-4 \
+        --trainer.learning-starts 50000 \
+        --trainer.target-network-frequency 1000 \
+        --trainer.train-frequency 4 \
 """
 
 [ddqn]
@@ -166,19 +166,19 @@ CartPole-v1 = """
 
 CartPole-v1 = """
     python abcdrl/ddqn_tf.py \
-        --env-id CartPole-v1 \
-        --num-envs 1 \
-        --total-timesteps 500000 \
-        --gamma 0.99 \
-        --buffer-size 10000 \
-        --start-epsilon 1.0 \
-        --end-epsilon 0.05 \
-        --exploration-fraction 0.5 \
-        --batch-size 128 \
-        --learning-rate 2.5e-4 \
-        --learning-starts 10000 \
-        --target-network-frequency 500 \
-        --train-frequency 10 \
+        --trainer.env-id CartPole-v1 \
+        --trainer.num-envs 1 \
+        --trainer.total-timesteps 500000 \
+        --trainer.gamma 0.99 \
+        --trainer.buffer-size 10000 \
+        --trainer.start-epsilon 1.0 \
+        --trainer.end-epsilon 0.05 \
+        --trainer.exploration-fraction 0.5 \
+        --trainer.batch-size 128 \
+        --trainer.learning-rate 2.5e-4 \
+        --trainer.learning-starts 10000 \
+        --trainer.target-network-frequency 500 \
+        --trainer.train-frequency 10 \
 """
 
 [pdqn]
@@ -210,21 +210,21 @@ CartPole-v1 = """
 
 CartPole-v1 = """
     python abcdrl/pdqn_tf.py \
-        --env-id CartPole-v1 \
-        --num-envs 1 \
-        --total-timesteps 500000 \
-        --gamma 0.99 \
-        --alpha 0.2 \
-        --beta 0.6 \
-        --buffer-size 10000 \
-        --start-epsilon 1.0 \
-        --end-epsilon 0.05 \
-        --exploration-fraction 0.5 \
-        --batch-size 128 \
-        --learning-rate 2.5e-4 \
-        --learning-starts 10000 \
-        --target-network-frequency 500 \
-        --train-frequency 10 \
+        --trainer.env-id CartPole-v1 \
+        --trainer.num-envs 1 \
+        --trainer.total-timesteps 500000 \
+        --trainer.gamma 0.99 \
+        --trainer.alpha 0.2 \
+        --trainer.beta 0.6 \
+        --trainer.buffer-size 10000 \
+        --trainer.start-epsilon 1.0 \
+        --trainer.end-epsilon 0.05 \
+        --trainer.exploration-fraction 0.5 \
+        --trainer.batch-size 128 \
+        --trainer.learning-rate 2.5e-4 \
+        --trainer.learning-starts 10000 \
+        --trainer.target-network-frequency 500 \
+        --trainer.train-frequency 10 \
 """
 
 
