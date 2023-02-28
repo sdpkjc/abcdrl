@@ -378,10 +378,4 @@ if __name__ == "__main__":
             if "logs" in log_data and log_data["log_type"] != "train":
                 print(log_data)
 
-    # def main(trainer: Trainer.Config) -> None:
-    #     # Trainer.__call__ = Logger.decorator(logger)(Trainer.__call__)  # type: ignore[assignment]
-    #     for log_data in Trainer(trainer)():
-    #         if "logs" in log_data and log_data["log_type"] != "train":
-    #             print(log_data)
-
     tyro.cli(main)
