@@ -5,7 +5,7 @@ import dataclasses
 import os
 import random
 import time
-from typing import Any, Callable, Generator, Generic, Optional, TypeVar
+from typing import Any, Callable, Generator, Generic, List, Optional, TypeVar
 
 import gymnasium as gym
 import numpy as np
@@ -312,7 +312,7 @@ class Logger:
     class Config:
         track: bool = False
         wandb_project_name: str = "abcdrl"
-        wandb_tags: list[str] = dataclasses.field(default_factory=lambda: [])
+        wandb_tags: List[str] = dataclasses.field(default_factory=lambda: [])
         wandb_entity: Optional[str] = None
 
     @classmethod
@@ -377,5 +377,11 @@ if __name__ == "__main__":
         for log_data in Trainer(trainer)():
             if "logs" in log_data and log_data["log_type"] != "train":
                 print(log_data)
+
+    # def main(trainer: Trainer.Config) -> None:
+    #     # Trainer.__call__ = Logger.decorator(logger)(Trainer.__call__)  # type: ignore[assignment]
+    #     for log_data in Trainer(trainer)():
+    #         if "logs" in log_data and log_data["log_type"] != "train":
+    #             print(log_data)
 
     tyro.cli(main)
