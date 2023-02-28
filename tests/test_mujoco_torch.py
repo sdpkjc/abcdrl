@@ -51,11 +51,11 @@ def test_sac_torch() -> None:
 def test_ppo_torch() -> None:
     subprocess.run(
         "python abcdrl/ppo_torch.py"
-        + " --env-id Hopper-v4"
-        + " --num-envs 2"
-        + " --num-steps 64"
-        + " --num-minibatches 16"
-        + " --total-timesteps 256",
+        + " --trainer.env-id Hopper-v4"
+        + " --trainer.num-envs 2"
+        + " --trainer.num-steps 64"
+        + " --trainer.num-minibatches 16"
+        + " --trainer.total-timesteps 256",
         shell=True,
         check=True,
         timeout=300,
