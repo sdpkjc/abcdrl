@@ -249,7 +249,7 @@ class Agent:
 class Trainer:
     @dataclasses.dataclass
     class Config:
-        exp_name: str | None = None
+        exp_name: Optional[str] = None
         seed: int = 1
         cuda: bool = True
         capture_video: bool = False

@@ -53,14 +53,17 @@ def main(
     with ThreadPoolExecutor(max_workers=workers) as executor:
         for alg, framework, env_id, seed in itertools.product(algs, frameworks, env_ids, seeds):
             kwargs = {
-                "trainer.cuda": cuda,
-                "logger.track": track,
                 "logger.wandb-project-name": wandb_project_name,
                 "logger.wandb-entity": wandb_entity,
                 "logger.wandb-tags": wandb_tags,
                 "trainer.capture-video": capture_video,
                 "trainer.seed": seed,
             }
+            if not cuda:
+                kwargs = {**kwargs, "trainer.no-cuda": False}
+            if track:
+                kwargs = {**kwargs, "trainer.track": True}
+
             executor.submit(train_process, alg, framework, env_id, kwargs)
 
 

@@ -6,7 +6,7 @@ import subprocess
 def test_benchmark_torch() -> None:
     try:
         subprocess.run(
-            "python benchmark.py --algs dqn --env-id CartPole-v1 --frameworks torch",
+            "python benchmark.py --algs dqn --env-ids CartPole-v1 --frameworks torch",
             shell=True,
             check=True,
             timeout=3,
