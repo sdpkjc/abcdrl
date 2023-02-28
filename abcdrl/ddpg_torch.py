@@ -274,8 +274,8 @@ class Trainer:
         if self.config["exp_name"] is None:
             self.config["exp_name"] = f"{self.config['env_id']}__{os.path.basename(__file__).rstrip('.py')}"
         self.config["run_name"] = f"{self.config['exp_name']}__{self.config['seed']}__{int(time.time())}"
-        self.config["target_network_frequency"] = max(
-            self.config["target_network_frequency"] // self.config["num_envs"] * self.config["num_envs"], 1
+        self.config["policy_frequency"] = max(
+            self.config["policy_frequency"] // self.config["num_envs"] * self.config["num_envs"], 1
         )
         self.config["device"] = "cuda" if self.config["cuda"] and torch.cuda.is_available() else "cpu"
 
