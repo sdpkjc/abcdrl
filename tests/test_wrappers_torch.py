@@ -5,21 +5,16 @@ from typing import Any, Callable, Generator
 # from abcdrl import (  # dqn_torch,; ddqn_torch,; dqn_atari_torch,; pdqn_torch,; ddpg_torch,; sac_torch,; td3_torch,
 #     # ppo_torch,
 # )
-from abcdrl.utils import (
-    wrapper_eval_step,
-    wrapper_logger_torch,
-    wrapper_print_filter,
-    wrapper_save_model,
-)
+from abcdrl.utils import eval_step, logger_torch, model_saver, print_filter
 
 
 def set_all_wrappers(
     func: Callable[..., Generator[dict[str, Any], None, None]]
 ) -> Callable[..., Generator[dict[str, Any], None, None]]:
-    func = wrapper_eval_step.wrapper_eval_step(func)  # type: ignore[assignment]
-    func = wrapper_logger_torch.wrapper_logger_torch(func)  # type: ignore[assignment]
-    func = wrapper_save_model.wrapper_save_model(func)  # type: ignore[assignment]
-    func = wrapper_print_filter.wrapper_print_filter(func)  # type: ignore[assignment]
+    func = eval_step.Evaluator.decorator()(func)  # type: ignore[assignment]
+    func = model_saver.Saver.decorator()(func)  # type: ignore[assignment]
+    func = logger_torch.Logger.decorator()(func)  # type: ignore[assignment]
+    func = print_filter.Filter.decorator()(func)  # type: ignore[assignment]
     return func
 
 

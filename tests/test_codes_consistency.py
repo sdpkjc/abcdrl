@@ -18,11 +18,11 @@ from abcdrl import (
 )
 from abcdrl.utils import (
     dqn_all_wrappers_torch,
-    wrapper_eval_step,
+    eval_step,
+    logger_torch,
+    model_saver,
+    print_filter,
     wrapper_logger_tf,
-    wrapper_logger_torch,
-    wrapper_print_filter,
-    wrapper_save_model,
 )
 
 
@@ -120,33 +120,15 @@ def test_codes_trainer() -> None:
 
 def test_codes_wrapper() -> None:
     # wrapper_logger_torch
-    # assert inspect.getsource(wrapper_logger_torch.wrapper_logger_torch) == inspect.getsource(
-    #     dqn_torch.wrapper_logger_torch
-    # )
-    assert inspect.getsource(wrapper_logger_torch.wrapper_logger_torch) == inspect.getsource(
-        ddqn_torch.wrapper_logger_torch
-    )
-    assert inspect.getsource(wrapper_logger_torch.wrapper_logger_torch) == inspect.getsource(
-        pdqn_torch.wrapper_logger_torch
-    )
-    assert inspect.getsource(wrapper_logger_torch.wrapper_logger_torch) == inspect.getsource(
-        ddpg_torch.wrapper_logger_torch
-    )
-    assert inspect.getsource(wrapper_logger_torch.wrapper_logger_torch) == inspect.getsource(
-        td3_torch.wrapper_logger_torch
-    )
-    assert inspect.getsource(wrapper_logger_torch.wrapper_logger_torch) == inspect.getsource(
-        sac_torch.wrapper_logger_torch
-    )
-    assert inspect.getsource(wrapper_logger_torch.wrapper_logger_torch) == inspect.getsource(
-        ppo_torch.wrapper_logger_torch
-    )
-    assert inspect.getsource(wrapper_logger_torch.wrapper_logger_torch) == inspect.getsource(
-        dqn_atari_torch.wrapper_logger_torch
-    )
-    assert inspect.getsource(wrapper_logger_torch.wrapper_logger_torch) == inspect.getsource(
-        dqn_all_wrappers_torch.wrapper_logger_torch
-    )
+    assert inspect.getsource(logger_torch.Logger) == inspect.getsource(dqn_torch.Logger)
+    assert inspect.getsource(logger_torch.Logger) == inspect.getsource(ddqn_torch.Logger)
+    assert inspect.getsource(logger_torch.Logger) == inspect.getsource(pdqn_torch.Logger)
+    assert inspect.getsource(logger_torch.Logger) == inspect.getsource(ddpg_torch.Logger)
+    assert inspect.getsource(logger_torch.Logger) == inspect.getsource(td3_torch.Logger)
+    assert inspect.getsource(logger_torch.Logger) == inspect.getsource(sac_torch.Logger)
+    assert inspect.getsource(logger_torch.Logger) == inspect.getsource(ppo_torch.Logger)
+    assert inspect.getsource(logger_torch.Logger) == inspect.getsource(dqn_atari_torch.Logger)
+    assert inspect.getsource(logger_torch.Logger) == inspect.getsource(dqn_all_wrappers_torch.Logger)
 
     # wrapper_logger_tf
     assert inspect.getsource(wrapper_logger_tf.wrapper_logger_tf) == inspect.getsource(dqn_tf.wrapper_logger_tf)
@@ -155,19 +137,13 @@ def test_codes_wrapper() -> None:
     assert inspect.getsource(wrapper_logger_tf.wrapper_logger_tf) == inspect.getsource(dqn_atari_tf.wrapper_logger_tf)
 
     # wrapper_filter
-    assert inspect.getsource(wrapper_print_filter.wrapper_print_filter) == inspect.getsource(
-        dqn_all_wrappers_torch.wrapper_print_filter
-    )
+    assert inspect.getsource(print_filter.Filter) == inspect.getsource(dqn_all_wrappers_torch.Filter)
 
     # wrapper_eval_step
-    assert inspect.getsource(wrapper_eval_step.wrapper_eval_step) == inspect.getsource(
-        dqn_all_wrappers_torch.wrapper_eval_step
-    )
+    assert inspect.getsource(eval_step.Evaluator) == inspect.getsource(dqn_all_wrappers_torch.Evaluator)
 
     # wrapper_save_model
-    assert inspect.getsource(wrapper_save_model.wrapper_save_model) == inspect.getsource(
-        dqn_all_wrappers_torch.wrapper_save_model
-    )
+    assert inspect.getsource(model_saver.Saver) == inspect.getsource(dqn_all_wrappers_torch.Saver)
 
 
 def test_codes_example() -> None:

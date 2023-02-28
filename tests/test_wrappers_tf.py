@@ -3,21 +3,18 @@ from __future__ import annotations
 from typing import Any, Callable, Generator
 
 from abcdrl import ddqn_tf, dqn_tf, pdqn_tf
-from abcdrl.utils import (
-    wrapper_eval_step,
-    wrapper_logger_tf,
-    wrapper_print_filter,
-    wrapper_save_model,
-)
+
+# from abcdrl.utils import eval_step, model_saver, print_filter, wrapper_logger_tf
+from abcdrl.utils import wrapper_logger_tf
 
 
 def set_all_wrappers(
     func: Callable[..., Generator[dict[str, Any], None, None]]
 ) -> Callable[..., Generator[dict[str, Any], None, None]]:
-    func = wrapper_eval_step.wrapper_eval_step(func)  # type: ignore[assignment]
+    # func = eval_step.Evaluator.decorator()(func)  # type: ignore[assignment]
+    # func = model_saver.Saver.decorator()(func)  # type: ignore[assignment]
     func = wrapper_logger_tf.wrapper_logger_tf(func)  # type: ignore[assignment]
-    func = wrapper_save_model.wrapper_save_model(func)  # type: ignore[assignment]
-    func = wrapper_print_filter.wrapper_print_filter(func)  # type: ignore[assignment]
+    # func = print_filter.Filter.decorator()(func)  # type: ignore[assignment]
     return func
 
 
