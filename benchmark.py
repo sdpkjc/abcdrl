@@ -14,7 +14,9 @@ def train_process(alg: str, framework: str, env_id: str, kwargs: dict[str, Any])
         cmd = tomli.load(file)[alg][framework][env_id]
     for param in kwargs.items():
         if isinstance(param[1], list):
-            cmd += f' --{param[0]} "{param[1]}"'
+            cmd += f" --{param[0]} {' '.join(param[1])}"
+        elif isinstance(param[1], bool):
+            cmd += f" --{param[0]}"
         else:
             cmd += f" --{param[0]} {param[1]}"
     print(cmd)
