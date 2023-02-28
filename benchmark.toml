@@ -305,74 +305,74 @@ HalfCheetah-v4 = """
 
 Pendulum-v1 = """
     python abcdrl/td3_torch.py \
-        --env-id Pendulum-v1 \
-        --num-envs 1 \
-        --total-timesteps 50000 \
-        --gamma 0.98 \
-        --buffer-size 50000 \
-        --exploration-noise 0.1 \
-        --noise-clip 0.5 \
-        --batch-size 256 \
-        --learning-rate 1e-3 \
-        --tau 0.005 \
-        --policy-noise 0.2 \
-        --learning-starts 1000 \
-        --train-frequency 4 \
-        --policy-frequency 2 \
+        --trainer.env-id Pendulum-v1 \
+        --trainer.num-envs 1 \
+        --trainer.total-timesteps 50000 \
+        --trainer.gamma 0.98 \
+        --trainer.buffer-size 50000 \
+        --trainer.exploration-noise 0.1 \
+        --trainer.noise-clip 0.5 \
+        --trainer.batch-size 256 \
+        --trainer.learning-rate 1e-3 \
+        --trainer.tau 0.005 \
+        --trainer.policy-noise 0.2 \
+        --trainer.learning-starts 1000 \
+        --trainer.train-frequency 4 \
+        --trainer.policy-frequency 2 \
 """
 
 Hopper-v4 = """
     python abcdrl/td3_torch.py \
-        --env-id Hopper-v4 \
-        --num-envs 1 \
-        --total-timesteps 1000000 \
-        --gamma 0.99 \
-        --buffer-size 1000000 \
-        --exploration-noise 0.1 \
-        --noise-clip 0.5 \
-        --batch-size 256 \
-        --learning-rate 3e-4 \
-        --tau 0.005 \
-        --policy-noise 0.2 \
-        --learning-starts 25000 \
-        --train-frequency 1 \
-        --policy-frequency 2 \
+        --trainer.env-id Hopper-v4 \
+        --trainer.num-envs 1 \
+        --trainer.total-timesteps 1000000 \
+        --trainer.gamma 0.99 \
+        --trainer.buffer-size 1000000 \
+        --trainer.exploration-noise 0.1 \
+        --trainer.noise-clip 0.5 \
+        --trainer.batch-size 256 \
+        --trainer.learning-rate 3e-4 \
+        --trainer.tau 0.005 \
+        --trainer.policy-noise 0.2 \
+        --trainer.learning-starts 25000 \
+        --trainer.train-frequency 1 \
+        --trainer.policy-frequency 2 \
 """
 
 Walker2d-v4 = """
     python abcdrl/td3_torch.py \
-        --env-id Walker2d-v4 \
-        --num-envs 1 \
-        --total-timesteps 1000000 \
-        --gamma 0.99 \
-        --buffer-size 1000000 \
-        --exploration-noise 0.1 \
-        --noise-clip 0.5 \
-        --batch-size 256 \
-        --learning-rate 3e-4 \
-        --tau 0.005 \
-        --policy-noise 0.2 \
-        --learning-starts 25000 \
-        --train-frequency 1 \
-        --policy-frequency 2 \
+        --trainer.env-id Walker2d-v4 \
+        --trainer.num-envs 1 \
+        --trainer.total-timesteps 1000000 \
+        --trainer.gamma 0.99 \
+        --trainer.buffer-size 1000000 \
+        --trainer.exploration-noise 0.1 \
+        --trainer.noise-clip 0.5 \
+        --trainer.batch-size 256 \
+        --trainer.learning-rate 3e-4 \
+        --trainer.tau 0.005 \
+        --trainer.policy-noise 0.2 \
+        --trainer.learning-starts 25000 \
+        --trainer.train-frequency 1 \
+        --trainer.policy-frequency 2 \
 """
 
 HalfCheetah-v4 = """
     python abcdrl/td3_torch.py \
-        --env-id HalfCheetah-v4 \
-        --num-envs 1 \
-        --total-timesteps 1000000 \
-        --gamma 0.99 \
-        --buffer-size 1000000 \
-        --exploration-noise 0.1 \
-        --noise-clip 0.5 \
-        --batch-size 256 \
-        --learning-rate 3e-4 \
-        --tau 0.005 \
-        --policy-noise 0.2 \
-        --learning-starts 25000 \
-        --train-frequency 1 \
-        --policy-frequency 2 \
+        --trainer.env-id HalfCheetah-v4 \
+        --trainer.num-envs 1 \
+        --trainer.total-timesteps 1000000 \
+        --trainer.gamma 0.99 \
+        --trainer.buffer-size 1000000 \
+        --trainer.exploration-noise 0.1 \
+        --trainer.noise-clip 0.5 \
+        --trainer.batch-size 256 \
+        --trainer.learning-rate 3e-4 \
+        --trainer.tau 0.005 \
+        --trainer.policy-noise 0.2 \
+        --trainer.learning-starts 25000 \
+        --trainer.train-frequency 1 \
+        --trainer.policy-frequency 2 \
 """
 
 
@@ -382,78 +382,76 @@ HalfCheetah-v4 = """
 
 Pendulum-v1 = """
     python abcdrl/sac_torch.py \
-        --env-id Pendulum-v1 \
-        --num-envs 1 \
-        --total-timesteps 50000 \
-        --gamma 0.98 \
-        --buffer-size 50000 \
-        --batch-size 256 \
-        --q-lr 1e-3 \
-        --policy-lr 3e-4 \
-        --tau 0.005 \
-        --alpha 0.2 \
-        --autotune True \
-        --learning-starts 25000 \
-        --train-frequency 1 \
-        --policy-frequency 2 \
-        --target-network-frequency 1 \
+        --trainer.env-id Pendulum-v1 \
+        --trainer.num-envs 1 \
+        --trainer.total-timesteps 50000 \
+        --trainer.gamma 0.98 \
+        --trainer.buffer-size 50000 \
+        --trainer.batch-size 256 \
+        --trainer.q-lr 1e-3 \
+        --trainer.policy-lr 3e-4 \
+        --trainer.tau 0.005 \
+        --trainer.alpha 0.2 \
+        --trainer.learning-starts 25000 \
+        --trainer.train-frequency 1 \
+        --trainer.policy-frequency 2 \
+        --trainer.target-network-frequency 1 \
 """
 
 Hopper-v4 = """
     python abcdrl/sac_torch.py \
-        --env-id Hopper-v4 \
-        --num-envs 1 \
-        --total-timesteps 1000000 \
-        --gamma 0.99 \
-        --buffer-size 1000000 \
-        --batch-size 256 \
-        --q-lr 1e-3 \
-        --policy-lr 3e-4 \
-        --tau 0.005 \
-        --alpha 0.2 \
-        --autotune True \
-        --learning-starts 25000 \
-        --train-frequency 1 \
-        --policy-frequency 2 \
-        --target-network-frequency 1 \
+        --trainer.env-id Hopper-v4 \
+        --trainer.num-envs 1 \
+        --trainer.total-timesteps 1000000 \
+        --trainer.gamma 0.99 \
+        --trainer.buffer-size 1000000 \
+        --trainer.batch-size 256 \
+        --trainer.q-lr 1e-3 \
+        --trainer.policy-lr 3e-4 \
+        --trainer.tau 0.005 \
+        --trainer.alpha 0.2 \
+        --trainer.learning-starts 25000 \
+        --trainer.train-frequency 1 \
+        --trainer.policy-frequency 2 \
+        --trainer.target-network-frequency 1 \
 """
 
 Walker2d-v4 = """
     python abcdrl/sac_torch.py \
-        --env-id Walker2d-v4 \
-        --num-envs 1 \
-        --total-timesteps 1000000 \
-        --gamma 0.99 \
-        --buffer-size 1000000 \
-        --batch-size 256 \
-        --q-lr 1e-3 \
-        --policy-lr 3e-4 \
-        --tau 0.005 \
-        --alpha 0.2 \
-        --autotune True \
-        --learning-starts 25000 \
-        --train-frequency 1 \
-        --policy-frequency 2 \
-        --target-network-frequency 1 \
+        --trainer.env-id Walker2d-v4 \
+        --trainer.num-envs 1 \
+        --trainer.total-timesteps 1000000 \
+        --trainer.gamma 0.99 \
+        --trainer.buffer-size 1000000 \
+        --trainer.batch-size 256 \
+        --trainer.q-lr 1e-3 \
+        --trainer.policy-lr 3e-4 \
+        --trainer.tau 0.005 \
+        --trainer.alpha 0.2 \
+        --trainer.autotune True \
+        --trainer.learning-starts 25000 \
+        --trainer.train-frequency 1 \
+        --trainer.policy-frequency 2 \
+        --trainer.target-network-frequency 1 \
 """
 
 HalfCheetah-v4 = """
     python abcdrl/sac_torch.py \
-        --env-id HalfCheetah-v4 \
-        --num-envs 1 \
-        --total-timesteps 1000000 \
-        --gamma 0.99 \
-        --buffer-size 1000000 \
-        --batch-size 256 \
-        --q-lr 1e-3 \
-        --policy-lr 3e-4 \
-        --tau 0.005 \
-        --alpha 0.2 \
-        --autotune True \
-        --learning-starts 25000 \
-        --train-frequency 1 \
-        --policy-frequency 2 \
-        --target-network-frequency 1 \
+        --trainer.env-id HalfCheetah-v4 \
+        --trainer.num-envs 1 \
+        --trainer.total-timesteps 1000000 \
+        --trainer.gamma 0.99 \
+        --trainer.buffer-size 1000000 \
+        --trainer.batch-size 256 \
+        --trainer.q-lr 1e-3 \
+        --trainer.policy-lr 3e-4 \
+        --trainer.tau 0.005 \
+        --trainer.alpha 0.2 \
+        --trainer.autotune True \
+        --trainer.learning-starts 25000 \
+        --trainer.train-frequency 1 \
+        --trainer.policy-frequency 2 \
+        --trainer.target-network-frequency 1 \
 """
 
 

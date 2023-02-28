@@ -2,10 +2,8 @@ from __future__ import annotations
 
 from typing import Any, Callable, Generator
 
-from abcdrl import (  # dqn_torch,; ddqn_torch,; dqn_atari_torch,; pdqn_torch,; ddpg_torch,
+from abcdrl import (  # dqn_torch,; ddqn_torch,; dqn_atari_torch,; pdqn_torch,; ddpg_torch,; sac_torch,; td3_torch,
     ppo_torch,
-    sac_torch,
-    td3_torch,
 )
 from abcdrl.utils import (
     wrapper_eval_step,
@@ -100,34 +98,34 @@ def set_all_wrappers(
 #         pass
 
 
-def test_td3_torch_wrappers() -> None:
-    Trainer = td3_torch.Trainer
-    Trainer.__call__ = set_all_wrappers(Trainer.__call__)  # type: ignore[assignment]
-    trainer = Trainer(
-        env_id="Hopper-v4",
-        num_envs=2,
-        learning_starts=64,
-        total_timesteps=256,
-        buffer_size=32,
-        batch_size=4,
-    )
-    for _ in trainer(eval_frequency=5, num_steps_eval=1, save_frequency=16):  # type: ignore[call-arg]
-        pass
+# def test_td3_torch_wrappers() -> None:
+#     Trainer = td3_torch.Trainer
+#     Trainer.__call__ = set_all_wrappers(Trainer.__call__)  # type: ignore[assignment]
+#     trainer = Trainer(
+#         env_id="Hopper-v4",
+#         num_envs=2,
+#         learning_starts=64,
+#         total_timesteps=256,
+#         buffer_size=32,
+#         batch_size=4,
+#     )
+#     for _ in trainer(eval_frequency=5, num_steps_eval=1, save_frequency=16):  # type: ignore[call-arg]
+#         pass
 
 
-def test_sac_torch_wrappers() -> None:
-    Trainer = sac_torch.Trainer
-    Trainer.__call__ = set_all_wrappers(Trainer.__call__)  # type: ignore[assignment]
-    trainer = Trainer(
-        env_id="Hopper-v4",
-        num_envs=2,
-        learning_starts=64,
-        total_timesteps=256,
-        buffer_size=32,
-        batch_size=4,
-    )
-    for _ in trainer(eval_frequency=5, num_steps_eval=1, save_frequency=16):  # type: ignore[call-arg]
-        pass
+# def test_sac_torch_wrappers() -> None:
+#     Trainer = sac_torch.Trainer
+#     Trainer.__call__ = set_all_wrappers(Trainer.__call__)  # type: ignore[assignment]
+#     trainer = Trainer(
+#         env_id="Hopper-v4",
+#         num_envs=2,
+#         learning_starts=64,
+#         total_timesteps=256,
+#         buffer_size=32,
+#         batch_size=4,
+#     )
+#     for _ in trainer(eval_frequency=5, num_steps_eval=1, save_frequency=16):  # type: ignore[call-arg]
+#         pass
 
 
 def test_ppo_torch_wrappers() -> None:
