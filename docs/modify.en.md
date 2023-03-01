@@ -3,19 +3,30 @@
 !!! info
     It is advised to read [the abstractions page](abstractions.en.md) before making changes.
 
-## Parameters & Loop
+## Parameters
 
-Our code uses [google/python-fire](https://github.com/google/python-fire) to manage parameters and repeatedly call the algorithm interface. To help you understand what fire does, here's an equivalent implementation using [argparse](https://docs.python.org/3/library/argparse.html).
+Our code uses [brentyi/tyro](https://github.com/brentyi/tyro) to manage parameters. To help you understand what `tyro` does, here's an equivalent implementation using [argparse](https://docs.python.org/3/library/argparse.html).
 
 === "python-fire"
 
     ```python
+    class Trainer:
+        @dataclasses.dataclass
+        class Config:
+            exp_name: Optional[str] = None
+            seed: int = 1
+            # ...
+        # ...
+
+
     if __name__ == "__main__":
         # ...
-        fire.Fire(
-            Trainer,
-            serialize=lambda gen: (log_data for log_data in gen if "logs" in log_data and log_data["log_type"] != "train"),
-        )
+        def main(trainer: Trainer.Config) -> None:
+            for log_data in Trainer(trainer)():
+                if "logs" in log_data and log_data["log_type"] != "train":
+                    print(log_data)
+
+        tyro.cli(main)
     ```
 
 === "argparse"
@@ -51,7 +62,7 @@ Our modular design does not prescribe a strict interface, and you are free to mo
 
 ### Writing Decorator
 
-The generic feature is implemented as a decorator, you can refer to the code below and `abcdrl/utils/wrapper_*.py` file to implement the new feature you want and apply it to all algorithms.
+The generic feature is implemented as a decorator, you can refer to the code below and `abcdrl/utils/*.py` file to implement the new feature you want and apply it to all algorithms.
 
 ```python hl_lines="8-9 13 15"
 from combine_signatures.combine_signatures import combine_signatures
@@ -74,18 +85,23 @@ def wrapper_example(
 
 ### Using Decorator
 
-```python hl_lines="1-11 25-26"
-# Step 1：Copy the decorators you need
-def wrapper_example(
-    wrapped: Callable[..., Generator[dict[str, Any], None, None]]
-) -> Callable[..., Generator[dict[str, Any], None, None]]:
-    @combine_signatures(wrapped)
-    def _wrapper(*args, new_arg: int = 1, **kwargs) -> Generator[dict[str, Any], None, None]:
-        gen = wrapped(*args, **kwargs)
-        for log_data in gen:
-            if "logs" in log_data and log_data["log_type"] != "train":
-                yield log_data
-    return _wrapper
+```python hl_lines="1-16 29-32"
+# Step 1: Copy the decorators you need
+class Example:
+    @dataclasses.dataclass
+    class Config:
+        new_arg: int = 1
+
+    @classmethod
+    def decorator(cls, config: Config = Config()) -> Callable[..., Generator[dict[str, Any], None, None]]:
+        @wrapt.decorator
+        def wrapper(wrapped, instance, args, kwargs) -> Generator[dict[str, Any], None, None]:
+            gen = wrapped(*args, **kwargs)
+            for log_data in gen:
+                if "logs" in log_data and log_data["log_type"] != "train":
+                    print(config.new_arg)
+                    yield log_data
+        return _wrapper
 
 
 if __name__ == "__main__":
@@ -98,11 +114,13 @@ if __name__ == "__main__":
     torch.backends.cudnn.benchmark = False
     torch.backends.cudnn.deterministic = True
 
-    Trainer.__call__ = wrapper_logger(Trainer.__call__)  # type: ignore[assignment]
-    # Step 2：Decorate the Trainer.__call__ function
-    Trainer.__call__ = wrapper_example(Trainer.__call__)  # type: ignore[assignment]
-    fire.Fire(
-        Trainer,
-        serialize=lambda gen: (log_data for log_data in gen if "logs" in log_data and log_data["log_type"] != "train"),
-    )
+    # Step 2: Add decorator arguments to the main function
+    def main(trainer: Trainer.Config, example: Example.Config) -> None:
+        # Step 3: Decorate the Trainer.__call__ function
+        Trainer.__call__ = Example.decorator(example)(Trainer.__call__)  # type: ignore[assignment]
+        for log_data in Trainer(trainer)():
+            if "logs" in log_data and log_data["log_type"] != "train":
+                print(log_data)
+
+    tyro.cli(main)
 ```

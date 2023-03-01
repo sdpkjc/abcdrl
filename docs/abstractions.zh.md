@@ -9,7 +9,7 @@
 
 调用 `Trainer.__call__` 函数将得到一个生成器📽，该生成器保存了训练流程和所有相关数据。生成器每步返回一个 `log_data` 训练日志📒，持续调用该生成器即可完成训练并得到所有 `log_data`。
 
-`logger📊` 部分使用 [Tensorboard](https://www.tensorflow.org/tensorboard) 和 [Weights & Biases](https://wandb.ai/) 记录训练日志。对 `Trainer.__call__` 函数进行装饰，具体实现见核心代码。
+`Logger📊` 部分使用 [Tensorboard](https://www.tensorflow.org/tensorboard) 和 [Weights & Biases](https://wandb.ai/) 记录训练日志。对 `Trainer.__call__` 函数进行装饰，具体实现见核心代码。
 
 ---
 
@@ -36,7 +36,7 @@
 
 ```python title="abstractions.py" linenums="1"
 class Model(nn.Module):
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, config: dict[str, Any]) -> None:
         pass
 
     def value(self, x: torch.Tensor, a: Optional[torch.Tensor] = None) -> tuple[Any]:
@@ -49,8 +49,8 @@ class Model(nn.Module):
 
 
 class Algorithm:
-    def __init__(self, **kwargs) -> None:
-        self.model = Model(**kwargs)
+    def __init__(self, config: dict[str, Any]) -> None:
+        self.model = Model(config)
         # 1. 初始化 model, target_model
         # 2. 初始化 optimizer
         pass
@@ -74,8 +74,8 @@ class Algorithm:
 
 
 class Agent:
-    def __init__(self, **kwargs) -> None:
-        self.alg = Algorithm(**kwargs)
+    def __init__(self, config: dict[str, Any]) -> None:
+        self.alg = Algorithm(config)
         # 1. 初始化 Algorithm
         # 2. 初始化 运行步数变量
         pass
@@ -102,8 +102,14 @@ class Agent:
 
 
 class Trainer:
-    def __init__(self, **kwargs) -> None:
-        self.agent = Agent(**kwargs)
+    @dataclasses.dataclass
+    class Config:
+        exp_name: Optional[str] = None
+        seed: int = 1
+        # ...
+
+    def __init__(self, config: Config = Config()) -> None:
+        self.agent = Agent(config)
         # 1. 初始化参数
         # 2. 初始化训练和评估环境
         # 3. 初始化 Buffer
