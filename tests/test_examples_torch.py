@@ -38,7 +38,9 @@ def test_example_eval_model_torch() -> None:
     )
 
     subprocess.run(
-        "python example_eval_model.py" + " --model-path models/test_eval_dqn/s16.agent" + " --total_timesteps 100",
+        "python example_eval_model.py"
+        + " --evaluater.model-path models/test_eval_dqn/s16.agent"
+        + " --evaluater.total_timesteps 100",
         shell=True,
         check=True,
         timeout=100,
