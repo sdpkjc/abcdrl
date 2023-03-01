@@ -11,7 +11,7 @@ abcdRL 是一个**模块化单文件强化学习代码库**，提供“有但不
 
 <figure markdown>
   ![Adam](imgs/adam.svg#only-light){ width="300" }
-  ![Adam](imgs/adam_white.svg#only-dark){ width="300" }
+  ![Adam](imgs/adam_dark.svg#only-dark){ width="300" }
   <figcaption>Adam</figcaption>
 </figure>
 

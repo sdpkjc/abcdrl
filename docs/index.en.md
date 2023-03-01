@@ -11,7 +11,7 @@ abcdRL is a **Modular Single-file Reinforcement Learning Algorithms Library** th
 
 <figure markdown>
   ![Adam](imgs/adam.svg#only-light){ width="300" }
-  ![Adam](imgs/adam_white.svg#only-dark){ width="300" }
+  ![Adam](imgs/adam_dark.svg#only-dark){ width="300" }
   <figcaption>Adam</figcaption>
 </figure>
 
