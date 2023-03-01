@@ -65,22 +65,24 @@ Our modular design does not prescribe a strict interface, and you are free to mo
 The generic feature is implemented as a decorator, you can refer to the code below and `abcdrl/utils/*.py` file to implement the new feature you want and apply it to all algorithms.
 
 ```python hl_lines="8-9 13 15"
-from combine_signatures.combine_signatures import combine_signatures
+class Example:
+    @dataclasses.dataclass
+    class Config:
+        # Add additional parameters
+        new_arg: int = 1
 
-
-def wrapper_example(
-    wrapped: Callable[..., Generator[dict[str, Any], None, None]]
-) -> Callable[..., Generator[dict[str, Any], None, None]]:
-    @combine_signatures(wrapped)
-    def _wrapper(*args, new_arg: int = 1, **kwargs) -> Generator[dict[str, Any], None, None]: # Add additional parameters
-        # After initializing the Trainer, before running the algorithm
-        gen = wrapped(*args, **kwargs)
-        for log_data in gen:
-            if "logs" in log_data and log_data["log_type"] != "train":
-                # Here, control flow is modified and log data is handled
-                yield log_data # Each step of the algorithm
-        # After running the algorithm
-    return _wrapper
+    @classmethod
+    def decorator(cls, config: Config = Config()) -> Callable[..., Generator[dict[str, Any], None, None]]:
+        @wrapt.decorator
+        def wrapper(wrapped, instance, args, kwargs) -> Generator[dict[str, Any], None, None]:
+            # After initializing the Trainer, before running the algorithm
+            gen = wrapped(*args, **kwargs)
+            for log_data in gen:
+                if "logs" in log_data and log_data["log_type"] != "train":
+                    # Here, control flow is modified and log data is handled
+                    yield log_data # Each step of the algorithm
+            # After running the algorithm
+        return _wrapper
 ```
 
 ### Using Decorator

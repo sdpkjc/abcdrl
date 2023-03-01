@@ -11,6 +11,7 @@
 - [OpenAI-SpinningUp: Algorithms](https://spinningup.openai.com/en/latest/algorithms/)
 - [gym docs](https://www.gymlibrary.dev)
 - [gymnasium docs](https://gymnasium.farama.org/)
+- [brentyi/tyro](https://github.com/brentyi/tyro)
 - [mkdocs-material](https://squidfunk.github.io/mkdocs-material/)
 - [envpool](https://github.com/sail-sg/envpool/)
 
