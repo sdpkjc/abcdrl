@@ -15,7 +15,7 @@
 
 <figure markdown>
   ![Adam](imgs/adam.svg#only-light){ width="500" }
-  ![Adam](imgs/adam_white.svg#only-dark){ width="500" }
+  ![Adam](imgs/adam_dark.svg#only-dark){ width="500" }
   <figcaption>Adam</figcaption>
 </figure>
 
