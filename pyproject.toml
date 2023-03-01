@@ -1,9 +1,9 @@
 [tool.poetry]
 name = "abcdrl"
-version = "0.2.0-alpha.4"
+version = "0.2.0-alpha.6"
 description = "Modular Single-file Reinfocement Learning Algorithms Library"
-authors = ["Adam Zhao <pazyx728@gmail.com>"]
-maintainers = ["Adam Zhao <pazyx728@gmail.com>"]
+authors = ["Adam Zhao <hi@sdpkjc.com>"]
+maintainers = ["Adam Zhao <hi@sdpkjc.com>"]
 include = ["abcdrl"]
 license= "MIT"
 readme = "README.md"
@@ -43,7 +43,9 @@ gymnasium = "^0.27.0"
 wandb = "^0.13.7"
 combine_signatures = "^0.1.0"
 dill = "^0.3.6"
-fire = "^0.5.0"
+tomli = "^2.0.0"
+tyro = "0.3.38"
+wrapt = "1.12.1"
 
 # torch
 torch = { version = "^1.12.1", optional = true }
@@ -53,7 +55,8 @@ tensorflow = { version = "^2.11.0", optional = true }
 
 # atari
 shimmy = { version = ">=0.1.0,<1.0", extras = ["atari"], optional = true }
-autorom = { version = ">=0.4.2,<0.6.0", extras = ["accept-rom-license"], optional = true }
+autorom = { version = "~=0.4.2", optional = true }
+autorom-accept-rom-license = { version = "~=0.4.2", optional = true }
 
 # mujoco
 mujoco = { version = ">=2.3.1.post1", optional = true }
@@ -64,9 +67,9 @@ free-mujoco-py = { version = "2.1.6", optional = true }
 [tool.poetry.extras]
 torch = ["torch"]
 tf = ["tensorflow"]
-atari = ["shimmy", "autorom"]
+atari = ["shimmy", "autorom", "autorom-accept-rom-license"]
 mujoco = ["mujoco", "mujoco-py", "imageio", "free-mujoco-py"]
-all = ["torch", "tensorflow", "shimmy", "autorom", "mujoco", "mujoco-py", "imageio", "free-mujoco-py"]
+all = ["torch", "tensorflow", "shimmy", "autorom", "autorom-accept-rom-license", "mujoco", "mujoco-py", "imageio", "free-mujoco-py"]
 
 [tool.poetry.group.dev]
 optional = true

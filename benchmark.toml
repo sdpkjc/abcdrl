@@ -4,140 +4,140 @@
 
 CartPole-v1 = """
     python abcdrl/dqn_torch.py \
-        --env-id CartPole-v1 \
-        --num-envs 1 \
-        --total-timesteps 500000 \
-        --gamma 0.99 \
-        --buffer-size 10000 \
-        --start-epsilon 1.0 \
-        --end-epsilon 0.05 \
-        --exploration-fraction 0.5 \
-        --batch-size 128 \
-        --learning-rate 2.5e-4 \
-        --learning-starts 10000 \
-        --target-network-frequency 500 \
-        --train-frequency 10 \
+        --trainer.env-id CartPole-v1 \
+        --trainer.num-envs 1 \
+        --trainer.total-timesteps 500000 \
+        --trainer.gamma 0.99 \
+        --trainer.buffer-size 10000 \
+        --trainer.start-epsilon 1.0 \
+        --trainer.end-epsilon 0.05 \
+        --trainer.exploration-fraction 0.5 \
+        --trainer.batch-size 128 \
+        --trainer.learning-rate 2.5e-4 \
+        --trainer.learning-starts 10000 \
+        --trainer.target-network-frequency 500 \
+        --trainer.train-frequency 10 \
 """
 
 BreakoutNoFrameskip-v4 = """
     python abcdrl/dqn_atari_torch.py \
-        --env-id BreakoutNoFrameskip-v4 \
-        --num-envs 1 \
-        --total-timesteps 10000000 \
-        --gamma 0.99 \
-        --buffer-size 1000000 \
-        --start-epsilon 1.0 \
-        --end-epsilon 0.01 \
-        --exploration-fraction 0.1 \
-        --batch-size 32 \
-        --learning-rate 1e-4 \
-        --learning-starts 50000 \
-        --target-network-frequency 1000 \
-        --train-frequency 4 \
+        --trainer.env-id BreakoutNoFrameskip-v4 \
+        --trainer.num-envs 1 \
+        --trainer.total-timesteps 10000000 \
+        --trainer.gamma 0.99 \
+        --trainer.buffer-size 1000000 \
+        --trainer.start-epsilon 1.0 \
+        --trainer.end-epsilon 0.01 \
+        --trainer.exploration-fraction 0.1 \
+        --trainer.batch-size 32 \
+        --trainer.learning-rate 1e-4 \
+        --trainer.learning-starts 50000 \
+        --trainer.target-network-frequency 1000 \
+        --trainer.train-frequency 4 \
 """
 
 PongNoFrameskip-v4 = """
     python abcdrl/dqn_atari_torch.py \
-        --env-id PongNoFrameskip-v4 \
-        --num-envs 1 \
-        --total-timesteps 10000000 \
-        --gamma 0.99 \
-        --buffer-size 1000000 \
-        --start-epsilon 1.0 \
-        --end-epsilon 0.01 \
-        --exploration-fraction 0.1 \
-        --batch-size 32 \
-        --learning-rate 1e-4 \
-        --learning-starts 50000 \
-        --target-network-frequency 1000 \
-        --train-frequency 4 \
+        --trainer.env-id PongNoFrameskip-v4 \
+        --trainer.num-envs 1 \
+        --trainer.total-timesteps 10000000 \
+        --trainer.gamma 0.99 \
+        --trainer.buffer-size 1000000 \
+        --trainer.start-epsilon 1.0 \
+        --trainer.end-epsilon 0.01 \
+        --trainer.exploration-fraction 0.1 \
+        --trainer.batch-size 32 \
+        --trainer.learning-rate 1e-4 \
+        --trainer.learning-starts 50000 \
+        --trainer.target-network-frequency 1000 \
+        --trainer.train-frequency 4 \
 """
 
 BeamRiderNoFrameskip-v4 = """
     python abcdrl/dqn_atari_torch.py \
-        --env-id BeamRiderNoFrameskip-v4 \
-        --num-envs 1 \
-        --total-timesteps 10000000 \
-        --gamma 0.99 \
-        --buffer-size 1000000 \
-        --start-epsilon 1.0 \
-        --end-epsilon 0.01 \
-        --exploration-fraction 0.1 \
-        --batch-size 32 \
-        --learning-rate 1e-4 \
-        --learning-starts 50000 \
-        --target-network-frequency 1000 \
-        --train-frequency 4 \
+        --trainer.env-id BeamRiderNoFrameskip-v4 \
+        --trainer.num-envs 1 \
+        --trainer.total-timesteps 10000000 \
+        --trainer.gamma 0.99 \
+        --trainer.buffer-size 1000000 \
+        --trainer.start-epsilon 1.0 \
+        --trainer.end-epsilon 0.01 \
+        --trainer.exploration-fraction 0.1 \
+        --trainer.batch-size 32 \
+        --trainer.learning-rate 1e-4 \
+        --trainer.learning-starts 50000 \
+        --trainer.target-network-frequency 1000 \
+        --trainer.train-frequency 4 \
 """
 
 [dqn.tf]
 
 CartPole-v1 = """
     python abcdrl/dqn_tf.py \
-        --env-id CartPole-v1 \
-        --num-envs 1 \
-        --total-timesteps 500000 \
-        --gamma 0.99 \
-        --buffer-size 10000 \
-        --start-epsilon 1.0 \
-        --end-epsilon 0.05 \
-        --exploration-fraction 0.5 \
-        --batch-size 128 \
-        --learning-rate 2.5e-4 \
-        --learning-starts 10000 \
-        --target-network-frequency 500 \
-        --train-frequency 10 \
+        --trainer.env-id CartPole-v1 \
+        --trainer.num-envs 1 \
+        --trainer.total-timesteps 500000 \
+        --trainer.gamma 0.99 \
+        --trainer.buffer-size 10000 \
+        --trainer.start-epsilon 1.0 \
+        --trainer.end-epsilon 0.05 \
+        --trainer.exploration-fraction 0.5 \
+        --trainer.batch-size 128 \
+        --trainer.learning-rate 2.5e-4 \
+        --trainer.learning-starts 10000 \
+        --trainer.target-network-frequency 500 \
+        --trainer.train-frequency 10 \
 """
 
 BreakoutNoFrameskip-v4 = """
     python abcdrl/dqn_atari_tf.py \
-        --env-id BreakoutNoFrameskip-v4 \
-        --num-envs 1 \
-        --total-timesteps 10000000 \
-        --gamma 0.99 \
-        --buffer-size 1000000 \
-        --start-epsilon 1.0 \
-        --end-epsilon 0.01 \
-        --exploration-fraction 0.1 \
-        --batch-size 32 \
-        --learning-rate 1e-4 \
-        --learning-starts 50000 \
-        --target-network-frequency 1000 \
-        --train-frequency 4 \
+        --trainer.env-id BreakoutNoFrameskip-v4 \
+        --trainer.num-envs 1 \
+        --trainer.total-timesteps 10000000 \
+        --trainer.gamma 0.99 \
+        --trainer.buffer-size 1000000 \
+        --trainer.start-epsilon 1.0 \
+        --trainer.end-epsilon 0.01 \
+        --trainer.exploration-fraction 0.1 \
+        --trainer.batch-size 32 \
+        --trainer.learning-rate 1e-4 \
+        --trainer.learning-starts 50000 \
+        --trainer.target-network-frequency 1000 \
+        --trainer.train-frequency 4 \
 """
 
 PongNoFrameskip-v4 = """
     python abcdrl/dqn_atari_tf.py \
-        --env-id PongNoFrameskip-v4 \
-        --num-envs 1 \
-        --total-timesteps 10000000 \
-        --gamma 0.99 \
-        --buffer-size 1000000 \
-        --start-epsilon 1.0 \
-        --end-epsilon 0.01 \
-        --exploration-fraction 0.1 \
-        --batch-size 32 \
-        --learning-rate 1e-4 \
-        --learning-starts 50000 \
-        --target-network-frequency 1000 \
-        --train-frequency 4 \
+        --trainer.env-id PongNoFrameskip-v4 \
+        --trainer.num-envs 1 \
+        --trainer.total-timesteps 10000000 \
+        --trainer.gamma 0.99 \
+        --trainer.buffer-size 1000000 \
+        --trainer.start-epsilon 1.0 \
+        --trainer.end-epsilon 0.01 \
+        --trainer.exploration-fraction 0.1 \
+        --trainer.batch-size 32 \
+        --trainer.learning-rate 1e-4 \
+        --trainer.learning-starts 50000 \
+        --trainer.target-network-frequency 1000 \
+        --trainer.train-frequency 4 \
 """
 
 BeamRiderNoFrameskip-v4 = """
     python abcdrl/dqn_atari_tf.py \
-        --env-id BeamRiderNoFrameskip-v4 \
-        --num-envs 1 \
-        --total-timesteps 10000000 \
-        --gamma 0.99 \
-        --buffer-size 1000000 \
-        --start-epsilon 1.0 \
-        --end-epsilon 0.01 \
-        --exploration-fraction 0.1 \
-        --batch-size 32 \
-        --learning-rate 1e-4 \
-        --learning-starts 50000 \
-        --target-network-frequency 1000 \
-        --train-frequency 4 \
+        --trainer.env-id BeamRiderNoFrameskip-v4 \
+        --trainer.num-envs 1 \
+        --trainer.total-timesteps 10000000 \
+        --trainer.gamma 0.99 \
+        --trainer.buffer-size 1000000 \
+        --trainer.start-epsilon 1.0 \
+        --trainer.end-epsilon 0.01 \
+        --trainer.exploration-fraction 0.1 \
+        --trainer.batch-size 32 \
+        --trainer.learning-rate 1e-4 \
+        --trainer.learning-starts 50000 \
+        --trainer.target-network-frequency 1000 \
+        --trainer.train-frequency 4 \
 """
 
 [ddqn]
@@ -147,38 +147,38 @@ BeamRiderNoFrameskip-v4 = """
 
 CartPole-v1 = """
     python abcdrl/ddqn_torch.py \
-        --env-id CartPole-v1 \
-        --num-envs 1 \
-        --total-timesteps 500000 \
-        --gamma 0.99 \
-        --buffer-size 10000 \
-        --start-epsilon 1.0 \
-        --end-epsilon 0.05 \
-        --exploration-fraction 0.5 \
-        --batch-size 128 \
-        --learning-rate 2.5e-4 \
-        --learning-starts 10000 \
-        --target-network-frequency 500 \
-        --train-frequency 10 \
+        --trainer.env-id CartPole-v1 \
+        --trainer.num-envs 1 \
+        --trainer.total-timesteps 500000 \
+        --trainer.gamma 0.99 \
+        --trainer.buffer-size 10000 \
+        --trainer.start-epsilon 1.0 \
+        --trainer.end-epsilon 0.05 \
+        --trainer.exploration-fraction 0.5 \
+        --trainer.batch-size 128 \
+        --trainer.learning-rate 2.5e-4 \
+        --trainer.learning-starts 10000 \
+        --trainer.target-network-frequency 500 \
+        --trainer.train-frequency 10 \
 """
 
 [ddqn.tf]
 
 CartPole-v1 = """
     python abcdrl/ddqn_tf.py \
-        --env-id CartPole-v1 \
-        --num-envs 1 \
-        --total-timesteps 500000 \
-        --gamma 0.99 \
-        --buffer-size 10000 \
-        --start-epsilon 1.0 \
-        --end-epsilon 0.05 \
-        --exploration-fraction 0.5 \
-        --batch-size 128 \
-        --learning-rate 2.5e-4 \
-        --learning-starts 10000 \
-        --target-network-frequency 500 \
-        --train-frequency 10 \
+        --trainer.env-id CartPole-v1 \
+        --trainer.num-envs 1 \
+        --trainer.total-timesteps 500000 \
+        --trainer.gamma 0.99 \
+        --trainer.buffer-size 10000 \
+        --trainer.start-epsilon 1.0 \
+        --trainer.end-epsilon 0.05 \
+        --trainer.exploration-fraction 0.5 \
+        --trainer.batch-size 128 \
+        --trainer.learning-rate 2.5e-4 \
+        --trainer.learning-starts 10000 \
+        --trainer.target-network-frequency 500 \
+        --trainer.train-frequency 10 \
 """
 
 [pdqn]
@@ -188,21 +188,21 @@ CartPole-v1 = """
 
 CartPole-v1 = """
     python abcdrl/pdqn_torch.py \
-        --env-id CartPole-v1 \
-        --num-envs 1 \
-        --total-timesteps 500000 \
-        --gamma 0.99 \
-        --alpha 0.2 \
-        --beta 0.6 \
-        --buffer-size 10000 \
-        --start-epsilon 1.0 \
-        --end-epsilon 0.05 \
-        --exploration-fraction 0.5 \
-        --batch-size 128 \
-        --learning-rate 2.5e-4 \
-        --learning-starts 10000 \
-        --target-network-frequency 500 \
-        --train-frequency 10 \
+        --trainer.env-id CartPole-v1 \
+        --trainer.num-envs 1 \
+        --trainer.total-timesteps 500000 \
+        --trainer.gamma 0.99 \
+        --trainer.alpha 0.2 \
+        --trainer.beta 0.6 \
+        --trainer.buffer-size 10000 \
+        --trainer.start-epsilon 1.0 \
+        --trainer.end-epsilon 0.05 \
+        --trainer.exploration-fraction 0.5 \
+        --trainer.batch-size 128 \
+        --trainer.learning-rate 2.5e-4 \
+        --trainer.learning-starts 10000 \
+        --trainer.target-network-frequency 500 \
+        --trainer.train-frequency 10 \
 """
 
 
@@ -210,21 +210,21 @@ CartPole-v1 = """
 
 CartPole-v1 = """
     python abcdrl/pdqn_tf.py \
-        --env-id CartPole-v1 \
-        --num-envs 1 \
-        --total-timesteps 500000 \
-        --gamma 0.99 \
-        --alpha 0.2 \
-        --beta 0.6 \
-        --buffer-size 10000 \
-        --start-epsilon 1.0 \
-        --end-epsilon 0.05 \
-        --exploration-fraction 0.5 \
-        --batch-size 128 \
-        --learning-rate 2.5e-4 \
-        --learning-starts 10000 \
-        --target-network-frequency 500 \
-        --train-frequency 10 \
+        --trainer.env-id CartPole-v1 \
+        --trainer.num-envs 1 \
+        --trainer.total-timesteps 500000 \
+        --trainer.gamma 0.99 \
+        --trainer.alpha 0.2 \
+        --trainer.beta 0.6 \
+        --trainer.buffer-size 10000 \
+        --trainer.start-epsilon 1.0 \
+        --trainer.end-epsilon 0.05 \
+        --trainer.exploration-fraction 0.5 \
+        --trainer.batch-size 128 \
+        --trainer.learning-rate 2.5e-4 \
+        --trainer.learning-starts 10000 \
+        --trainer.target-network-frequency 500 \
+        --trainer.train-frequency 10 \
 """
 
 
@@ -235,66 +235,66 @@ CartPole-v1 = """
 
 Pendulum-v1 = """
     python abcdrl/ddpg_torch.py \
-        --env-id Pendulum-v1 \
-        --num-envs 1 \
-        --total-timesteps 50000 \
-        --gamma 0.98 \
-        --buffer-size 50000 \
-        --exploration-noise 0.1 \
-        --batch-size 256 \
-        --learning-rate 1e-3 \
-        --tau 0.005 \
-        --learning-starts 1000 \
-        --train-frequency 4 \
-        --policy-frequency 2 \
+        --trainer.env-id Pendulum-v1 \
+        --trainer.num-envs 1 \
+        --trainer.total-timesteps 50000 \
+        --trainer.gamma 0.98 \
+        --trainer.buffer-size 50000 \
+        --trainer.exploration-noise 0.1 \
+        --trainer.batch-size 256 \
+        --trainer.learning-rate 1e-3 \
+        --trainer.tau 0.005 \
+        --trainer.learning-starts 1000 \
+        --trainer.train-frequency 4 \
+        --trainer.policy-frequency 2 \
 """
 
 Hopper-v4 = """
     python abcdrl/ddpg_torch.py \
-        --env-id Hopper-v4 \
-        --num-envs 1 \
-        --total-timesteps 1000000 \
-        --gamma 0.99 \
-        --buffer-size 1000000 \
-        --exploration-noise 0.1 \
-        --batch-size 256 \
-        --learning-rate 3e-4 \
-        --tau 0.005 \
-        --learning-starts 25000 \
-        --train-frequency 1 \
-        --policy-frequency 2 \
+        --trainer.env-id Hopper-v4 \
+        --trainer.num-envs 1 \
+        --trainer.total-timesteps 1000000 \
+        --trainer.gamma 0.99 \
+        --trainer.buffer-size 1000000 \
+        --trainer.exploration-noise 0.1 \
+        --trainer.batch-size 256 \
+        --trainer.learning-rate 3e-4 \
+        --trainer.tau 0.005 \
+        --trainer.learning-starts 25000 \
+        --trainer.train-frequency 1 \
+        --trainer.policy-frequency 2 \
 """
 
 Walker2d-v4 = """
     python abcdrl/ddpg_torch.py \
-        --env-id Walker2d-v4 \
-        --num-envs 1 \
-        --total-timesteps 1000000 \
-        --gamma 0.99 \
-        --buffer-size 1000000 \
-        --exploration-noise 0.1 \
-        --batch-size 256 \
-        --learning-rate 3e-4 \
-        --tau 0.005 \
-        --learning-starts 25000 \
-        --train-frequency 1 \
-        --policy-frequency 2 \
+        --trainer.env-id Walker2d-v4 \
+        --trainer.num-envs 1 \
+        --trainer.total-timesteps 1000000 \
+        --trainer.gamma 0.99 \
+        --trainer.buffer-size 1000000 \
+        --trainer.exploration-noise 0.1 \
+        --trainer.batch-size 256 \
+        --trainer.learning-rate 3e-4 \
+        --trainer.tau 0.005 \
+        --trainer.learning-starts 25000 \
+        --trainer.train-frequency 1 \
+        --trainer.policy-frequency 2 \
 """
 
 HalfCheetah-v4 = """
     python abcdrl/ddpg_torch.py \
-        --env-id HalfCheetah-v4 \
-        --num-envs 1 \
-        --total-timesteps 1000000 \
-        --gamma 0.99 \
-        --buffer-size 1000000 \
-        --exploration-noise 0.1 \
-        --batch-size 256 \
-        --learning-rate 3e-4 \
-        --tau 0.005 \
-        --learning-starts 25000 \
-        --train-frequency 1 \
-        --policy-frequency 2 \
+        --trainer.env-id HalfCheetah-v4 \
+        --trainer.num-envs 1 \
+        --trainer.total-timesteps 1000000 \
+        --trainer.gamma 0.99 \
+        --trainer.buffer-size 1000000 \
+        --trainer.exploration-noise 0.1 \
+        --trainer.batch-size 256 \
+        --trainer.learning-rate 3e-4 \
+        --trainer.tau 0.005 \
+        --trainer.learning-starts 25000 \
+        --trainer.train-frequency 1 \
+        --trainer.policy-frequency 2 \
 """
 
 
@@ -305,74 +305,74 @@ HalfCheetah-v4 = """
 
 Pendulum-v1 = """
     python abcdrl/td3_torch.py \
-        --env-id Pendulum-v1 \
-        --num-envs 1 \
-        --total-timesteps 50000 \
-        --gamma 0.98 \
-        --buffer-size 50000 \
-        --exploration-noise 0.1 \
-        --noise-clip 0.5 \
-        --batch-size 256 \
-        --learning-rate 1e-3 \
-        --tau 0.005 \
-        --policy-noise 0.2 \
-        --learning-starts 1000 \
-        --train-frequency 4 \
-        --policy-frequency 2 \
+        --trainer.env-id Pendulum-v1 \
+        --trainer.num-envs 1 \
+        --trainer.total-timesteps 50000 \
+        --trainer.gamma 0.98 \
+        --trainer.buffer-size 50000 \
+        --trainer.exploration-noise 0.1 \
+        --trainer.noise-clip 0.5 \
+        --trainer.batch-size 256 \
+        --trainer.learning-rate 1e-3 \
+        --trainer.tau 0.005 \
+        --trainer.policy-noise 0.2 \
+        --trainer.learning-starts 1000 \
+        --trainer.train-frequency 4 \
+        --trainer.policy-frequency 2 \
 """
 
 Hopper-v4 = """
     python abcdrl/td3_torch.py \
-        --env-id Hopper-v4 \
-        --num-envs 1 \
-        --total-timesteps 1000000 \
-        --gamma 0.99 \
-        --buffer-size 1000000 \
-        --exploration-noise 0.1 \
-        --noise-clip 0.5 \
-        --batch-size 256 \
-        --learning-rate 3e-4 \
-        --tau 0.005 \
-        --policy-noise 0.2 \
-        --learning-starts 25000 \
-        --train-frequency 1 \
-        --policy-frequency 2 \
+        --trainer.env-id Hopper-v4 \
+        --trainer.num-envs 1 \
+        --trainer.total-timesteps 1000000 \
+        --trainer.gamma 0.99 \
+        --trainer.buffer-size 1000000 \
+        --trainer.exploration-noise 0.1 \
+        --trainer.noise-clip 0.5 \
+        --trainer.batch-size 256 \
+        --trainer.learning-rate 3e-4 \
+        --trainer.tau 0.005 \
+        --trainer.policy-noise 0.2 \
+        --trainer.learning-starts 25000 \
+        --trainer.train-frequency 1 \
+        --trainer.policy-frequency 2 \
 """
 
 Walker2d-v4 = """
     python abcdrl/td3_torch.py \
-        --env-id Walker2d-v4 \
-        --num-envs 1 \
-        --total-timesteps 1000000 \
-        --gamma 0.99 \
-        --buffer-size 1000000 \
-        --exploration-noise 0.1 \
-        --noise-clip 0.5 \
-        --batch-size 256 \
-        --learning-rate 3e-4 \
-        --tau 0.005 \
-        --policy-noise 0.2 \
-        --learning-starts 25000 \
-        --train-frequency 1 \
-        --policy-frequency 2 \
+        --trainer.env-id Walker2d-v4 \
+        --trainer.num-envs 1 \
+        --trainer.total-timesteps 1000000 \
+        --trainer.gamma 0.99 \
+        --trainer.buffer-size 1000000 \
+        --trainer.exploration-noise 0.1 \
+        --trainer.noise-clip 0.5 \
+        --trainer.batch-size 256 \
+        --trainer.learning-rate 3e-4 \
+        --trainer.tau 0.005 \
+        --trainer.policy-noise 0.2 \
+        --trainer.learning-starts 25000 \
+        --trainer.train-frequency 1 \
+        --trainer.policy-frequency 2 \
 """
 
 HalfCheetah-v4 = """
     python abcdrl/td3_torch.py \
-        --env-id HalfCheetah-v4 \
-        --num-envs 1 \
-        --total-timesteps 1000000 \
-        --gamma 0.99 \
-        --buffer-size 1000000 \
-        --exploration-noise 0.1 \
-        --noise-clip 0.5 \
-        --batch-size 256 \
-        --learning-rate 3e-4 \
-        --tau 0.005 \
-        --policy-noise 0.2 \
-        --learning-starts 25000 \
-        --train-frequency 1 \
-        --policy-frequency 2 \
+        --trainer.env-id HalfCheetah-v4 \
+        --trainer.num-envs 1 \
+        --trainer.total-timesteps 1000000 \
+        --trainer.gamma 0.99 \
+        --trainer.buffer-size 1000000 \
+        --trainer.exploration-noise 0.1 \
+        --trainer.noise-clip 0.5 \
+        --trainer.batch-size 256 \
+        --trainer.learning-rate 3e-4 \
+        --trainer.tau 0.005 \
+        --trainer.policy-noise 0.2 \
+        --trainer.learning-starts 25000 \
+        --trainer.train-frequency 1 \
+        --trainer.policy-frequency 2 \
 """
 
 
@@ -382,78 +382,76 @@ HalfCheetah-v4 = """
 
 Pendulum-v1 = """
     python abcdrl/sac_torch.py \
-        --env-id Pendulum-v1 \
-        --num-envs 1 \
-        --total-timesteps 50000 \
-        --gamma 0.98 \
-        --buffer-size 50000 \
-        --batch-size 256 \
-        --q-lr 1e-3 \
-        --policy-lr 3e-4 \
-        --tau 0.005 \
-        --alpha 0.2 \
-        --autotune True \
-        --learning-starts 25000 \
-        --train-frequency 1 \
-        --policy-frequency 2 \
-        --target-network-frequency 1 \
+        --trainer.env-id Pendulum-v1 \
+        --trainer.num-envs 1 \
+        --trainer.total-timesteps 50000 \
+        --trainer.gamma 0.98 \
+        --trainer.buffer-size 50000 \
+        --trainer.batch-size 256 \
+        --trainer.q-lr 1e-3 \
+        --trainer.policy-lr 3e-4 \
+        --trainer.tau 0.005 \
+        --trainer.alpha 0.2 \
+        --trainer.learning-starts 25000 \
+        --trainer.train-frequency 1 \
+        --trainer.policy-frequency 2 \
+        --trainer.target-network-frequency 1 \
 """
 
 Hopper-v4 = """
     python abcdrl/sac_torch.py \
-        --env-id Hopper-v4 \
-        --num-envs 1 \
-        --total-timesteps 1000000 \
-        --gamma 0.99 \
-        --buffer-size 1000000 \
-        --batch-size 256 \
-        --q-lr 1e-3 \
-        --policy-lr 3e-4 \
-        --tau 0.005 \
-        --alpha 0.2 \
-        --autotune True \
-        --learning-starts 25000 \
-        --train-frequency 1 \
-        --policy-frequency 2 \
-        --target-network-frequency 1 \
+        --trainer.env-id Hopper-v4 \
+        --trainer.num-envs 1 \
+        --trainer.total-timesteps 1000000 \
+        --trainer.gamma 0.99 \
+        --trainer.buffer-size 1000000 \
+        --trainer.batch-size 256 \
+        --trainer.q-lr 1e-3 \
+        --trainer.policy-lr 3e-4 \
+        --trainer.tau 0.005 \
+        --trainer.alpha 0.2 \
+        --trainer.learning-starts 25000 \
+        --trainer.train-frequency 1 \
+        --trainer.policy-frequency 2 \
+        --trainer.target-network-frequency 1 \
 """
 
 Walker2d-v4 = """
     python abcdrl/sac_torch.py \
-        --env-id Walker2d-v4 \
-        --num-envs 1 \
-        --total-timesteps 1000000 \
-        --gamma 0.99 \
-        --buffer-size 1000000 \
-        --batch-size 256 \
-        --q-lr 1e-3 \
-        --policy-lr 3e-4 \
-        --tau 0.005 \
-        --alpha 0.2 \
-        --autotune True \
-        --learning-starts 25000 \
-        --train-frequency 1 \
-        --policy-frequency 2 \
-        --target-network-frequency 1 \
+        --trainer.env-id Walker2d-v4 \
+        --trainer.num-envs 1 \
+        --trainer.total-timesteps 1000000 \
+        --trainer.gamma 0.99 \
+        --trainer.buffer-size 1000000 \
+        --trainer.batch-size 256 \
+        --trainer.q-lr 1e-3 \
+        --trainer.policy-lr 3e-4 \
+        --trainer.tau 0.005 \
+        --trainer.alpha 0.2 \
+        --trainer.autotune True \
+        --trainer.learning-starts 25000 \
+        --trainer.train-frequency 1 \
+        --trainer.policy-frequency 2 \
+        --trainer.target-network-frequency 1 \
 """
 
 HalfCheetah-v4 = """
     python abcdrl/sac_torch.py \
-        --env-id HalfCheetah-v4 \
-        --num-envs 1 \
-        --total-timesteps 1000000 \
-        --gamma 0.99 \
-        --buffer-size 1000000 \
-        --batch-size 256 \
-        --q-lr 1e-3 \
-        --policy-lr 3e-4 \
-        --tau 0.005 \
-        --alpha 0.2 \
-        --autotune True \
-        --learning-starts 25000 \
-        --train-frequency 1 \
-        --policy-frequency 2 \
-        --target-network-frequency 1 \
+        --trainer.env-id HalfCheetah-v4 \
+        --trainer.num-envs 1 \
+        --trainer.total-timesteps 1000000 \
+        --trainer.gamma 0.99 \
+        --trainer.buffer-size 1000000 \
+        --trainer.batch-size 256 \
+        --trainer.q-lr 1e-3 \
+        --trainer.policy-lr 3e-4 \
+        --trainer.tau 0.005 \
+        --trainer.alpha 0.2 \
+        --trainer.autotune True \
+        --trainer.learning-starts 25000 \
+        --trainer.train-frequency 1 \
+        --trainer.policy-frequency 2 \
+        --trainer.target-network-frequency 1 \
 """
 
 
@@ -463,80 +461,76 @@ HalfCheetah-v4 = """
 
 Pendulum-v1 = """
     python abcdrl/ppo_torch.py \
-        --env-id Pendulum-v1 \
-        --num-envs 1 \
-        --total-timesteps 50000 \
-        --gamma 0.98 \
-        --num-steps 128 \
-        --learning-rate 1e-3 \
-        --anneal-lr True \
-        --update-epochs 10 \
-        --norm-adv True \
-        --clip-coef 0.2 \
-        --clip-vloss True \
-        --ent-coef 0.0 \
-        --vf-coef 0.5 \
-        --max-grad-norm 0.5 \
-        --num-minibatches 32 \
-        --gae-lambda 0.95 \
+        --trainer.env-id Pendulum-v1 \
+        --trainer.num-envs 1 \
+        --trainer.total-timesteps 50000 \
+        --trainer.gamma 0.98 \
+        --trainer.num-steps 128 \
+        --trainer.learning-rate 1e-3 \
+        --trainer.update-epochs 10 \
+        --trainer.norm-adv True \
+        --trainer.clip-coef 0.2 \
+        --trainer.clip-vloss True \
+        --trainer.ent-coef 0.0 \
+        --trainer.vf-coef 0.5 \
+        --trainer.max-grad-norm 0.5 \
+        --trainer.num-minibatches 32 \
+        --trainer.gae-lambda 0.95 \
 """
 
 Hopper-v4 = """
     python abcdrl/ppo_torch.py \
-        --env-id Hopper-v4 \
-        --num-envs 1 \
-        --total-timesteps 1000000 \
-        --gamma 0.99 \
-        --num-steps 2048 \
-        --learning-rate 3e-4 \
-        --anneal-lr True \
-        --update-epochs 10 \
-        --norm-adv True \
-        --clip-coef 0.2 \
-        --clip-vloss True \
-        --ent-coef 0.0 \
-        --vf-coef 0.5 \
-        --max-grad-norm 0.5 \
-        --num-minibatches 32 \
-        --gae-lambda 0.95 \
+        --trainer.env-id Hopper-v4 \
+        --trainer.num-envs 1 \
+        --trainer.total-timesteps 1000000 \
+        --trainer.gamma 0.99 \
+        --trainer.num-steps 2048 \
+        --trainer.learning-rate 3e-4 \
+        --trainer.update-epochs 10 \
+        --trainer.norm-adv True \
+        --trainer.clip-coef 0.2 \
+        --trainer.clip-vloss True \
+        --trainer.ent-coef 0.0 \
+        --trainer.vf-coef 0.5 \
+        --trainer.max-grad-norm 0.5 \
+        --trainer.num-minibatches 32 \
+        --trainer.gae-lambda 0.95 \
 """
 
 Walker2d-v4 = """
     python abcdrl/ppo_torch.py \
-        --env-id Walker2d-v4 \
-        --num-envs 1 \
-        --total-timesteps 1000000 \
-        --gamma 0.99 \
-        --num-steps 2048 \
-        --learning-rate 3e-4 \
-        --anneal-lr True \
-        --update-epochs 10 \
-        --norm-adv True \
-        --clip-coef 0.2 \
-        --clip-vloss True \
-        --ent-coef 0.0 \
-        --vf-coef 0.5 \
-        --max-grad-norm 0.5 \
-        --num-minibatches 32 \
-        --gae-lambda 0.95 \
+        --trainer.env-id Walker2d-v4 \
+        --trainer.num-envs 1 \
+        --trainer.total-timesteps 1000000 \
+        --trainer.gamma 0.99 \
+        --trainer.num-steps 2048 \
+        --trainer.learning-rate 3e-4 \
+        --trainer.update-epochs 10 \
+        --trainer.norm-adv True \
+        --trainer.clip-coef 0.2 \
+        --trainer.clip-vloss True \
+        --trainer.ent-coef 0.0 \
+        --trainer.vf-coef 0.5 \
+        --trainer.max-grad-norm 0.5 \
+        --trainer.num-minibatches 32 \
+        --trainer.gae-lambda 0.95 \
 """
 
 HalfCheetah-v4 = """
     python abcdrl/ppo_torch.py \
-        --env-id HalfCheetah-v4 \
-        --num-envs 1 \
-        --total-timesteps 1000000 \
-        --gamma 0.99 \
-        --num-steps 2048 \
-        --learning-rate 3e-4 \
-        --anneal-lr True \
-        --update-epochs 10 \
-        --norm-adv True \
-        --clip-coef 0.2 \
-        --clip-vloss True \
-        --ent-coef 0.0 \
-        --vf-coef 0.5 \
-        --max-grad-norm 0.5 \
-        --num-minibatches 32 \
-        --gae-lambda 0.95 \
+        --trainer.env-id HalfCheetah-v4 \
+        --trainer.num-envs 1 \
+        --trainer.total-timesteps 1000000 \
+        --trainer.gamma 0.99 \
+        --trainer.num-steps 2048 \
+        --trainer.learning-rate 3e-4 \
+        --trainer.update-epochs 10 \
+        --trainer.norm-adv True \
+        --trainer.clip-coef 0.2 \
+        --trainer.clip-vloss True \
+        --trainer.ent-coef 0.0 \
+        --trainer.vf-coef 0.5 \
+        --trainer.max-grad-norm 0.5 \
+        --trainer.num-minibatches 32 \
+        --trainer.gae-lambda 0.95 \
 """

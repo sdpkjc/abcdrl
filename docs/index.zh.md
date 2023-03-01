@@ -10,7 +10,8 @@
 abcdRL 是一个**模块化单文件强化学习代码库**，提供“有但不严格”的模块化设计，和清晰的单文件算法实现。
 
 <figure markdown>
-  ![Adam](imgs/adam.svg){ width="300" }
+  ![Adam](imgs/adam.svg#only-light){ width="300" }
+  ![Adam](imgs/adam_dark.svg#only-dark){ width="300" }
   <figcaption>Adam</figcaption>
 </figure>
 

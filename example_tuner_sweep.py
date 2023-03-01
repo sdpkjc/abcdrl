@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 import time
+from typing import Optional
 
-import fire
+import tyro
 import wandb
 
 from abcdrl import dqn_torch
@@ -26,7 +27,7 @@ def tune_agent() -> None:
     with wandb.init(name=f"{sweep_configuration['name']}__{int(time.time())}") as writer:  # type: ignore[union-attr]
         wandb.save("abcdrl/dqn_torch.py")
 
-        trainer = dqn_torch.Trainer(
+        agent_config = dqn_torch.Trainer.Config(
             env_id=wandb.config.env_id,
             learning_rate=wandb.config.learning_rate,
             batch_size=wandb.config.batch_size,
@@ -34,6 +35,7 @@ def tune_agent() -> None:
             target_network_frequency=wandb.config.target_network_frequency,
             exploration_fraction=wandb.config.exploration_fraction,
         )
+        trainer = dqn_torch.Trainer(agent_config)
 
         for log_data in trainer():
             if "logs" in log_data:
@@ -46,13 +48,16 @@ def tune_agent() -> None:
                 writer.log({"global_step": log_data["sample_step"]}, step=log_data["sample_step"])
 
 
-def main(
-    sweep_id: str | None = None, run_count: int = 1, wandb_project_name: str = "abcdrl", wandb_entity: str | None = None
-):
-    if sweep_id is None:
-        sweep_id = wandb.sweep(sweep=sweep_configuration, project=wandb_project_name, entity=wandb_entity)  # type: ignore[arg-type]
-    wandb.agent(sweep_id, function=tune_agent, count=run_count)
-
-
 if __name__ == "__main__":
-    fire.Fire(main)
+
+    def main(
+        sweep_id: Optional[str] = None,
+        run_count: int = 1,
+        wandb_project_name: str = "abcdrl",
+        wandb_entity: Optional[str] = None,
+    ):
+        if sweep_id is None:
+            sweep_id = wandb.sweep(sweep=sweep_configuration, project=wandb_project_name, entity=wandb_entity)  # type: ignore[arg-type]
+        wandb.agent(sweep_id, function=tune_agent, count=run_count)
+
+    tyro.cli(main)

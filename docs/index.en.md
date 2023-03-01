@@ -10,7 +10,8 @@
 abcdRL is a **Modular Single-file Reinforcement Learning Algorithms Library** that provides modular design without strict and clean single-file implementation.
 
 <figure markdown>
-  ![Adam](imgs/adam.svg){ width="300" }
+  ![Adam](imgs/adam.svg#only-light){ width="300" }
+  ![Adam](imgs/adam_dark.svg#only-dark){ width="300" }
   <figcaption>Adam</figcaption>
 </figure>
 

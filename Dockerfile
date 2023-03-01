@@ -1,5 +1,5 @@
 FROM nvidia/cuda:11.7.0-runtime-ubuntu22.04
-LABEL maintainer="pazyx728@gmail.com"
+LABEL maintainer="hi@sdpkjc.com"
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PATH="$HOME/.pyenv/bin:$HOME/.pyenv/shims:$PATH"

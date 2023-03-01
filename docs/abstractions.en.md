@@ -9,12 +9,13 @@ Each algorithm is mainly composed of four classes: `Model📦`, `Algorithm👣`,
 
 The `Trainer.__call__` function returns a generator that holds the training control-flow and all related data. The generator returns a `log_data` training log at each step, and the generator is called iteratively to complete the training and get all `log_data`.
 
-The `logger📊` part uses [Tensorboard](https://www.tensorflow.org/tensorboard) and [Weights & Biases](https://wandb.ai/) to record training logs and decorates the `Trainer.__call__` function, see the core code for the specific implementation.
+The `Logger📊` part uses [Tensorboard](https://www.tensorflow.org/tensorboard) and [Weights & Biases](https://wandb.ai/) to record training logs and decorates the `Trainer.__call__` function, see the core code for the specific implementation.
 
 ---
 
 <figure markdown>
-  ![Adam](imgs/adam.svg){ width="500" }
+  ![Adam](imgs/adam.svg#only-light){ width="500" }
+  ![Adam](imgs/adam_white.svg#only-dark){ width="500" }
   <figcaption>Adam</figcaption>
 </figure>
 
@@ -36,7 +37,7 @@ The `logger📊` part uses [Tensorboard](https://www.tensorflow.org/tensorboard)
 
 ```python title="abstractions.py" linenums="1"
 class Model(nn.Module):
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, config: dict[str, Any]) -> None:
         pass
 
     def value(self, x: torch.Tensor, a: Optional[torch.Tensor] = None) -> tuple[Any]:
@@ -49,8 +50,8 @@ class Model(nn.Module):
 
 
 class Algorithm:
-    def __init__(self, **kwargs) -> None:
-        self.model = Model(**kwargs)
+    def __init__(self, config: dict[str, Any]) -> None:
+        self.model = Model(config)
         # 1. Initialize model, target model
         # 2. Initialize optimizer
         pass
@@ -74,8 +75,8 @@ class Algorithm:
 
 
 class Agent:
-    def __init__(self, **kwargs) -> None:
-        self.alg = Algorithm(**kwargs)
+    def __init__(self, config: dict[str, Any]) -> None:
+        self.alg = Algorithm(config)
         # 1. Initialize Algorithm
         # 2. Initialize run steps variable
         pass
@@ -102,8 +103,14 @@ class Agent:
 
 
 class Trainer:
-    def __init__(self, **kwargs) -> None:
-        self.agent = Agent(**kwargs)
+    @dataclasses.dataclass
+    class Config:
+        exp_name: Optional[str] = None
+        seed: int = 1
+        # ...
+
+    def __init__(self, config: Config = Config()) -> None:
+        self.agent = Agent(config)
         # 1. Initialize args
         # 2. Initialize the training and evaluation environment
         # 3. Initialize Buffer
