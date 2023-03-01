@@ -3,16 +3,16 @@ from __future__ import annotations
 import itertools
 import subprocess
 from concurrent.futures import ThreadPoolExecutor
-from typing import Any
+from typing import Any, List, Optional
 
-import fire
 import tomli
+import tyro
 
 
-def train_process(alg: str, framework: str, env_id: str, kwargs: dict[str, Any]) -> None:
+def train_process(alg: str, framework: str, env_id: str, config: dict[str, Any]) -> None:
     with open("benchmark.toml", "rb") as file:
         cmd = tomli.load(file)[alg][framework][env_id]
-    for param in kwargs.items():
+    for param in config.items():
         if isinstance(param[1], list):
             cmd += f" --{param[0]} {' '.join(param[1])}"
         elif isinstance(param[1], bool):
@@ -24,35 +24,24 @@ def train_process(alg: str, framework: str, env_id: str, kwargs: dict[str, Any])
 
 
 def main(
-    algs: str | list[str] = ["dqn"],
-    frameworks: str | list[str] = ["torch"],
-    env_ids: str | list[str] = ["CartPole-v1"],
-    seeds: int | list[int] = [1],
+    algs: List[str] = ["dqn"],
+    frameworks: List[str] = ["torch"],
+    env_ids: List[str] = ["CartPole-v1"],
+    seeds: List[int] = [1],
     cuda: bool = True,
     workers: int = 3,
     track: bool = False,
     wandb_project_name: str = "abcdrl",
-    wandb_entity: str | None = None,
-    wandb_tags: str | list[str] = [],
+    wandb_entity: Optional[str] = None,
+    wandb_tags: List[str] = [],
     capture_video: bool = False,
 ):
-    if not isinstance(algs, list):
-        algs = [algs]
-    if not isinstance(frameworks, list):
-        frameworks = [frameworks]
-    if not isinstance(env_ids, list):
-        env_ids = [env_ids]
-    if not isinstance(seeds, list):
-        seeds = [seeds]
-    if not isinstance(wandb_tags, list):
-        wandb_tags = [wandb_tags]
-
     git_commit_sha = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode("ascii").strip()
     wandb_tags.append(git_commit_sha)
 
     with ThreadPoolExecutor(max_workers=workers) as executor:
         for alg, framework, env_id, seed in itertools.product(algs, frameworks, env_ids, seeds):
-            kwargs = {
+            config = {
                 "logger.wandb-project-name": wandb_project_name,
                 "logger.wandb-entity": wandb_entity,
                 "logger.wandb-tags": wandb_tags,
@@ -60,12 +49,12 @@ def main(
                 "trainer.seed": seed,
             }
             if not cuda:
-                kwargs = {**kwargs, "trainer.no-cuda": False}
+                config = {**config, "trainer.no-cuda": False}
             if track:
-                kwargs = {**kwargs, "trainer.track": True}
+                config = {**config, "trainer.track": True}
 
-            executor.submit(train_process, alg, framework, env_id, kwargs)
+            executor.submit(train_process, alg, framework, env_id, config)
 
 
 if __name__ == "__main__":
-    fire.Fire(main)
+    tyro.cli(main)
