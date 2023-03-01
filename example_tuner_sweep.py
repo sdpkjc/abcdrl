@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 import time
+from typing import Optional
 
-import fire
+import tyro
 import wandb
 
 from abcdrl import dqn_torch
@@ -47,13 +48,16 @@ def tune_agent() -> None:
                 writer.log({"global_step": log_data["sample_step"]}, step=log_data["sample_step"])
 
 
-def main(
-    sweep_id: str | None = None, run_count: int = 1, wandb_project_name: str = "abcdrl", wandb_entity: str | None = None
-):
-    if sweep_id is None:
-        sweep_id = wandb.sweep(sweep=sweep_configuration, project=wandb_project_name, entity=wandb_entity)  # type: ignore[arg-type]
-    wandb.agent(sweep_id, function=tune_agent, count=run_count)
-
-
 if __name__ == "__main__":
-    fire.Fire(main)
+
+    def main(
+        sweep_id: Optional[str] = None,
+        run_count: int = 1,
+        wandb_project_name: str = "abcdrl",
+        wandb_entity: Optional[str] = None,
+    ):
+        if sweep_id is None:
+            sweep_id = wandb.sweep(sweep=sweep_configuration, project=wandb_project_name, entity=wandb_entity)  # type: ignore[arg-type]
+        wandb.agent(sweep_id, function=tune_agent, count=run_count)
+
+    tyro.cli(main)
