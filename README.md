@@ -20,7 +20,7 @@ abcdRL is a **Modular Single-file Reinforcement Learning Algorithms Library** th
 
 <picture>
   <source media="(prefers-color-scheme: light)" srcset="https://docs.abcdrl.xyz/imgs/adam.svg">
-  <source media="(prefers-color-scheme: dark)" srcset="https://docs.abcdrl.xyz/imgs/adam_white.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="https://docs.abcdrl.xyz/imgs/adam_dark.svg">
   <img alt="adam" src="https://docs.abcdrl.xyz/imgs/adam.svg" width="300">
 </picture>
 

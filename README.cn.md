@@ -20,7 +20,7 @@ abcdRL 是一个**模块化单文件强化学习代码库**，提供“有但不
 
 <picture>
   <source media="(prefers-color-scheme: light)" srcset="https://docs.abcdrl.xyz/imgs/adam.svg">
-  <source media="(prefers-color-scheme: dark)" srcset="https://docs.abcdrl.xyz/imgs/adam_white.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="https://docs.abcdrl.xyz/imgs/adam_dark.svg">
   <img alt="adam" src="https://docs.abcdrl.xyz/imgs/adam.svg" width="300">
 </picture>
 
