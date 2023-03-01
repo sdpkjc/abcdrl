@@ -14,7 +14,8 @@ The `Logger📊` part uses [Tensorboard](https://www.tensorflow.org/tensorboard)
 ---
 
 <figure markdown>
-  ![Adam](imgs/adam.svg){ width="500" }
+  ![Adam](imgs/adam.svg#only-light){ width="500" }
+  ![Adam](imgs/adam_white.svg#only-dark){ width="500" }
   <figcaption>Adam</figcaption>
 </figure>
 

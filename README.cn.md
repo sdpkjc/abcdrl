@@ -18,7 +18,11 @@
 
 abcdRL 是一个**模块化单文件强化学习代码库**，提供“有但不严格”的模块化设计，和清晰的单文件算法实现。
 
-<img src="https://docs.abcdrl.xyz/imgs/adam.svg" width="300"/>
+<picture>
+  <source media="(prefers-color-scheme: light)" srcset="https://docs.abcdrl.xyz/imgs/adam.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="https://docs.abcdrl.xyz/imgs/adam_white.svg">
+  <img alt="adam" src="https://docs.abcdrl.xyz/imgs/adam.svg" width="300">
+</picture>
 
 *阅读代码时，在单文件代码中，快速了解算法的完整实现细节；改进算法时，得益于轻量的模块化设计，只需专注于少量的模块。*
 
