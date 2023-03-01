@@ -51,7 +51,7 @@ def main(
             if not cuda:
                 config = {**config, "trainer.no-cuda": False}
             if track:
-                config = {**config, "trainer.track": True}
+                config = {**config, "logger.track": True}
 
             executor.submit(train_process, alg, framework, env_id, config)
 
