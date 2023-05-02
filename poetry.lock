@@ -1750,37 +1750,37 @@ reference = "tsinghua"
 
 [[package]]
 name = "mujoco"
-version = "2.3.5"
+version = "2.3.2"
 description = "MuJoCo Physics Simulator"
 category = "main"
 optional = true
 python-versions = ">=3.7"
 files = [
-    {file = "mujoco-2.3.5-cp310-cp310-macosx_10_12_x86_64.whl", hash = "sha256:51909772a5289b183434ccc74ed26420255f5ff905bb1e030f982dabba2a4afc"},
-    {file = "mujoco-2.3.5-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:de6c544046b9f104c05c025daabc4c10370f9638094b352329314f0e36225714"},
-    {file = "mujoco-2.3.5-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:c17b4a79b214a092fa561b9065e051ae3af4d6c6f138fd934bb6e82daec059df"},
-    {file = "mujoco-2.3.5-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:8f4b1c431f454fda3237a54b48b75d7dc320836fbc2c386beadd498ff3b03aa0"},
-    {file = "mujoco-2.3.5-cp310-cp310-win_amd64.whl", hash = "sha256:121b551e65f5211e9c406be2c00f67d6a9a13e6c44d89fe46419542d0e2054b5"},
-    {file = "mujoco-2.3.5-cp311-cp311-macosx_10_12_x86_64.whl", hash = "sha256:9cd73e6ead99b4f0baf1b42c5aa571da8818a7d1d72331b08bd190e5a0cea1ad"},
-    {file = "mujoco-2.3.5-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:d621353d6be604a5e11bc015a52f76c594496d19f5a431df0c2beb9ee71bcd3d"},
-    {file = "mujoco-2.3.5-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:55a5f082acc156499c531f1c0a0b53aefa51dcadf5b3588edcadc71c5a8e646d"},
-    {file = "mujoco-2.3.5-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:32bf87cb5e17a993ce71f820ef2786a8c71f588e426a346d6de01cbf16843d14"},
-    {file = "mujoco-2.3.5-cp311-cp311-win_amd64.whl", hash = "sha256:1c3ab3bf087255c535571ceeab4c2fb62d8f00dfbd3a0d2a5c1cc115c1144d79"},
-    {file = "mujoco-2.3.5-cp37-cp37m-macosx_10_12_x86_64.whl", hash = "sha256:1ba3f282b0a537d7bd22e81488305ec104e55b18e48cae6718fa7cf820d18aed"},
-    {file = "mujoco-2.3.5-cp37-cp37m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:daae78b6fd7831bbc8510a02cfe34d2be641f8af2257df9b9b81f1f4abb00067"},
-    {file = "mujoco-2.3.5-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:fffe7e3a8a13eb0ef9478d91ce16760db645b33da939db1935751d7e88893ed9"},
-    {file = "mujoco-2.3.5-cp37-cp37m-win_amd64.whl", hash = "sha256:962a7d94d8ad9fb5a16ca97f25f8dabe607a2b7ec0cdc84173b9614c132fc488"},
-    {file = "mujoco-2.3.5-cp38-cp38-macosx_10_12_x86_64.whl", hash = "sha256:4d64445da3e091c4a63ceec0d2a181d981b89a2f3215cc4c78dd793815368f4e"},
-    {file = "mujoco-2.3.5-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:e218455e52ea3309ae90b97f7344c98f01e5e54515e27794677d19d64722cad7"},
-    {file = "mujoco-2.3.5-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:cbdc5a19f1006c50edbd97bff349e45f3f7b81b9058a185a02123c1b06397962"},
-    {file = "mujoco-2.3.5-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:1e2d45eaa76799681e61d2ef0a2d22a12a77b6ac4f4471deef862e80b3e7cbe2"},
-    {file = "mujoco-2.3.5-cp38-cp38-win_amd64.whl", hash = "sha256:8333cb49049e77f64d8ae944c05fa907a012fbcc19002ab752ab461a814ca17d"},
-    {file = "mujoco-2.3.5-cp39-cp39-macosx_10_12_x86_64.whl", hash = "sha256:b61e54e8618365c48395cb20bcc46a456dbb248b24a059729b2deb43646c4a80"},
-    {file = "mujoco-2.3.5-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:10aa8ff583b42966170b9a38d62c4fdad35351fca716d3d005887d45dbe69b95"},
-    {file = "mujoco-2.3.5-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:27f8cd4e94d6e153c5477001f9ad8df4d44e2a45e4d76f1829af4204d9806701"},
-    {file = "mujoco-2.3.5-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:223882a4b4c4becb57172a94255709060f58d5075c59ef7f2869b080d7199d84"},
-    {file = "mujoco-2.3.5-cp39-cp39-win_amd64.whl", hash = "sha256:3f411e1950fe6e7bc6266ae71749860c272e1a0865db2a865624407272710205"},
-    {file = "mujoco-2.3.5.tar.gz", hash = "sha256:39d966e6ec3cb9ed212de238de0c563ea9b4450f2c87043feff256089514aab4"},
+    {file = "mujoco-2.3.2-cp310-cp310-macosx_10_12_x86_64.whl", hash = "sha256:d5c2d95746464260913e0f37b9f2c57f84e58f8f3e13c50996c959e5fef55de8"},
+    {file = "mujoco-2.3.2-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:4c44fcbbcfa5daea31a63992c5edc7924579e8589cf9803a5eeb916be2f874b2"},
+    {file = "mujoco-2.3.2-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:6cafe3ac3db7c002ab2ea1a1391615039e24eeb0584428a417106f33ebcff249"},
+    {file = "mujoco-2.3.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:a75fba0b57804c1f340974287496330535167259d8120fb699b9e15621c4ee70"},
+    {file = "mujoco-2.3.2-cp310-cp310-win_amd64.whl", hash = "sha256:98f70b05666f4cad0c3bbd84b095c93248444cfe436f77b0210204cf27022401"},
+    {file = "mujoco-2.3.2-cp311-cp311-macosx_10_12_x86_64.whl", hash = "sha256:e8faa0551a46247aeaaf3ff9fab842d228fee4d832c394e4e35546464cbc3504"},
+    {file = "mujoco-2.3.2-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:9347bad6f7ce8f877e472cc28482864fd57d9095fa44d781042cd5cce7da8a76"},
+    {file = "mujoco-2.3.2-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:008d4e9ec5324bff2ff3654fc941874dddbe60b5c92c47c83eae25697b16745f"},
+    {file = "mujoco-2.3.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:7ced61cc3cceb993a80492a6aad8c4a8d0513749acf84901c97610c7a260e2eb"},
+    {file = "mujoco-2.3.2-cp311-cp311-win_amd64.whl", hash = "sha256:0e14878486515c6ea7b656a06f62dee8eb1edad404d6f8ae84b4265b81dfe257"},
+    {file = "mujoco-2.3.2-cp37-cp37m-macosx_10_12_x86_64.whl", hash = "sha256:19ab1db70881070d637059040f43e3c8d6f8d6082a952be1c75f3d19bf8587b7"},
+    {file = "mujoco-2.3.2-cp37-cp37m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:2043bee40c586e2daefa56bbdf0f62af13b52ce63ab46984e868c5cd8a126a21"},
+    {file = "mujoco-2.3.2-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:4c69072397f49e09cdf5fd114f30121915c8827442a2c96972f617f348f520dc"},
+    {file = "mujoco-2.3.2-cp37-cp37m-win_amd64.whl", hash = "sha256:b696e33795f1c0e950f69575db3f269afec73b73e95abdd4ae58df7963f075be"},
+    {file = "mujoco-2.3.2-cp38-cp38-macosx_10_12_x86_64.whl", hash = "sha256:61f2f21ee15c4a0518dacb2bb320657c35b2199b2e5bb6f65a3c588b5aec33f2"},
+    {file = "mujoco-2.3.2-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:4b4e9617c88ec8b8596b8a1161c26a8adba686f53cadf928554f699d3286208f"},
+    {file = "mujoco-2.3.2-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:621592592515746d2320c4ef622c45f3e154ea0f209b34b8ba25c808b6b5388c"},
+    {file = "mujoco-2.3.2-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:fd2b6e945cf53d96518448bb15ef59b950c5313c1ed2acd73d3a01cbf0f1d141"},
+    {file = "mujoco-2.3.2-cp38-cp38-win_amd64.whl", hash = "sha256:0bf6e1b8f0c3d0f1a9c4b7fcc07d5aac70c07d87446cdf4280b41f709e777905"},
+    {file = "mujoco-2.3.2-cp39-cp39-macosx_10_12_x86_64.whl", hash = "sha256:60daf3d2dbc3abf5348cd9c28ef0c847a28b04da45acc30991294342dc0b1dba"},
+    {file = "mujoco-2.3.2-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:a2cb4b09e62958080a61c834e01fdd4398551f322be51c3536220663d9078838"},
+    {file = "mujoco-2.3.2-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:4e4284069fead472a3feea32337ee1994953838c88b0e0a5259a4adf59ee9b09"},
+    {file = "mujoco-2.3.2-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:7e1cfea0a2aceb2aba1c0a924caefd3d5a23b6fc07c291f21aae6ccc2314e2b2"},
+    {file = "mujoco-2.3.2-cp39-cp39-win_amd64.whl", hash = "sha256:0165df4bebeeee8ff6640fa324515c54a4328c430128174df8543b91286eca49"},
+    {file = "mujoco-2.3.2.tar.gz", hash = "sha256:8983eb8500c6358f4d071b38dc2730259a5580ec3a7fdce6e5d6b00da0dd2cae"},
 ]
 
 [package.dependencies]
@@ -3574,4 +3574,4 @@ torch = ["torch"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.11"
-content-hash = "a17a7bae326fd540bce4d7e3eb710d6db4324deef2ca34004717e15d51365293"
+content-hash = "ad144f5376dc392e0f7eceb9cf754b0ca8ed97b4190aadb22816805a0bf78f84"

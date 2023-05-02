@@ -58,7 +58,7 @@ autorom = { version = "~=0.4.2", optional = true }
 autorom-accept-rom-license = { version = "~=0.4.2", optional = true }
 
 # mujoco
-mujoco = { version = ">=2.3.1.post1", optional = true }
+mujoco = { version = "==2.3.2", optional = true }
 mujoco-py = { version = ">=2.1,<2.2", optional = true }
 imageio = { version = ">=2.14.1", optional = true }
 free-mujoco-py = { version = "2.1.6", optional = true }
