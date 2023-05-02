@@ -364,18 +364,6 @@ class Logger:
         import wandb
         from torch.utils.tensorboard import SummaryWriter
 
-        def setup_video_monitor() -> None:
-            vcr = gym.wrappers.monitoring.video_recorder.VideoRecorder
-            vcr.close_ = vcr.close  # type: ignore[attr-defined]
-
-            def close(self):
-                vcr.close_(self)
-                if self.path:
-                    wandb.log({"videos": wandb.Video(self.path)})
-                    self.path = None
-
-            vcr.close = close  # type: ignore[assignment]
-
         @wrapt.decorator
         def wrapper(wrapped, instance, args, kwargs) -> Generator[dict[str, Any], None, None]:
             if config.track:
@@ -386,9 +374,9 @@ class Logger:
                     sync_tensorboard=True,
                     config=instance.config,
                     name=instance.config["run_name"],
+                    monitor_gym=True,
                     save_code=True,
                 )
-                setup_video_monitor()
 
             writer = SummaryWriter(f"runs/{instance.config['run_name']}")
             writer.add_text(
