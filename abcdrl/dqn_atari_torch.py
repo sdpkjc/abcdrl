@@ -176,7 +176,7 @@ class ReplayBuffer:
             next_observations = self.next_obs_buf[idxs]
         else:
             if self.size != self.buffer_size:
-                idxs = np.random.choice(self.size, size=batch_size, replace=True)
+                idxs = np.random.choice(self.size - 1, size=batch_size, replace=True)
             else:
                 idxs = (
                     (np.random.choice(self.size - 1, size=batch_size, replace=True) + 1) + self.ptr
@@ -354,6 +354,7 @@ class Trainer:
             self.config["obs_space"],
             self.config["act_space"],
             buffer_size=self.config["buffer_size"],
+            optimize_memory_usage=True,
         )
 
         self.obs, _ = self.envs.reset(seed=self.config["seed"])
