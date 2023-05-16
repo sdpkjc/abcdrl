@@ -354,6 +354,7 @@ class Trainer:
             self.config["obs_space"],
             self.config["act_space"],
             buffer_size=self.config["buffer_size"],
+            optimize_memory_usage=True,
         )
 
         self.obs, _ = self.envs.reset(seed=self.config["seed"])
