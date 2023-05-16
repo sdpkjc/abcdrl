@@ -176,7 +176,7 @@ class ReplayBuffer:
             next_observations = self.next_obs_buf[idxs]
         else:
             if self.size != self.buffer_size:
-                idxs = np.random.choice(self.size - 1, size=batch_size, replace=True)
+                idxs = np.random.choice(self.size, size=batch_size, replace=True)
             else:
                 idxs = (
                     (np.random.choice(self.size - 1, size=batch_size, replace=True) + 1) + self.ptr
