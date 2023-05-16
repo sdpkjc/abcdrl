@@ -43,7 +43,7 @@ gymnasium = "0.28.1"
 wandb = "^0.15.0"
 dill = "^0.3.6"
 tomli = "^2.0.0"
-tyro = "0.3.38"
+tyro = "^0.5.0"
 wrapt = "1.15.0"
 
 # torch
